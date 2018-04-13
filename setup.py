@@ -19,11 +19,9 @@ from setuptools import find_packages, setup
 from moad_tools import __pkg_metadata__
 
 py_versions = ["3", "3.6"]
-python_classifiers = [
-    f"Programming Language :: Python :: {py_versions}"
-]
+python_classifiers = [f"Programming Language :: Python :: {py_versions}"]
 other_classifiers = [
-    "Development Status :: " + __pkg_metadata__.DEV_STATUS,
+    f"Development Status :: {__pkg_metadata__.DEV_STATUS}",
     "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: Implementation :: CPython",
     "Operating System :: MacOS :: MacOS X",
