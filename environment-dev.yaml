@@ -1,0 +1,38 @@
+# conda environment description file for moad_tools package
+# development environment
+#
+# Create a conda environment for development, testing and documentation of the package
+# with:
+#
+#   $ conda env create -f moad_tools/environment-dev.yaml
+#   $ conda activate moad-tools
+#   (moad-tools)$ pip install --editable moad_tools
+#
+# The environment will include all of the tools used to develop,
+# test, and document the moad_tools package.
+#
+# See the requirements.txt file for an exhaustive list of all of the
+# packages installed in the environment and their versions used in
+# recent development.
+
+name: moad-tools
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - pip
+  - python=3.6
+
+  # For unit tests
+  - coverage
+  - pytest
+
+  # For documentation
+  - sphinx
+  - sphinx_rtd_theme
+
+  - pip:
+    # For coding style
+    - black
