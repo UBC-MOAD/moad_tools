@@ -14,7 +14,7 @@
 # limitations under the License.
 """moad_tools package
 """
-PROJECT = 'moad_tools'
-DESCRIPTION = 'UBC EOAS MOAD Group Tools Package'
-VERSION = '1.0.dev0'
-DEV_STATUS = '5 - Production/Stable'
+PROJECT = "moad_tools"
+DESCRIPTION = "UBC EOAS MOAD Group Tools Package"
+VERSION = "1.0.dev0"
+DEV_STATUS = "5 - Production/Stable"

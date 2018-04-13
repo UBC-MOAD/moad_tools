@@ -14,34 +14,31 @@
 # limitations under the License.
 """moad_tools package
 """
-from setuptools import (
-    find_packages,
-    setup,
-)
+from setuptools import find_packages, setup
 
 from moad_tools import __pkg_metadata__
 
+py_versions = ["3", "3.6"]
 python_classifiers = [
-    'Programming Language :: Python :: {0}'.format(py_version)
-    for py_version in ['3', '3.6']
+    f"Programming Language :: Python :: {py_versions}"
 ]
 other_classifiers = [
-    'Development Status :: ' + __pkg_metadata__.DEV_STATUS,
-    'License :: OSI Approved :: Apache Software License',
-    'Programming Language :: Python :: Implementation :: CPython',
-    'Operating System :: MacOS :: MacOS X',
-    'Operating System :: POSIX :: Linux',
-    'Operating System :: Unix',
-    'Environment :: Console',
-    'Intended Audience :: Science/Research',
-    'Intended Audience :: Education',
-    'Intended Audience :: Developers',
-    'Intended Audience :: End Users/Desktop',
+    "Development Status :: " + __pkg_metadata__.DEV_STATUS,
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Unix",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
 ]
 try:
-    long_description = open('README.rst', 'rt').read()
+    long_description = open("README.rst", "rt").read()
 except IOError:
-    long_description = ''
+    long_description = ""
 install_requires = [
     # see requirements.txt for versions most recently used in development
 ]
@@ -51,12 +48,12 @@ setup(
     version=__pkg_metadata__.VERSION,
     description=__pkg_metadata__.DESCRIPTION,
     long_description=long_description,
-    author='Doug Latornell',
-    author_email='dlatornell@eoas.ubc.ca',
-    url='http://ubc-moad-tools.readthedocs.io/en/latest/',
-    license='Apache License, Version 2.0',
+    author="Doug Latornell",
+    author_email="dlatornell@eoas.ubc.ca",
+    url="http://ubc-moad-tools.readthedocs.io/en/latest/",
+    license="Apache License, Version 2.0",
     classifiers=python_classifiers + other_classifiers,
-    platforms=['Linux'],
+    platforms=["Linux"],
     install_requires=install_requires,
     packages=find_packages(),
 )
