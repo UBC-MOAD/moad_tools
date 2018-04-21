@@ -22,6 +22,7 @@ channels:
   - defaults
 
 dependencies:
+  - pandas
   - pip
   - python=3.6
 
