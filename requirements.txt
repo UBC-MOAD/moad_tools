@@ -34,13 +34,13 @@ Pygments==2.2.0
 pyOpenSSL==17.5.0
 pyparsing==2.2.0
 PySocks==1.6.8
-pytest==3.5.0
+pytest==3.5.1
 python-dateutil==2.7.2
 pytz==2018.4
 requests==2.18.4
 six==1.11.0
 snowballstemmer==1.2.1
-Sphinx==1.7.2
+Sphinx==1.7.4
 sphinx-rtd-theme==0.3.0
 sphinxcontrib-websupport==1.0.1
 typing==3.6.4
