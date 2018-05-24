@@ -72,14 +72,27 @@ def get_ndbc_buoy(buoy_id):
         return datetime.strptime(f"{yr} {mo} {dy} {hr} {mn}", "%Y %m %d %H %M")
 
     try:
-        df = pandas.read_table(
-            ndbc_url,
-            delim_whitespace=True,
-            header=[0, 1],
-            na_values="MM",
-            parse_dates=[[0, 1, 2, 3, 4]],
-            date_parser=datetime_parser,
-        )
+        try:
+            df = pandas.read_table(
+                ndbc_url,
+                delim_whitespace=True,
+                header=[0, 1],
+                na_values="MM",
+                parse_dates=[[0, 1, 2, 3, 4]],
+                date_parser=datetime_parser,
+            )
+        except urllib.error.URLError:
+            # Work around SSL: UNKNOWN_PROTOCOL error that appeared on 23may18
+            # by trying HTTP instead of HTTPS
+            ndbc_url = ndbc_url.replace("https://", "http://")
+            df = pandas.read_table(
+                ndbc_url,
+                delim_whitespace=True,
+                header=[0, 1],
+                na_values="MM",
+                parse_dates=[[0, 1, 2, 3, 4]],
+                date_parser=datetime_parser,
+            )
     except urllib.error.HTTPError as exc:
         msg = f"buoy data request failed: HTTP Error {exc.code}: {exc.reason}: {ndbc_url}"
         logging.error(msg)
