@@ -61,8 +61,9 @@ def get_ndbc_buoy(buoy_id):
     msg = " ".join(
         (
             msg,
-            f"for buoy {buoy_number}" if int(buoy_number)
-            == buoy_id else f"for buoy {buoy_number} {buoy_id}",
+            f"for buoy {buoy_number}"
+            if int(buoy_number) == buoy_id
+            else f"for buoy {buoy_number} {buoy_id}",
         )
     )
     logging.info(msg)
@@ -94,7 +95,9 @@ def get_ndbc_buoy(buoy_id):
                 date_parser=datetime_parser,
             )
     except urllib.error.HTTPError as exc:
-        msg = f"buoy data request failed: HTTP Error {exc.code}: {exc.reason}: {ndbc_url}"
+        msg = (
+            f"buoy data request failed: HTTP Error {exc.code}: {exc.reason}: {ndbc_url}"
+        )
         logging.error(msg)
         raise ValueError(msg) from exc
 

@@ -21,9 +21,7 @@ sys.path.insert(0, os.path.abspath(".."))
 # -- Project information -----------------------------------------------------
 
 project = "UBC EOAS MOAD Group Tools"
-copyright = (
-    "2018, " "The UBC EOAS MOAD Group " "and The University of British Columbia"
-)
+copyright = "2018, The UBC EOAS MOAD Group and The University of British Columbia"
 
 # The short X.Y version.
 from moad_tools import __pkg_metadata__
