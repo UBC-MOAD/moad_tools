@@ -30,8 +30,8 @@ This is the documentation for the UBC EOAS MOAD Group's :kbd:`moad_tools` Python
    modules
    pkg_development
 
-Indices and tables
-==================
+Indices
+=======
 
 * :ref:`genindex`
 * :ref:`modindex`
