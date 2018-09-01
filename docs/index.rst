@@ -1,4 +1,4 @@
-.. Copyright 2013-2017 The UBC EOAS MOAD Group
+.. Copyright 2018 The UBC EOAS MOAD Group
 .. and The University of British Columbia
 ..
 .. Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,6 +28,7 @@ This is the documentation for the UBC EOAS MOAD Group's :kbd:`moad_tools` Python
    :caption: Contents:
 
    modules
+   pkg_development
 
 Indices and tables
 ==================

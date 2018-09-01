@@ -2,13 +2,42 @@
 UBC EOAS MOAD Group Tools Package
 *********************************
 
-The UBC EOAS MOAD Group Tools package (moad_tools) is a collection of Python modules that facilitate code reuse for the UBC EOAS MOAD Group.
+:License: Apache License, Version 2.0
+
+.. image:: https://img.shields.io/badge/license-Apache%202-cb2533.svg
+    :target: https://www.apache.org/licenses/LICENSE-2.0
+    :alt: Licensed under the Apache License, Version 2.0
+.. image:: https://img.shields.io/badge/python-3.6-blue.svg
+    :target: https://docs.python.org/3.6/
+    :alt: Python Version
+.. image:: https://img.shields.io/badge/version%20control-hg-blue.svg
+    :target: https://bitbucket.org/UBC_MOAD/moad_tools/
+    :alt: Mercurial on Bitbucket
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://black.readthedocs.io/en/stable/
+    :alt: The uncompromising Python code formatter
+.. image:: https://readthedocs.org/projects/ubc-moad-tools/badge/?version=latest
+    :target: https://ubc-moad-tools.readthedocs.io/en/latest/
+    :alt: Documentation Status
+.. image:: https://img.shields.io/bitbucket/issues/UBC_MOAD/moad_tools.svg
+    :target: https://bitbucket.org/UBC_MOAD/moad_tools/issues?status=new&status=open
+    :alt: Issue Tracker
+
+The UBC EOAS MOAD Group Tools package (``moad_tools``) is a collection of Python modules that facilitate code reuse for the UBC EOAS MOAD Group.
 
 Documentation for the package is in the ``docs/`` directory and is rendered at http://ubc-moad-tools.readthedocs.org/en/latest/.
+
+.. image:: https://readthedocs.org/projects/ubc-moad-tools/badge/?version=latest
+    :target: https://ubc-moad-tools.readthedocs.io/en/latest/
+    :alt: Documentation Status
 
 
 License
 =======
+
+.. image:: https://img.shields.io/badge/license-Apache%202-cb2533.svg
+    :target: https://www.apache.org/licenses/LICENSE-2.0
+    :alt: Licensed under the Apache License, Version 2.0
 
 The UBC EOAS MOAD Group Tools package and documentation are copyright 2018 by the UBC EOAS MOAD Group and The University of British Columbia.
 
