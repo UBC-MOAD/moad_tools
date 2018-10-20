@@ -49,4 +49,9 @@ PLACES = {
         "GEM2.5 grid ji": (183, 107),
         "EC buoy number": 46131,
     },
+    # VHFR FVCOM model HADCP station
+    "2nd Narrows Rail Bridge": {
+        "lon lat": (-123.0247222, 49.2938889),
+        "stn number": 3160171,  # AIS MMSI (Maritime Mobile Service Identity)
+    },
 }
