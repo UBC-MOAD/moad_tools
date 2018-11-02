@@ -22,6 +22,7 @@ channels:
   - defaults
 
 dependencies:
+  - arrow
   - matplotlib
   - pandas
   - pip
@@ -37,6 +38,5 @@ dependencies:
   - sphinx
   - sphinx_rtd_theme
 
-  - pip:
-    # For coding style
-    - black
+  # For coding style
+  - black
