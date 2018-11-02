@@ -15,9 +15,9 @@
 """Unit tests for observations module.
 """
 import urllib
-from unittest.mock import patch, Mock
+from unittest.mock import Mock, patch
 
-import pytest as pytest
+import pytest
 
 from moad_tools import observations
 
