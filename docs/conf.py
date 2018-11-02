@@ -49,7 +49,7 @@ extensions = [
 
 intersphinx_mapping = {"python": ("https://docs.python.org/", None)}
 
-autodoc_mock_imports = ["pandas"]
+autodoc_mock_imports = ["matplotlib", "pandas", "tables", "xarray"]
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 

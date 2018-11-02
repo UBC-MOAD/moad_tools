@@ -39,7 +39,10 @@ except IOError:
     long_description = ""
 install_requires = [
     # see requirements.txt for versions most recently used in development
-    "pandas"
+    "matplotlib",
+    "pandas",
+    "pytables",
+    "xarray",
 ]
 
 setup(
