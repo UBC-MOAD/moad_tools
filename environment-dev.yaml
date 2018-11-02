@@ -22,9 +22,12 @@ channels:
   - defaults
 
 dependencies:
+  - matplotlib
   - pandas
   - pip
-  - python=3.6
+  - pytables
+  - python=3
+  - xarray
 
   # For unit tests
   - coverage
