@@ -47,7 +47,10 @@ extensions = [
     "sphinx.ext.viewcode",
 ]
 
-intersphinx_mapping = {"python": ("https://docs.python.org/", None)}
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/", None),
+    "xarray": ("http://xarray.pydata.org/en/stable/", None),
+}
 
 autodoc_mock_imports = ["matplotlib", "pandas", "tables", "xarray"]
 # Add any paths that contain templates here, relative to this directory.

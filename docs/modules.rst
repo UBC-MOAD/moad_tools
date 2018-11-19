@@ -5,3 +5,4 @@ moad_tools
    :maxdepth: 4
 
    moad_tools
+   moad_tools.midoss
