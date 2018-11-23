@@ -42,7 +42,7 @@ install_requires = [
     "arrow",
     "matplotlib",
     "pandas",
-    "pytables",
+    "tables",  # PyTables
     "xarray",
 ]
 
