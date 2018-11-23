@@ -24,6 +24,7 @@ channels:
 dependencies:
   - arrow
   - matplotlib
+  - netcdf4
   - pandas
   - pip
   - pytables
