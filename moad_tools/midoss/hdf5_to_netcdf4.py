@@ -12,10 +12,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Functions to transform an MOHID HDF5 output file into an xarray dataset.
+"""Functions to transform an MOHID HDF5 output file into a netCDF4 file.
 """
 import functools
 import logging
+import os
+from pathlib import Path
+import shlex
+import subprocess
+import tempfile
 import time
 from types import SimpleNamespace
 
@@ -24,11 +29,8 @@ import numpy
 import tables
 import xarray
 
-# logging.getLogger(__name__).addHandler(logging.NullHandler())
-logging.getLogger(__name__)
-
-
-t0 = 0
+logging.getLogger(__name__).addHandler(logging.NullHandler())
+# logging.getLogger(__name__)
 
 
 def main_timer(func):
@@ -46,6 +48,7 @@ def main_timer(func):
 def function_timer(func):
     @functools.wraps(func)
     def wrapper_function_timer(*args, **kwargs):
+        global t0
         t_func = time.time()
         return_value = func(*args, **kwargs)
         logging.info(
@@ -57,36 +60,48 @@ def function_timer(func):
 
 
 @main_timer
-def hdf5_to_netcdf4(hdf5_file, nc_file_dir, nc_filename_root):
+def hdf5_to_netcdf4(hdf5_file, netcdf4_file):
     """Transform selected contents of a MOHID HDF5 results file into a netCDF4 file.
 
     :param hdf5_file: File path and name of MOHID HDF5 results file to read from.
     :type hdf5_file: :py:class:`pathlib.Path` or str
 
-    :param nc_file_dir: File path and name of netCDF4 file to write to.
-    :type nc_file_dir: :py:class:`pathlib.Path` or str
-
-    :param nc_filename_root:
+    :param netcdf4_file: File path and name of netCDF4 file to write to.
+    :type netcdf4_file: :py:class:`pathlib.Path` or str
     """
     with tables.open_file(hdf5_file) as h5file:
-        logging.info(f"reading MOHID results from: {hdf5_file}")
+        logging.info(f"reading MOHID hdf5 results from: {hdf5_file}")
         timestep_files = []
-        grid_indices, timestep_file = _init_dataset(
-            h5file, nc_file_dir, nc_filename_root
-        )
-        timestep_files.append(timestep_file)
-        # for index in range(2, h5file.root.Time._v_nchildren + 1):
-        for index in range(2, 4):
-            timestep_files.append(
-                _calc_timestep_file(
-                    grid_indices, h5file, index, nc_file_dir, nc_filename_root
-                )
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp_dir_path = Path(tmp_dir)
+            netcdf4_file = Path(netcdf4_file)
+            grid_indices, timestep_file = _init_dataset(
+                h5file, netcdf4_file, tmp_dir_path
             )
-        # oil_times_file = _calc_oil_times_file(grid_indices, h5file, nc_file_dir, nc_filename_root)
+            timestep_files.append(timestep_file)
+            for index in range(2, h5file.root.Time._v_nchildren + 1):
+                # for index in range(2, 4):
+                timestep_files.append(
+                    _calc_timestep_file(
+                        grid_indices, h5file, index, netcdf4_file, tmp_dir_path
+                    )
+                )
+            _concat_timestep_files(timestep_files, netcdf4_file)
+            oil_times_file = _calc_oil_times_file(
+                grid_indices, h5file, netcdf4_file, tmp_dir_path
+            )
+            _append_oil_times_file(oil_times_file, netcdf4_file)
+    logging.info(f"created MOHID netCDF4 results in: {netcdf4_file}")
 
 
 @function_timer
-def _init_dataset(h5file, nc_file_dir, nc_filename_root):
+def _init_dataset(h5file, netcdf4_file, tmp_dir):
+    """
+    :param :py:class:`tables.File` h5file:
+    :param :py:class:`pathlib.Path` netcdf4_file:
+    :param :py:class:`pathlib.Path` tmp_dir:
+    :rtype: :py:class:`types.SimpleNamespace`, :py:class:`pathlib.Path`
+    """
     time_coord = _calc_time_coord(h5file, 1)
     logging.info(f"initializing dataset with fields at: {time_coord.values[0]}")
     z_index, y_index, x_index = _calc_zyx_indices(h5file)
@@ -99,14 +114,14 @@ def _init_dataset(h5file, nc_file_dir, nc_filename_root):
         if group._v_name in ("Beaching Time", "Oil Arrival Time"):
             continue
         data_vars.update(_calc_data_var(group, 1, (time_coord, y_index, x_index)))
-        logging.info(
+        logging.debug(
             f"added (t, y, x) field: {group._v_name} at {time_coord.values[0]}"
         )
     for group in h5file.root.Results.OilSpill.Data_3D:
         data_vars.update(
             _calc_data_var(group, 1, (time_coord, z_index, y_index, x_index))
         )
-        logging.info(
+        logging.debug(
             f"added (t, z, y, x) field: {group._v_name} at {time_coord.values[0]}"
         )
     ds = xarray.Dataset(
@@ -121,14 +136,25 @@ def _init_dataset(h5file, nc_file_dir, nc_filename_root):
     timestamp = (
         time_coord.values[0].astype("datetime64[m]").astype(str).replace(":", "")
     )
-    nc_file = nc_file_dir / f"{nc_filename_root}_{timestamp}.nc"
-    _write_netcdf(ds, nc_file)
-    logging.info(f"wrote initial time step to: {nc_file}")
-    return SimpleNamespace(z_index=z_index, y_index=y_index, x_index=x_index), nc_file
+    timestep_file = (tmp_dir / f"{netcdf4_file.stem}_{timestamp}").with_suffix(".nc")
+    _write_netcdf(ds, timestep_file)
+    logging.info(f"wrote initial time step to: {timestep_file}")
+    return (
+        SimpleNamespace(z_index=z_index, y_index=y_index, x_index=x_index),
+        timestep_file,
+    )
 
 
 @function_timer
-def _calc_timestep_file(grid_indices, h5file, index, nc_file_dir, nc_filename_root):
+def _calc_timestep_file(grid_indices, h5file, index, netcdf4_file, tmp_dir):
+    """
+    :param :py:class:`types.SimpleNamespace` grid_indices:
+    :param :py:class:`tables.File` h5file:
+    :param int index:
+    :param :py:class:`pathlib.Path` netcdf4_file:
+    :param :py:class:`pathlib.Path` tmp_dir:
+    :return:
+    """
     time_coord = _calc_time_coord(h5file, index)
     logging.info(f"processing fields at: {time_coord.values[0]}")
     data_vars = {}
@@ -168,15 +194,36 @@ def _calc_timestep_file(grid_indices, h5file, index, nc_file_dir, nc_filename_ro
             grid_indices.x_index.name: grid_indices.x_index,
         },
     )
-    hr = time_coord.values[0].astype("datetime64[m]").astype(str)
-    nc_file = nc_file_dir / f"{nc_filename_root}_{hr}.nc"
-    _write_netcdf(ds, nc_file)
-    logging.debug(f"wrote time step to: {nc_file}")
-    return nc_file
+    timestamp = time_coord.values[0].astype("datetime64[m]").astype(str)
+    timestep_file = (tmp_dir / f"{netcdf4_file.stem}_{timestamp}").with_suffix(".nc")
+    _write_netcdf(ds, timestep_file)
+    logging.info(f"wrote time step to: {timestep_file}")
+    return timestep_file
 
 
 @function_timer
-def _calc_oil_times_file(grid_indices, h5file, nc_file_dir, nc_filename_root):
+def _concat_timestep_files(timestep_files, netcdf4_file):
+    """
+    :param list timestep_files:
+    :param :py:class:`pathlib.Path`netcdf4_file:
+    """
+    ncrcat_cmd = "ncrcat -4 -L4 -O -o"
+    input_files = " ".join(os.fspath(f) for f in timestep_files)
+    cmd = f"{ncrcat_cmd} {netcdf4_file} {input_files}"
+    logging.debug(f"concatenating time steps with: {ncrcat_cmd} {netcdf4_file}")
+    subprocess.check_call(shlex.split(cmd))
+    logging.info(f"concatenated time steps to: {netcdf4_file}")
+
+
+@function_timer
+def _calc_oil_times_file(grid_indices, h5file, netcdf4_file, tmp_dir):
+    """
+    :param :py:class:`types.SimpleNamespace` grid_indices:
+    :param :py:class:`tables.File` hdf5_file:
+    :param :py:class:`pathlib.Path` netcdf4_file:
+    :param :py:class:`pathlib.Path` tmp_dir:
+    :rtype: :py:class:`pathlib.Path`
+    """
     logging.info(f"processing oil beaching and arrival times")
     data_vars = {}
     for group in h5file.root.Results.OilSpill.Data_2D:
@@ -187,7 +234,7 @@ def _calc_oil_times_file(grid_indices, h5file, nc_file_dir, nc_filename_root):
                 group, group._v_nchildren, (grid_indices.y_index, grid_indices.x_index)
             )
         )
-        logging.info(
+        logging.debug(
             f"added (y, x) field: {group._v_name} at time step {group._v_nchildren}"
         )
     ds = xarray.Dataset(
@@ -197,19 +244,32 @@ def _calc_oil_times_file(grid_indices, h5file, nc_file_dir, nc_filename_root):
             grid_indices.x_index.name: grid_indices.x_index,
         },
     )
-    nc_file = nc_file_dir / f"{nc_filename_root}_oil_times.nc"
-    _write_netcdf(ds, nc_file, time_coord=False, scaled_vars=False)
-    logging.debug(f"wrote oil beaching and arrival times to: {nc_file}")
-    return nc_file
+    oil_times_file = (tmp_dir / f"{netcdf4_file.stem}_oil_times").with_suffix(".nc")
+    _write_netcdf(ds, oil_times_file, time_coord=False, scaled_vars=False)
+    logging.info(f"wrote oil beaching and arrival times to: {oil_times_file}")
+    return oil_times_file
 
 
-def _calc_time_coord(h5file, index):
+@function_timer
+def _append_oil_times_file(oil_times_file, netcdf4_file):
     """
-    :param index:
+    :param :py:class:`pathlib.Path` oil_times_file:
+    :param :py:class:`pathlib.Path` netcdf4_file:
+    """
+    ncks_cmd = "ncks -4 -L4 -A"
+    cmd = f"{ncks_cmd} {oil_times_file} {netcdf4_file}"
+    logging.debug(f"appending oil times file with: {cmd}")
+    subprocess.check_call(shlex.split(cmd))
+    logging.info(f"appended oil times file to: {netcdf4_file}")
+
+
+def _calc_time_coord(hdf5_file, index):
+    """
+    :param int index:
     :param :py:class:`tables.File` h5file:
     :rtype: :py:class:`xarray.DataArray`
     """
-    time_step = getattr(h5file.root.Time, f"Time_{index:05d}")
+    time_step = getattr(hdf5_file.root.Time, f"Time_{index:05d}")
     time_coord = xarray.DataArray(
         name="time",
         data=[arrow.get(*time_step.read().astype(int)).datetime],
@@ -249,9 +309,9 @@ def _calc_zyx_indices(h5file):
 
 def _calc_data_var(group, index, coords):
     """
-    :param group:
+    :param :py:class:`tables.Group` group:
     :param int index:
-    :param 3-tuple coords:
+    :param tuple coords:
     :rtype: :py:class:`xarray.DataArray`
     """
     name = group._v_name.replace(" ", "_")
@@ -273,7 +333,13 @@ def _calc_data_var(group, index, coords):
     }
 
 
-def _write_netcdf(ds, nc_file, time_coord=True, scaled_vars=True):
+def _write_netcdf(ds, netcdf4_file, time_coord=True, scaled_vars=True):
+    """
+    :param :py:class:`xarray.Dataset` ds:
+    :param :py:class:`pathlib.Path` netcdf4_file:
+    :param boolean time_coord:
+    :param boolean scaled_vars:
+    """
     encoding = {}
     if time_coord:
         encoding.update(
@@ -290,7 +356,7 @@ def _write_netcdf(ds, nc_file, time_coord=True, scaled_vars=True):
                 {var: {"dtype": numpy.int32, "scale_factor": 1e-4, "_FillValue": -9999}}
             )
     ds.to_netcdf(
-        nc_file,
+        netcdf4_file,
         mode="w",
         format="NETCDF4",
         encoding=encoding,
