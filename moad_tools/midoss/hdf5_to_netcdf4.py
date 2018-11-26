@@ -25,6 +25,7 @@ import time
 from types import SimpleNamespace
 
 import arrow
+import click
 import numpy
 import tables
 import xarray
@@ -61,7 +62,9 @@ def function_timer(func):
 
 @main_timer
 def hdf5_to_netcdf4(hdf5_file, netcdf4_file):
-    """Transform selected contents of a MOHID HDF5 results file into a netCDF4 file.
+    """Transform selected contents of a MOHID HDF5 results file HDF5_FILE into a netCDF4 file
+    stored as NETCDF4_FILE.
+    \f
 
     :param hdf5_file: File path and name of MOHID HDF5 results file to read from.
     :type hdf5_file: :py:class:`pathlib.Path` or str
@@ -211,7 +214,10 @@ def _concat_timestep_files(timestep_files, netcdf4_file):
     input_files = " ".join(os.fspath(f) for f in timestep_files)
     cmd = f"{ncrcat_cmd} {netcdf4_file} {input_files}"
     logging.debug(f"concatenating time steps with: {ncrcat_cmd} {netcdf4_file}")
-    subprocess.check_call(shlex.split(cmd))
+    proc = subprocess.run(shlex.split(cmd), capture_output=True, check=True, text=True)
+    expected_msg = "ncrcat: INFO/WARNING Multi-file concatenator encountered packing attribute scale_factor"
+    if proc.stderr and not proc.stderr.startswith(expected_msg):
+        logging.error(proc.stderr)
     logging.info(f"concatenated time steps to: {netcdf4_file}")
 
 
@@ -259,7 +265,9 @@ def _append_oil_times_file(oil_times_file, netcdf4_file):
     ncks_cmd = "ncks -4 -L4 -A"
     cmd = f"{ncks_cmd} {oil_times_file} {netcdf4_file}"
     logging.debug(f"appending oil times file with: {cmd}")
-    subprocess.check_call(shlex.split(cmd))
+    proc = subprocess.run(shlex.split(cmd), capture_output=True, check=True, text=True)
+    if proc.stderr:
+        logging.error(proc.stderr)
     logging.info(f"appended oil times file to: {netcdf4_file}")
 
 
@@ -363,3 +371,20 @@ def _write_netcdf(ds, netcdf4_file, time_coord=True, scaled_vars=True):
         unlimited_dims=("time",),
         compute=True,
     )
+
+
+@click.command(help=hdf5_to_netcdf4.__doc__)
+@click.argument("hdf5_file", type=click.Path(exists=True))
+@click.argument("netcdf4_file", type=click.Path(writable=True))
+def cli(hdf5_file, netcdf4_file):
+    """Command-line interface for :py:func:`moad_tools.midoss.hdf5_to_netcdf4`.
+
+    Please see:
+
+      hdf5_to_netcdf4 --help
+
+    :param str hdf5_file: File path and name of MOHID HDF5 results file to read from.
+
+    :param str netcdf4_file: File path and name of netCDF4 file to write to.
+    """
+    hdf5_to_netcdf4(hdf5_file, netcdf4_file)

@@ -40,6 +40,7 @@ except IOError:
 install_requires = [
     # see requirements.txt for versions most recently used in development
     "arrow",
+    "Click",
     "matplotlib",
     "pandas",
     "tables",  # PyTables
@@ -57,6 +58,11 @@ setup(
     license="Apache License, Version 2.0",
     classifiers=python_classifiers + other_classifiers,
     platforms=["Linux"],
-    install_requires=install_requires,
     packages=find_packages(),
+    include_package_data=True,
+    install_requires=install_requires,
+    entry_points="""
+        [console_scripts]
+        hdf5-to-netcdf4=moad_tools.midoss.hdf5_to_netcdf4:cli
+    """,
 )
