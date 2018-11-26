@@ -23,6 +23,7 @@ channels:
 
 dependencies:
   - arrow
+  - Click
   - matplotlib
   - netcdf4
   - pandas
