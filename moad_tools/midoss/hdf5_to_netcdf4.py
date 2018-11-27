@@ -14,14 +14,12 @@
 # limitations under the License.
 """Functions to transform an MOHID HDF5 output file into a netCDF4 file.
 """
-import functools
 import logging
 import os
 from pathlib import Path
 import shlex
 import subprocess
 import tempfile
-import time
 from types import SimpleNamespace
 
 import arrow
@@ -33,33 +31,6 @@ import xarray
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 
 
-def main_timer(func):
-    @functools.wraps(func)
-    def wrapper_main_timer(*args, **kwargs):
-        global t0
-        t0 = time.time()
-        return_value = func(*args, **kwargs)
-        logging.info(f"total time: {time.time() - t0}")
-        return return_value
-
-    return wrapper_main_timer
-
-
-def function_timer(func):
-    @functools.wraps(func)
-    def wrapper_function_timer(*args, **kwargs):
-        global t0
-        t_func = time.time()
-        return_value = func(*args, **kwargs)
-        logging.info(
-            f"function time: {time.time() - t_func}; total time: {time.time() - t0}"
-        )
-        return return_value
-
-    return wrapper_function_timer
-
-
-@main_timer
 def hdf5_to_netcdf4(hdf5_file, netcdf4_file):
     """Transform selected contents of a MOHID HDF5 results file HDF5_FILE into a netCDF4 file
     stored as NETCDF4_FILE.
@@ -95,7 +66,6 @@ def hdf5_to_netcdf4(hdf5_file, netcdf4_file):
     logging.info(f"created MOHID netCDF4 results in: {netcdf4_file}")
 
 
-@function_timer
 def _init_dataset(h5file, netcdf4_file, tmp_dir):
     """
     :param :py:class:`tables.File` h5file:
@@ -146,7 +116,6 @@ def _init_dataset(h5file, netcdf4_file, tmp_dir):
     )
 
 
-@function_timer
 def _calc_timestep_file(grid_indices, h5file, index, netcdf4_file, tmp_dir):
     """
     :param :py:class:`types.SimpleNamespace` grid_indices:
@@ -202,7 +171,6 @@ def _calc_timestep_file(grid_indices, h5file, index, netcdf4_file, tmp_dir):
     return timestep_file
 
 
-@function_timer
 def _concat_timestep_files(timestep_files, netcdf4_file):
     """
     :param list timestep_files:
@@ -219,7 +187,6 @@ def _concat_timestep_files(timestep_files, netcdf4_file):
     logging.info(f"concatenated time steps to: {netcdf4_file}")
 
 
-@function_timer
 def _calc_oil_times_file(grid_indices, h5file, netcdf4_file, tmp_dir):
     """
     :param :py:class:`types.SimpleNamespace` grid_indices:
@@ -258,7 +225,6 @@ def _calc_oil_times_file(grid_indices, h5file, netcdf4_file, tmp_dir):
     return oil_times_file
 
 
-@function_timer
 def _append_oil_times_file(oil_times_file, netcdf4_file):
     """
     :param :py:class:`pathlib.Path` oil_times_file:
