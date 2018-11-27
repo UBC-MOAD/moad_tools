@@ -31,7 +31,6 @@ import tables
 import xarray
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
-# logging.getLogger(__name__)
 
 
 def main_timer(func):
@@ -83,7 +82,6 @@ def hdf5_to_netcdf4(hdf5_file, netcdf4_file):
             )
             timestep_files.append(timestep_file)
             for index in range(2, h5file.root.Time._v_nchildren + 1):
-                # for index in range(2, 4):
                 timestep_files.append(
                     _calc_timestep_file(
                         grid_indices, h5file, index, netcdf4_file, tmp_dir_path
@@ -231,13 +229,17 @@ def _calc_oil_times_file(grid_indices, h5file, netcdf4_file, tmp_dir):
     :rtype: :py:class:`pathlib.Path`
     """
     logging.info(f"processing oil beaching and arrival times")
+    time_coord = _calc_time_coord(h5file, 1)
     data_vars = {}
     for group in h5file.root.Results.OilSpill.Data_2D:
         if group._v_name not in ("Beaching Time", "Oil Arrival Time"):
             continue
         data_vars.update(
             _calc_data_var(
-                group, group._v_nchildren, (grid_indices.y_index, grid_indices.x_index)
+                group,
+                group._v_nchildren,
+                (grid_indices.y_index, grid_indices.x_index),
+                time_coord.values[0],
             )
         )
         logging.debug(
@@ -315,11 +317,12 @@ def _calc_zyx_indices(h5file):
     return z_index, y_index, x_index
 
 
-def _calc_data_var(group, index, coords):
+def _calc_data_var(group, index, coords, timebase=None):
     """
     :param :py:class:`tables.Group` group:
     :param int index:
     :param tuple coords:
+    :param :py:class:`numpy.datetime64` timebase:
     :rtype: :py:class:`xarray.DataArray`
     """
     name = group._v_name.replace(" ", "_")
@@ -331,14 +334,11 @@ def _calc_data_var(group, index, coords):
         else numpy.swapaxes(field.read(), 0, 1)
     )
     data = da_field if len(coords) == 2 else numpy.expand_dims(da_field, axis=0)
-    return {
-        name: xarray.DataArray(
-            name=name,
-            data=data,
-            coords=coords,
-            attrs={"standard_name": name, "long_name": group._v_name, "units": units},
-        )
-    }
+    attrs = {"standard_name": name, "long_name": group._v_name, "units": units}
+    if timebase is not None:
+        data = data.astype("timedelta64[s]") + timebase
+        attrs = {"standard_name": name, "long_name": group._v_name}
+    return {name: xarray.DataArray(name=name, data=data, coords=coords, attrs=attrs)}
 
 
 def _write_netcdf(ds, netcdf4_file, time_coord=True, scaled_vars=True):
