@@ -342,15 +342,32 @@ def _write_netcdf(ds, netcdf4_file, time_coord=True, scaled_vars=True):
 @click.command(help=hdf5_to_netcdf4.__doc__)
 @click.argument("hdf5_file", type=click.Path(exists=True))
 @click.argument("netcdf4_file", type=click.Path(writable=True))
-def cli(hdf5_file, netcdf4_file):
+@click.option(
+    "-v",
+    "--verbosity",
+    default="warning",
+    show_default=True,
+    type=click.Choice(("debug", "info", "warning", "error", "critical")),
+    help="""
+        Choose how much information you want to see about the progress of the transformation;
+        warning, error, and critical should be silent unless something bad goes wrong. 
+    """,
+)
+def cli(hdf5_file, netcdf4_file, verbosity):
     """Command-line interface for :py:func:`moad_tools.midoss.hdf5_to_netcdf4`.
 
     Please see:
 
-      hdf5_to_netcdf4 --help
+      hdf5-to-netcdf4 --help
 
     :param str hdf5_file: File path and name of MOHID HDF5 results file to read from.
 
     :param str netcdf4_file: File path and name of netCDF4 file to write to.
     """
+    logging_level = getattr(logging, verbosity.upper())
+    logging.basicConfig(
+        level=logging_level,
+        format="%(asctime)s hdf5-to-netcdf4 %(levelname)s %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
     hdf5_to_netcdf4(hdf5_file, netcdf4_file)
