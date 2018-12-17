@@ -42,6 +42,7 @@ install_requires = [
     "arrow",
     "Click",
     "matplotlib",
+    "netCDF4",
     "pandas",
     "tables",  # PyTables
     "xarray",
