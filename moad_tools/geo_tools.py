@@ -140,8 +140,8 @@ def estimate_closest_point(dataset, lons, lats):
     indexi, indexj = np.array(dataset['indexi']), np.array(dataset['indexj'])
     lonmin, latmin = dataset['lonmin'].values, dataset['latmin'].values
     dlon, dlat = dataset['dlon'].values, dataset['dlat'].values
-    iis = indexi[(np.round((lons-lonmin)/dlon)).astype(int),
-              (np.round((lats-latmin)/dlat)).astype(int)]
-    jjs = indexj[(np.round((lons-lonmin)/dlon)).astype(int),
-              (np.round((lats-latmin)/dlat)).astype(int)]
+    iis = indexi[(np.round((lats-latmin)/dlat)).astype(int),
+              (np.round((lons-lonmin)/dlon)).astype(int)]
+    jjs = indexj[(np.round((lats-latmin)/dlat)).astype(int),
+              (np.round((lons-lonmin)/dlon)).astype(int)]
     return (iis, jjs)
