@@ -74,7 +74,7 @@ def get_ndbc_buoy(buoy_id):
 
     try:
         try:
-            df = pandas.read_table(
+            df = pandas.read_csv(
                 ndbc_url,
                 delim_whitespace=True,
                 header=[0, 1],
@@ -86,7 +86,7 @@ def get_ndbc_buoy(buoy_id):
             # Work around SSL: UNKNOWN_PROTOCOL error that appeared on 23may18
             # by trying HTTP instead of HTTPS
             ndbc_url = ndbc_url.replace("https://", "http://")
-            df = pandas.read_table(
+            df = pandas.read_csv(
                 ndbc_url,
                 delim_whitespace=True,
                 header=[0, 1],
