@@ -30,6 +30,7 @@ dependencies:
   - pip
   - pytables
   - python=3
+  - scipy
   - xarray
 
   # For unit tests

@@ -44,6 +44,7 @@ install_requires = [
     "matplotlib",
     "netCDF4",
     "pandas",
+    "scipy",
     "tables",  # PyTables
     "xarray",
 ]
