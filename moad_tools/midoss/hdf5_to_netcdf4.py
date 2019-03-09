@@ -45,7 +45,7 @@ def hdf5_to_netcdf4(hdf5_file, netcdf4_file):
     with tables.open_file(hdf5_file) as h5file:
         logging.info(f"reading MOHID hdf5 results from: {hdf5_file}")
         timestep_files = []
-        with tempfile.TemporaryDirectory() as tmp_dir:
+        with tempfile.TemporaryDirectory(dir=os.environ.get("SLURM_TMPDIR")) as tmp_dir:
             tmp_dir_path = Path(tmp_dir)
             netcdf4_file = Path(netcdf4_file)
             grid_indices, timestep_file = _init_dataset(
