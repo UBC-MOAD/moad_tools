@@ -27,7 +27,7 @@ This is the documentation for the UBC EOAS MOAD Group's :kbd:`moad_tools` Python
    :maxdepth: 2
    :caption: Contents:
 
-   modules
+   moad_tools
    pkg_development
 
 Indices
