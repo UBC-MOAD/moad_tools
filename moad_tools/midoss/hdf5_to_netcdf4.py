@@ -19,6 +19,7 @@ import os
 from pathlib import Path
 import shlex
 import subprocess
+import sys
 import tempfile
 from types import SimpleNamespace
 
@@ -369,5 +370,6 @@ def cli(hdf5_file, netcdf4_file, verbosity):
         level=logging_level,
         format="%(asctime)s hdf5-to-netcdf4 %(levelname)s %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
+        stream=sys.stdout,
     )
     hdf5_to_netcdf4(hdf5_file, netcdf4_file)
