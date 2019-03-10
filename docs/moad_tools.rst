@@ -1,19 +1,27 @@
-moad\_tools package
-===================
+*********************
+:kbd:`moad_tools` API
+*********************
 
-Submodules
-----------
+:kbd:`moad_tools.geo_tools` Module
+==================================
 
-moad\_tools.observations module
--------------------------------
+.. automodule:: moad_tools.geo_tools
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+:kbd:`moad_tools.observations` Module
+=====================================
 
 .. automodule:: moad_tools.observations
     :members:
     :undoc-members:
     :show-inheritance:
 
-moad\_tools.places module
--------------------------
+
+:kbd:`moad_tools.places` Module
+===============================
 
 .. automodule:: moad_tools.places
     :members:
@@ -21,10 +29,10 @@ moad\_tools.places module
     :show-inheritance:
 
 
-Module contents
----------------
+:kbd:`moad_tools.midoss` Sub-package
+====================================
 
-.. automodule:: moad_tools
+.. automodule:: moad_tools.midoss.hdf5_to_netcdf4
     :members:
     :undoc-members:
     :show-inheritance:
