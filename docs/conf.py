@@ -11,7 +11,8 @@
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#
+
+import datetime
 import os
 import sys
 
@@ -21,7 +22,11 @@ sys.path.insert(0, os.path.abspath(".."))
 # -- Project information -----------------------------------------------------
 
 project = "UBC EOAS MOAD Group Tools"
-copyright = "2018, The UBC EOAS MOAD Group and The University of British Columbia"
+author = "The UBC EOAS MOAD Group and The University of British Columbia"
+copyright_years = (
+    "2018" if datetime.date.today().year == 2018 else f"2018-{datetime.date.today():%Y}"
+)
+copyright = f"{copyright_years}, {author}"
 
 # The short X.Y version.
 from moad_tools import __pkg_metadata__
