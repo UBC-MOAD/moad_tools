@@ -57,7 +57,16 @@ intersphinx_mapping = {
     "xarray": ("http://xarray.pydata.org/en/stable/", None),
 }
 
-autodoc_mock_imports = ["matplotlib", "pandas", "tables", "xarray"]
+autodoc_mock_imports = [
+    "arrow",
+    "click",
+    "matplotlib",
+    "numpy",
+    "pandas",
+    "scipy",
+    "tables",
+    "xarray",
+]
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
