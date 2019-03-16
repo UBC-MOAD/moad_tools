@@ -364,6 +364,13 @@ def cli(hdf5_file, netcdf4_file, verbosity):
     :param str hdf5_file: File path and name of MOHID HDF5 results file to read from.
 
     :param str netcdf4_file: File path and name of netCDF4 file to write to.
+
+    :param str verbosity: Verbosity level of logging messages about the progress of the
+                          transformation.
+                          Choices are :kbd:`debug, info, warning, error, critical`.
+                          :kbd:`warning`, :kbd:`error`, and :kbd:`critical` should be silent
+                          unless something bad goes wrong.
+                          Default is :kbd:`warning`.
     """
     logging_level = getattr(logging, verbosity.upper())
     logging.basicConfig(
