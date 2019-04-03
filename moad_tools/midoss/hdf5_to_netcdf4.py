@@ -249,7 +249,7 @@ def _calc_time_coord(hdf5_file, index):
     time_step = getattr(hdf5_file.root.Time, f"Time_{index:05d}")
     time_coord = xarray.DataArray(
         name="time",
-        data=[arrow.get(*time_step.read().astype(int)).datetime],
+        data=[arrow.get(*time_step.read().astype(int)).naive],
         dims="time",
         attrs={"standard_name": "time", "long_name": "time", "tz_name": "UTC"},
     )
