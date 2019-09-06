@@ -341,6 +341,7 @@ def _write_netcdf(ds, netcdf4_file, time_coord=True, scaled_vars=True):
 
 
 @click.command(help=hdf5_to_netcdf4.__doc__)
+@click.version_option()
 @click.argument("hdf5_file", type=click.Path(exists=True))
 @click.argument("netcdf4_file", type=click.Path(writable=True))
 @click.option(
