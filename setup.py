@@ -43,6 +43,7 @@ install_requires = [
     "Click",
     "matplotlib",
     "netCDF4",
+    "numpy",
     "pandas",
     "scipy",
     "tables",  # PyTables
