@@ -83,7 +83,7 @@ def _init_dataset(h5file, netcdf4_file, tmp_dir):
     )
     data_vars = {}
     for group in h5file.root.Results.OilSpill.Data_2D:
-        if group._v_name in ("Beaching Time", "Oil Arrival Time"):
+        if group._v_name in ("Beaching Time", "Oil Arrival Time", "Beaching Volume"):
             continue
         data_vars.update(_calc_data_var(group, 1, (time_coord, y_index, x_index)))
         logging.debug(
@@ -130,7 +130,7 @@ def _calc_timestep_file(grid_indices, h5file, index, netcdf4_file, tmp_dir):
     logging.info(f"processing fields at: {time_coord.values[0]}")
     data_vars = {}
     for group in h5file.root.Results.OilSpill.Data_2D:
-        if group._v_name in ("Beaching Time", "Oil Arrival Time"):
+        if group._v_name in ("Beaching Time", "Oil Arrival Time", "Beaching Volume"):
             continue
         data_vars.update(
             _calc_data_var(
@@ -200,7 +200,7 @@ def _calc_oil_times_file(grid_indices, h5file, netcdf4_file, tmp_dir):
     time_coord = _calc_time_coord(h5file, 1)
     data_vars = {}
     for group in h5file.root.Results.OilSpill.Data_2D:
-        if group._v_name not in ("Beaching Time", "Oil Arrival Time"):
+        if group._v_name not in ("Beaching Time", "Oil Arrival Time", "Beaching Volume"):
             continue
         data_vars.update(
             _calc_data_var(
