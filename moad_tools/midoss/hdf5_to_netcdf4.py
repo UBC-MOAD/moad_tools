@@ -76,7 +76,7 @@ def _init_dataset(h5file, netcdf4_file, tmp_dir):
     """
     time_coord = _calc_time_coord(h5file, 1)
     logging.info(f"initializing dataset with fields at: {time_coord.values[0]}")
-    z_index, y_index, x_index = _calc_zyx_indices(h5file)
+    z_index, y_index, y_index_lat, x_index, x_index_lat = _calc_zyx_indices(h5file)
     logging.info(
         f"initializing dataset with (z, y, x) grid indices: "
         f"({z_index.size}, {y_index.size}, {x_index.size})"
@@ -96,6 +96,18 @@ def _init_dataset(h5file, netcdf4_file, tmp_dir):
         logging.debug(
             f"added (t, z, y, x) field: {group._v_name} at {time_coord.values[0]}"
         )
+    for group in h5file.root.Grid:
+        if group._v_name in ("Latitude","Longitude"):
+            name = group._v_name
+            coords = (y_index_lat, x_index_lat)
+            field = numpy.swapaxes(group.read(), 0, 1) 
+            attrs = {"standard_name": name, "long_name": group._v_name}
+            data_vars.update(
+                {name: xarray.DataArray(name=name, data=field, coords=coords, attrs=attrs)}
+            )
+            logging.debug(
+                f"added (y, x) field: {group._v_name}"
+            )
     ds = xarray.Dataset(
         data_vars=data_vars,
         coords={
@@ -103,6 +115,8 @@ def _init_dataset(h5file, netcdf4_file, tmp_dir):
             z_index.name: z_index,
             y_index.name: y_index,
             x_index.name: x_index,
+            y_index_lat.name: y_index_lat,
+            x_index_lat.name: x_index_lat,
         },
     )
     timestamp = (
@@ -262,7 +276,9 @@ def _calc_zyx_indices(h5file):
     :rtype: 3-tuple of :py:class:`xarray.DataArray`
     """
     oil_conc_3d = h5file.root.Results.OilSpill.Data_3D.OilConcentration_3D
+    latitude    = h5file.root.Grid.Latitude
     z_count, x_count, y_count = oil_conc_3d.OilConcentration_3D_00001.shape
+    x_count_lat, y_count_lat  = latitude.shape
     z_index = xarray.DataArray(
         name="grid_z",
         data=numpy.arange(z_count, dtype=numpy.int16),
@@ -275,13 +291,25 @@ def _calc_zyx_indices(h5file):
         dims="grid_y",
         attrs={"standard_name": "model_y_index", "long_name": "y index"},
     )
+    y_index_lat = xarray.DataArray(
+       name="grid_y_latlon",
+       data=numpy.arange(y_count_lat, dtype=numpy.single),
+       dims="grid_y_latlon",
+       attrs={"standard_name": "model_latlon_y_index","long_name": "latlon y index"},
+    )
     x_index = xarray.DataArray(
         name="grid_x",
         data=numpy.arange(x_count, dtype=numpy.int16),
         dims="grid_x",
         attrs={"standard_name": "model_x_index", "long_name": "x index"},
     )
-    return z_index, y_index, x_index
+    x_index_lat = xarray.DataArray(
+       name="grid_x_latlon",
+       data=numpy.arange(x_count_lat, dtype=numpy.single),
+       dims="grid_x_latlon",
+       attrs={"standard_name": "model_latlon_x_index","long_name": "latlon x index"},
+    )
+    return z_index, y_index, y_index_lat, x_index, x_index_lat
 
 
 def _calc_data_var(group, index, coords, timebase=None):
