@@ -97,11 +97,22 @@ def _init_dataset(h5file, netcdf4_file, tmp_dir):
             f"added (t, z, y, x) field: {group._v_name} at {time_coord.values[0]}"
         )
     for group in h5file.root.Grid:
-        if group._v_name in ("Latitude","Longitude"):
+        if group._v_name in ("Latitude"):
             name = group._v_name
             coords = (y_index_lat, x_index_lat)
             field = numpy.swapaxes(group.read(), 0, 1) 
-            attrs = {"standard_name": name, "long_name": group._v_name}
+            attrs = {"standard_name": name, "long_name": group._v_name, "units": "degrees_north"}
+            data_vars.update(
+                {name: xarray.DataArray(name=name, data=field, coords=coords, attrs=attrs)}
+            )
+            logging.debug(
+                f"added (y, x) field: {group._v_name}"
+            )
+        elif group._v_name in ("Longitude"):
+            name = group._v_name
+            coords = (y_index_lat, x_index_lat)
+            field = numpy.swapaxes(group.read(), 0, 1) 
+            attrs = {"standard_name": name, "long_name": group._v_name, "units": "degrees_east"}
             data_vars.update(
                 {name: xarray.DataArray(name=name, data=field, coords=coords, attrs=attrs)}
             )
