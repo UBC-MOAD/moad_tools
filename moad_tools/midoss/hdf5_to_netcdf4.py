@@ -295,7 +295,7 @@ def _calc_zyx_indices(h5file):
        name="grid_y_latlon",
        data=numpy.arange(y_count_lat, dtype=numpy.single),
        dims="grid_y_latlon",
-       attrs={"standard_name": "model_latlon_y_index","long_name": "latlon y index"},
+       attrs={"standard_name": "model_latlon_y_index","long_name": "latlon y index", "units": "degrees_north"},
     )
     x_index = xarray.DataArray(
         name="grid_x",
@@ -307,7 +307,7 @@ def _calc_zyx_indices(h5file):
        name="grid_x_latlon",
        data=numpy.arange(x_count_lat, dtype=numpy.single),
        dims="grid_x_latlon",
-       attrs={"standard_name": "model_latlon_x_index","long_name": "latlon x index"},
+       attrs={"standard_name": "model_latlon_x_index","long_name": "latlon x index", "units": "degrees_east"},
     )
     return z_index, y_index, y_index_lat, x_index, x_index_lat
 
