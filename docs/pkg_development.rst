@@ -23,20 +23,20 @@
 .. image:: https://img.shields.io/badge/license-Apache%202-cb2533.svg
     :target: https://www.apache.org/licenses/LICENSE-2.0
     :alt: Licensed under the Apache License, Version 2.0
-.. image:: https://img.shields.io/badge/python-3.6-blue.svg
-    :target: https://docs.python.org/3.6/
+.. image:: https://img.shields.io/badge/python-3.6+-blue.svg
+    :target: https://docs.python.org/3.8/
     :alt: Python Version
-.. image:: https://img.shields.io/badge/version%20control-hg-blue.svg
-    :target: https://bitbucket.org/UBC_MOAD/moad_tools/
-    :alt: Mercurial on Bitbucket
+.. image:: https://img.shields.io/badge/version%20control-git-blue.svg?logo=github
+    :target: https://github.com/UBC-MOAD/moad_tools
+    :alt: Git on GitHub
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://black.readthedocs.io/en/stable/
     :alt: The uncompromising Python code formatter
 .. image:: https://readthedocs.org/projects/ubc-moad-tools/badge/?version=latest
     :target: https://ubc-moad-tools.readthedocs.io/en/latest/
     :alt: Documentation Status
-.. image:: https://img.shields.io/bitbucket/issues/UBC_MOAD/moad_tools.svg
-    :target: https://bitbucket.org/UBC_MOAD/moad_tools/issues?status=new&status=open
+.. image:: https://img.shields.io/github/issues/SalishSeaCast/SalishSeaNowcast?logo=github
+    :target: https://github.com/SalishSeaCast/SalishSeaNowcast/issues
     :alt: Issue Tracker
 
 The UBC EOAS MOAD Group Tools package (:kbd:`moad_tools`) is a collection of Python modules that facilitate code reuse for the UBC EOAS MOAD Group.
@@ -47,11 +47,11 @@ The UBC EOAS MOAD Group Tools package (:kbd:`moad_tools`) is a collection of Pyt
 Python Versions
 ===============
 
-.. image:: https://img.shields.io/badge/python-3.6-blue.svg
-    :target: https://docs.python.org/3.6/
+.. image:: https://img.shields.io/badge/python-3.6+-blue.svg
+    :target: https://docs.python.org/3.8/
     :alt: Python Version
 
-The :kbd:`moad_tools` package is developed and tested using `Python`_ 3.6 or later.
+The :kbd:`moad_tools` package is developed and tested using `Python`_ 3.8 or later.
 The package uses some Python language features that are not available in versions prior to 3.6,
 in particular:
 
@@ -69,29 +69,29 @@ in particular:
 Getting the Code
 ================
 
-.. image:: https://img.shields.io/badge/version%20control-hg-blue.svg
-    :target: https://bitbucket.org/UBC_MOAD/moad_tools/
-    :alt: Mercurial on Bitbucket
+.. image:: https://img.shields.io/badge/version%20control-git-blue.svg?logo=github
+    :target: https://github.com/UBC-MOAD/moad_tools
+    :alt: Git on GitHub
 
-Clone the code and documentation `repository`_ from Bitbucket with:
+Clone the code and documentation `repository`_ from GitHub with:
 
-.. _repository: https://bitbucket.org/UBC_MOAD/moad_tools/
+.. _repository: https://github.com/UBC-MOAD/moad_tools
 
 .. code-block:: bash
 
-    $ hg clone ssh://hg@bitbucket.org/UBC_MOAD/moad_tools
+    $ git clone git@github.com:UBC-MOAD/moad_tools.git
 
 or
 
 .. code-block:: bash
 
-    $ hg clone https://your_userid@bitbucket.org/UBC_MOAD/moad_tools
+    $ git clone https://github.com/UBC-MOAD/moad_tools.git
 
-if you don't have `ssh key authentication`_ set up on Bitbucket
-(replace :kbd:`you_userid` with you Bitbucket userid,
-or copy the link from the :guilabel:`Clone` action pop-up on the `repository`_ page).
+if you don't have `ssh key authentication`_ set up on GitHub
+(replace :kbd:`you_userid` with you GitHub userid,
+or copy the link from the :guilabel:`Clone or download` button on the `repository`_ page).
 
-.. _ssh key authentication: https://confluence.atlassian.com/bitbucket/set-up-an-ssh-key-728138079.html
+.. _ssh key authentication: https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh
 
 
 .. _moad_toolsDevelopmentEnvironment:
@@ -122,7 +122,7 @@ To deactivate the environment use:
 
 .. code-block:: bash
 
-    (moad-tools)$ source deactivate
+    (moad-tools)$ conda deactivate
 
 
 .. _moad_toolsCodingStyle:
@@ -172,21 +172,21 @@ The ::kbd:`moad_tools` documentation is written in `reStructuredText`_ and conve
 .. _reStructuredText: http://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
 .. _Sphinx: http://www.sphinx-doc.org/en/master/
 
-If you have write access to the `repository`_ on Bitbucket,
-whenever you push changes to Bitbucket the documentation is automatically re-built and rendered at https://ubc-moad-tools.readthedocs.io/en/latest/.
+If you have write access to the `repository`_ on GitHub,
+whenever you push changes to GitHub the documentation is automatically re-built and rendered at https://ubc-moad-tools.readthedocs.io/en/latest/.
 
 Additions,
 improvements,
 and corrections to these docs are *always* welcome.
 
-The quickest way to fix typos, etc. on existing pages is to use the :guilabel:`Edit on Bitbucket` link in the upper right corner of the page to get to the online editor for the page on `Bitbucket`_.
+The quickest way to fix typos, etc. on existing pages is to use the :guilabel:`Edit on GitHub` link in the upper right corner of the page to get to the online editor for the page on `GitHub`_.
 
-.. _Bitbucket: https://bitbucket.org/UBC_MOAD/moad_tools/
+.. _GitHub: https://github.com/UBC-MOAD/moad_tools
 
 For more substantial work,
 and to add new pages,
 follow the instructions in the :ref:`moad_toolsDevelopmentEnvironment` section above.
-In the development environment you can build the docs locally instead of having to push commits to Bitbucket to trigger a `build on readthedocs.org`_ and wait for it to complete.
+In the development environment you can build the docs locally instead of having to push commits to GitHub to trigger a `build on readthedocs.org`_ and wait for it to complete.
 Below are instructions that explain how to:
 
 .. _build on readthedocs.org: https://readthedocs.org/projects/ubc-moad-tools/builds/
@@ -248,8 +248,8 @@ To preview in Firefox from the command-line you can do:
 
     (moad-tools) docs$ firefox _build/html/index.html
 
-If you have write access to the `repository`_ on Bitbucket,
-whenever you push changes to Bitbucket the documentation is automatically re-built and rendered at https://ubc-moad-tools.readthedocs.io/en/latest/.
+If you have write access to the `repository`_ on GitHub,
+whenever you push changes to GitHub the documentation is automatically re-built and rendered at https://ubc-moad-tools.readthedocs.io/en/latest/.
 
 
 .. _moad_toolsLinkCheckingTheDocumentation:
@@ -291,16 +291,16 @@ The output looks something like::
   (line   54) ok        https://www.python.org/
   (line   58) ok        https://docs.python.org/3/reference/lexical_analysis.html#f-strings
   (line   60) ok        https://docs.python.org/3/whatsnew/3.6.html#whatsnew36-pep519
-  (line   21) ok        https://bitbucket.org/UBC_MOAD/moad_tools/issues?status=new&status=open
+  (line   21) ok        https://github.com/UBC-MOAD/moad_tools/issues?status=new&status=open
   (line   21) ok        https://www.apache.org/licenses/LICENSE-2.0
   (line   90) ok        https://confluence.atlassian.com/bitbucket/set-up-an-ssh-key-728138079.html
-  (line   70) ok        https://bitbucket.org/UBC_MOAD/moad_tools/
-  (line   21) ok        https://bitbucket.org/UBC_MOAD/moad_tools/
+  (line   70) ok        https://github.com/UBC-MOAD/moad_tools/
+  (line   21) ok        https://github.com/UBC-MOAD/moad_tools/
   (line  102) ok        https://www.anaconda.com/download/
-  (line   76) ok        https://bitbucket.org/UBC_MOAD/moad_tools/
+  (line   76) ok        https://github.com/UBC-MOAD/moad_tools/
   (line  102) ok        https://conda.io/docs/
   (line  102) ok        https://conda.io/docs/install/quick.html
-  (line   90) ok        https://bitbucket.org/UBC_MOAD/moad_tools/
+  (line   90) ok        https://github.com/UBC-MOAD/moad_tools/
   (line  137) ok        https://www.python.org/dev/peps/pep-0008/
   (line  170) ok        http://www.sphinx-doc.org/en/master/
   (line  170) ok        http://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
@@ -316,13 +316,13 @@ The output looks something like::
 Version Control Repository
 ==========================
 
-.. image:: https://img.shields.io/badge/version%20control-hg-blue.svg
-    :target: https://bitbucket.org/UBC_MOAD/moad_tools/
-    :alt: Mercurial on Bitbucket
+.. image:: https://img.shields.io/badge/version%20control-git-blue.svg?logo=github
+    :target: https://github.com/UBC-MOAD/moad_tools
+    :alt: Git on GitHub
 
-The :kbd:`moad_tools` package code and documentation source files are available in the :kbd:`moad_tools` `Mercurial`_ repository at https://bitbucket.org/UBC_MOAD/moad_tools/.
+The :kbd:`moad_tools` package code and documentation source files are available in the :kbd:`moad_tools` `Git`_ repository at https://github.com/UBC-MOAD/moad_tools.
 
-.. _Mercurial: https://www.mercurial-scm.org/
+.. _Git: https://git-scm.com/
 
 
 .. _moad_toolsIssueTracker:
@@ -330,13 +330,13 @@ The :kbd:`moad_tools` package code and documentation source files are available 
 Issue Tracker
 =============
 
-.. image:: https://img.shields.io/bitbucket/issues/UBC_MOAD/moad_tools.svg
-    :target: https://bitbucket.org/UBC_MOAD/moad_tools/issues?status=new&status=open
+.. image:: https://img.shields.io/github/issues/SalishSeaCast/SalishSeaNowcast?logo=github
+    :target: https://github.com/SalishSeaCast/SalishSeaNowcast/issues
     :alt: Issue Tracker
 
 Development tasks,
 bug reports,
-and enhancement ideas are recorded and managed in the issue tracker at https://bitbucket.org/UBC_MOAD/moad_tools/issues.
+and enhancement ideas are recorded and managed in the issue tracker at https://github.com/SalishSeaCast/SalishSeaNowcast/issues
 
 
 License
@@ -352,4 +352,4 @@ They are licensed under the Apache License, Version 2.0.
 http://www.apache.org/licenses/LICENSE-2.0
 Please see the LICENSE file for details of the license.
 
-.. _UBC EOAS MOAD Group: https://bitbucket.org/UBC_MOAD/docs/src/tip/CONTRIBUTORS.rst
+.. _UBC EOAS MOAD Group: https://github.com/UBC-MOAD/docs/blob/master/CONTRIBUTORS.rst

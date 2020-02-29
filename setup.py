@@ -18,7 +18,7 @@ from setuptools import find_packages, setup
 
 from moad_tools import __pkg_metadata__
 
-py_versions = ["3", "3.6"]
+py_versions = ["3", "3.6", "3.7", "3.8"]
 python_classifiers = [f"Programming Language :: Python :: {py_versions}"]
 other_classifiers = [
     f"Development Status :: {__pkg_metadata__.DEV_STATUS}",
