@@ -16,5 +16,5 @@
 """
 PROJECT = "moad_tools"
 DESCRIPTION = "UBC EOAS MOAD Group Tools Package"
-VERSION = "18.1.dev0"
+VERSION = "20.1.dev0"
 DEV_STATUS = "5 - Production/Stable"
