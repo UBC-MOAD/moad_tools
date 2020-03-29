@@ -278,7 +278,7 @@ The output looks something like::
   preparing documents... done
   writing output... [ 25%] index
   (line    6) ok        http://www.apache.org/licenses/LICENSE-2.0
-  (line    4) ok        https://bitbucket.org/UBC_MOAD/docs/src/tip/CONTRIBUTORS.rst
+  (line    4) ok        https://github.com/UBC-MOAD/docs/blob/master/CONTRIBUTORS.rst
   writing output... [ 50%] moad_tools
   (line    3) ok        https://docs.python.org/3/library/exceptions.html#KeyError
   (line    8) ok        https://docs.python.org/3/library/functions.html#int
