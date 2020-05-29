@@ -1,12 +1,11 @@
-# conda environment description file for moad_tools package
-# development environment
+# conda environment description file for moad_tools package development environment
 #
 # Create a conda environment for development, testing and documentation of the package
 # with:
 #
-#   $ conda env create -f moad_tools/environment-dev.yaml
+#   $ conda env create -f moad_tools/envs/environment-dev.yaml
 #   $ conda activate moad-tools
-#   (moad-tools)$ pip install --editable moad_tools
+#   (moad-tools)$ python3 -m pip install --editable moad_tools
 #
 # The environment will include all of the tools used to develop,
 # test, and document the moad_tools package.
@@ -29,7 +28,7 @@ dependencies:
   - pandas
   - pip
   - pytables
-  - python=3
+  - python>=3.8
   - pyyaml
   - scipy
   - xarray

@@ -42,7 +42,7 @@ License
 The UBC EOAS MOAD Group Tools package and documentation are copyright 2018-2020 by the `UBC EOAS MOAD Group`_ and The University of British Columbia.
 
 They are licensed under the Apache License, Version 2.0.
-http://www.apache.org/licenses/LICENSE-2.0
+https://www.apache.org/licenses/LICENSE-2.0
 Please see the LICENSE file for details of the license.
 
 .. _UBC EOAS MOAD Group: https://github.com/UBC-MOAD/docs/blob/master/CONTRIBUTORS.rst
