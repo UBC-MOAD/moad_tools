@@ -45,6 +45,7 @@ install_requires = [
     "netCDF4",
     "numpy",
     "pandas",
+    "PyYAML",
     "scipy",
     "tables",  # PyTables
     "xarray",
