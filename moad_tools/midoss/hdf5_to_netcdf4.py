@@ -100,25 +100,37 @@ def _init_dataset(h5file, netcdf4_file, tmp_dir):
         if group._v_name in ("Latitude"):
             name = group._v_name
             coords = (y_index_lat, x_index_lat)
-            field = numpy.swapaxes(group.read(), 0, 1) 
-            attrs = {"standard_name": name, "long_name": group._v_name, "units": "degrees_north"}
+            field = numpy.swapaxes(group.read(), 0, 1)
+            attrs = {
+                "standard_name": name,
+                "long_name": group._v_name,
+                "units": "degrees_north",
+            }
             data_vars.update(
-                {name: xarray.DataArray(name=name, data=field, coords=coords, attrs=attrs)}
+                {
+                    name: xarray.DataArray(
+                        name=name, data=field, coords=coords, attrs=attrs
+                    )
+                }
             )
-            logging.debug(
-                f"added (y, x) field: {group._v_name}"
-            )
+            logging.debug(f"added (y, x) field: {group._v_name}")
         elif group._v_name in ("Longitude"):
             name = group._v_name
             coords = (y_index_lat, x_index_lat)
-            field = numpy.swapaxes(group.read(), 0, 1) 
-            attrs = {"standard_name": name, "long_name": group._v_name, "units": "degrees_east"}
+            field = numpy.swapaxes(group.read(), 0, 1)
+            attrs = {
+                "standard_name": name,
+                "long_name": group._v_name,
+                "units": "degrees_east",
+            }
             data_vars.update(
-                {name: xarray.DataArray(name=name, data=field, coords=coords, attrs=attrs)}
+                {
+                    name: xarray.DataArray(
+                        name=name, data=field, coords=coords, attrs=attrs
+                    )
+                }
             )
-            logging.debug(
-                f"added (y, x) field: {group._v_name}"
-            )
+            logging.debug(f"added (y, x) field: {group._v_name}")
     ds = xarray.Dataset(
         data_vars=data_vars,
         coords={
@@ -225,7 +237,11 @@ def _calc_oil_times_file(grid_indices, h5file, netcdf4_file, tmp_dir):
     time_coord = _calc_time_coord(h5file, 1)
     data_vars = {}
     for group in h5file.root.Results.OilSpill.Data_2D:
-        if group._v_name not in ("Beaching Time", "Oil Arrival Time", "Beaching Volume"):
+        if group._v_name not in (
+            "Beaching Time",
+            "Oil Arrival Time",
+            "Beaching Volume",
+        ):
             continue
         data_vars.update(
             _calc_data_var(
@@ -287,9 +303,9 @@ def _calc_zyx_indices(h5file):
     :rtype: 3-tuple of :py:class:`xarray.DataArray`
     """
     oil_conc_3d = h5file.root.Results.OilSpill.Data_3D.OilConcentration_3D
-    latitude    = h5file.root.Grid.Latitude
+    latitude = h5file.root.Grid.Latitude
     z_count, x_count, y_count = oil_conc_3d.OilConcentration_3D_00001.shape
-    x_count_lat, y_count_lat  = latitude.shape
+    x_count_lat, y_count_lat = latitude.shape
     z_index = xarray.DataArray(
         name="grid_z",
         data=numpy.arange(z_count, dtype=numpy.int16),
@@ -303,10 +319,14 @@ def _calc_zyx_indices(h5file):
         attrs={"standard_name": "model_y_index", "long_name": "y index"},
     )
     y_index_lat = xarray.DataArray(
-       name="grid_y_latlon",
-       data=numpy.arange(y_count_lat, dtype=numpy.single),
-       dims="grid_y_latlon",
-       attrs={"standard_name": "model_latlon_y_index","long_name": "latlon y index", "units": "degrees_north"},
+        name="grid_y_latlon",
+        data=numpy.arange(y_count_lat, dtype=numpy.single),
+        dims="grid_y_latlon",
+        attrs={
+            "standard_name": "model_latlon_y_index",
+            "long_name": "latlon y index",
+            "units": "degrees_north",
+        },
     )
     x_index = xarray.DataArray(
         name="grid_x",
@@ -315,10 +335,14 @@ def _calc_zyx_indices(h5file):
         attrs={"standard_name": "model_x_index", "long_name": "x index"},
     )
     x_index_lat = xarray.DataArray(
-       name="grid_x_latlon",
-       data=numpy.arange(x_count_lat, dtype=numpy.single),
-       dims="grid_x_latlon",
-       attrs={"standard_name": "model_latlon_x_index","long_name": "latlon x index", "units": "degrees_east"},
+        name="grid_x_latlon",
+        data=numpy.arange(x_count_lat, dtype=numpy.single),
+        dims="grid_x_latlon",
+        attrs={
+            "standard_name": "model_latlon_x_index",
+            "long_name": "latlon x index",
+            "units": "degrees_east",
+        },
     )
     return z_index, y_index, y_index_lat, x_index, x_index_lat
 
