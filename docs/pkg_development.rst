@@ -111,9 +111,9 @@ and building the documentation with the commands below:
 .. code-block:: bash
 
     $ cd moad_tools
-    $ conda env create -f environment-dev.yaml
+    $ conda env create -f envs/environment-dev.yaml
     $ conda activate moad-tools
-    (moad-tools)$ pip install --editable .
+    (moad-tools)$ python3 -m pip install --editable .
 
 The :kbd:`--editable` option in the :command:`pip install` command above installs the :kbd:`moad_tools` package via a symlink so that the installed package will be automatically updated as the repo evolves.
 

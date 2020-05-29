@@ -1,10 +1,16 @@
 # conda environment description file for docs build environment
 # on readthedocs.org
 
-name: sphinx-build
+name: moad-tools-rtd
 
 channels:
   - defaults
 
 dependencies:
   - python=3.8
+
+  # RTD packages
+  - mock
+  - pillow
+  - sphinx
+  - sphinx_rtd_theme
