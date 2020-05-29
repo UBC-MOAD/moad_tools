@@ -1,10 +1,15 @@
 # Created by .ignore support plugin (hsz.mobi)
 
+### Local environment hooks
+pre-commit-hook.sh
+
+
 ### IntelliJ project files
 .idea
 *.iml
 out
 gen
+
 
 ### Vim template
 # Swap
@@ -62,6 +67,7 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
 
 ### macOS template
 # General
