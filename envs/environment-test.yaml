@@ -1,0 +1,31 @@
+# conda environment description file for moad_tools package testing environment
+#
+# Creates a conda environment in which the moad_tools package unit tests and
+# coverage analysis can be run.
+# Primarily intended for creation of a conda env for use in a GitHub Actions workflow.
+
+name: moad-tools-test
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - arrow
+  - Click
+  - matplotlib
+  - netcdf4
+  - pandas
+  - pip
+  - pytables
+  - pyyaml
+  - scipy
+  - xarray
+
+  # For unit tests and coverage monitoring
+  - pytest
+  - pytest-cov
+
+  - pip:
+    # For unit tests
+    - pytest-randomly
