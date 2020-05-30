@@ -47,7 +47,19 @@
 :kbd:`moad_tools.midoss` Sub-package
 ====================================
 
+:command:`hdf5-to-netCDF4` Tool
+-------------------------------
+
 .. automodule:: moad_tools.midoss.hdf5_to_netcdf4
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+:command:`random-oil-spills` Script
+-----------------------------------
+
+.. automodule:: moad_tools.midoss.random_oil_spills
     :members:
     :undoc-members:
     :show-inheritance:

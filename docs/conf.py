@@ -66,8 +66,9 @@ extensions = [
 ]
 
 intersphinx_mapping = {
+    "pandas": ("https://pandas.pydata.org/docs/", None),
     "python": ("https://docs.python.org/", None),
-    "xarray": ("http://xarray.pydata.org/en/stable/", None),
+    "xarray": ("https://xarray.pydata.org/en/stable/", None),
 }
 
 autodoc_mock_imports = [

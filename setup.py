@@ -19,6 +19,9 @@ import setuptools
 
 setuptools.setup(
     entry_points={
-        "console_scripts": ["hdf5-to-netcdf4 = moad_tools.midoss.hdf5_to_netcdf4:cli"]
+        "console_scripts": [
+            "hdf5-to-netcdf4 = moad_tools.midoss.hdf5_to_netcdf4:cli",
+            "random-oil-spills = moad_tools.midoss.random_oil_spills:cli",
+        ]
     }
 )
