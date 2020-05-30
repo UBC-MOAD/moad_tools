@@ -14,9 +14,9 @@
 
 import configparser
 import datetime
-import importlib.metadata
 import os
 import sys
+
 
 sys.path.insert(0, os.path.abspath(".."))
 
@@ -40,8 +40,11 @@ copyright_years = (
 )
 copyright = f"{copyright_years}, {author}"
 
+
+import moad_tools
+
 # The short X.Y version.
-version = importlib.metadata.version(project)
+version = moad_tools.__version__
 # The full version, including alpha/beta/rc tags.
 release = version
 
