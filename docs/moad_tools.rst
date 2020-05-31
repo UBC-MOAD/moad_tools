@@ -59,6 +59,17 @@
 :command:`random-oil-spills` Script
 -----------------------------------
 
+.. _RandomOilSpillsYAMLFile:
+
+Processing Configuration YAML File
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+*Coming Soon...*
+
+
+Functions and Command-line Interface
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 .. automodule:: moad_tools.midoss.random_oil_spills
     :members:
     :undoc-members:
