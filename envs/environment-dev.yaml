@@ -30,6 +30,7 @@ dependencies:
   - pytables
   - python>=3.8
   - pyyaml
+  - rasterio
   - scipy
   - xarray
 

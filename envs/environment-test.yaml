@@ -19,6 +19,7 @@ dependencies:
   - pip
   - pytables
   - pyyaml
+  - rasterio
   - scipy
   - xarray
 
