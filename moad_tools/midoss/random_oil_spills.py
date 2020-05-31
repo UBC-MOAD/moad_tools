@@ -55,6 +55,19 @@ def write_csv_file(df, csv_file):
     help="""
     Calculate and store a CSV file containing parameters of a set of random oil spills
     to drive Monte Carlo runs of MOHID.
+    
+    \b
+    Please see 
+    
+    \b
+    https://ubc-moad-tools.readthedocs.io/en/latest/moad_tools.html#moad_tools.midoss.random_oil_spills.cli
+    
+    for more information about arguments and options, and
+    
+    \b
+    https://ubc-moad-tools.readthedocs.io/en/latest/moad_tools.html#processing-configuration-yaml-file
+    
+    for details of the contents of the config file.
 """
 )
 @click.version_option()
@@ -77,10 +90,6 @@ def write_csv_file(df, csv_file):
 )
 def cli(n_spills, config_file, csv_file, verbosity):
     """Command-line interface for :py:func:`moad_tools.midoss.random_oil_spills`.
-
-    Please see:
-
-      random-oil-spills --help
 
     :param int n_spills: Number of spills to calculate parameters for.
 
