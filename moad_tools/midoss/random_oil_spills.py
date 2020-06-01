@@ -16,7 +16,6 @@
 of random oil spills to drive Monte Carlo runs of MOHID.
 """
 import logging
-import random
 import sys
 from datetime import timedelta
 from pathlib import Path
@@ -48,9 +47,13 @@ def random_oil_spills(n_spills, config_file):
     geotiffs_dir = Path(config["geotiffs dir"])
     vte_probability = calc_vte_probability(geotiffs_dir)
 
+    # Initialize PCG-64 random number generator
+    random_generator = numpy.random.default_rng()
+
     start_date = arrow.get(config["start date"]).datetime
     end_date = arrow.get(config["end date"]).datetime
-    spill_date_hour = get_date(start_date, end_date, vte_probability)
+
+    spill_date_hour = get_date(start_date, end_date, vte_probability, random_generator)
 
 
 def calc_vte_probability(geotiffs_dir):
@@ -90,11 +93,30 @@ def calc_vte_probability(geotiffs_dir):
     return vte_probability
 
 
-def get_date(start_date, end_date, vte_probability):
-    # Randomly select month based on weighting by vessel traffic
-    month_random = numpy.random.choice(range(1, 13), p=vte_probability)
+def get_date(start_date, end_date, vte_probability, random_generator):
+    """Randomly select a spill date and hour, with the month weighted by vessel traffic exposure
+    (VTE) probability.
 
-    # Now that month is selected, we need to choose day, year, and time.  We weight these all the same
+    :param start_date: Starting date of period in which spill dates and hours are to be selected.
+    :type start_date: :py:class:`datetime.datetime`
+
+    :param end_date: Ending date of period in which spill dates and hours are to be selected.
+    :type end_date: :py:class:`datetime.datetime`
+
+    :param vte_probability: 12 elements array of monthly spill probability weights
+    :type vte_probability: :py:class:`numpyt.ndarray`
+
+    :param random_generator: PCG-64 random number generator
+    :type random_generator: :py:class:`numpy.random.Generator`
+
+    :return: Randomly selected spill date and hour
+    :rtype: :py:class:`datetime.datetime`
+    """
+    # Randomly select month based on weighting by vessel traffic
+    month_random = random_generator.choice(range(1, 13), p=vte_probability)
+
+    # Now that month is selected, we need to choose day, year, and time.
+    # We weight these all the same.
     time_period = end_date - start_date
     time_period_inhours = numpy.int(time_period.total_seconds() / 3600)
     date_arr = [
@@ -107,7 +129,7 @@ def get_date(start_date, end_date, vte_probability):
         if days.month == month_random:
             date_arr_select.append(days)
 
-    return random.choice(date_arr_select)
+    return random_generator.choice(date_arr_select)
 
 
 def write_csv_file(df, csv_file):
