@@ -23,13 +23,14 @@ from pathlib import Path
 import arrow
 import click
 import numpy
+import pandas
 import rasterio
 import yaml
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 
 
-def random_oil_spills(n_spills, config_file):
+def random_oil_spills(n_spills, config_file, random_seed=None):
     """Calculate a dataframe containing parameters of a set of random oil spills
     to drive Monte Carlo runs of MOHID.
 
@@ -60,6 +61,16 @@ def random_oil_spills(n_spills, config_file):
     end_date = arrow.get(config["end date"]).datetime
 
     spill_date_hour = get_date(start_date, end_date, vte_probability, random_generator)
+
+    df = pandas.DataFrame(
+        {
+            "spill_date_hour": [
+                pandas.Timestamp(spill_date_hour.strftime("%Y-%m-%d %H:%M"))
+            ],
+        },
+    )
+
+    return df
 
 
 def calc_vte_probability(geotiffs_dir):
