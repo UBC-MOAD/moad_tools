@@ -52,6 +52,7 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
         config = yaml.safe_load(f)
         logging.info(f"read config dict from {config_file}")
 
+    # Load GeoTIFF files for each month and add up vessel traffic exposure (VTE)
     geotiffs_dir = Path(config["geotiffs dir"])
     vte_probability = calc_vte_probability(geotiffs_dir)
 
@@ -76,13 +77,12 @@ def calc_vte_probability(geotiffs_dir):
     """Calculate monthly spill probability weights from vessel traffic exposure (VTE)
     in AIS GeoTIFF files.
 
-    :param geotiffs_dir: File path to read AIS GeoTIFF files from.
+    :param geotiffs_dir: Directory path to read AIS GeoTIFF files from.
     :type geotiffs_dir: :py:class:`pathlib.Path`
 
     :return: 12 elements array of monthly spill probability weights
     :rtype: :py:class:`numpy.ndarray`
     """
-    # Load GeoTIFF files for each month and add up VTE
     total_vte_by_month = numpy.empty(12)
 
     for month in range(1, 13):
@@ -113,10 +113,10 @@ def get_date(start_date, end_date, vte_probability, random_generator):
     """Randomly select a spill date and hour, with the month weighted by vessel traffic exposure
     (VTE) probability.
 
-    :param start_date: Starting date of period in which spill dates and hours are to be selected.
+    :param start_date: Starting date of period from which spill dates and hours are to be selected.
     :type start_date: :py:class:`datetime.datetime`
 
-    :param end_date: Ending date of period in which spill dates and hours are to be selected.
+    :param end_date: Ending date of period from which spill dates and hours are to be selected.
     :type end_date: :py:class:`datetime.datetime`
 
     :param vte_probability: 12 elements array of monthly spill probability weights

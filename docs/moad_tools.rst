@@ -64,7 +64,27 @@
 Processing Configuration YAML File
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-*Coming Soon...*
+A collction of values for the processing that the :command:`random-oil-spills` performs are stored in a YAML file that is passed in as the command-line argument :kbd:`CONFIG_FILE`.
+
+In contrast to the :command:`random-oil-spills` command-line arguments :kbd:`N_SPILLS` and :kbd:`CSV_FILE` that may be different every time the script is run,
+the values in the YAML file are likely to change only rarely.
+Storing them in a
+(version controlled)
+YAML file aviods the tedium of typing them for every invocation of :command:`random-oil-spills`.
+
+Here is an example YAML file:
+
+.. code-block:: yaml
+
+    # Config items for random-oil-spills script
+
+    # Starting and ending dates of period from which
+    # spill dates and hours are to be selected
+    start date: 2015-01-01
+    end date: 2018-12-31
+
+    # Directory path to read AIS GeoTIFF files from
+    geotiffs dir: /media/doug/warehouse/MIDOSS/ShipTrackDensityGeoTIFFs/
 
 
 Functions and Command-line Interface
