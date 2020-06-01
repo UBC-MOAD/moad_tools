@@ -45,20 +45,32 @@ def random_oil_spills(n_spills, config_file):
     with Path(config_file).open("rt") as f:
         config = yaml.safe_load(f)
         logging.info(f"read config dict from {config_file}")
+
+    geotiffs_dir = config["geotiffs dir"]
+    vte_probability = calc_vte_probability(geotiffs_dir)
+
     start_date = arrow.get(config["start date"]).datetime
     end_date = arrow.get(config["end date"]).datetime
-    geotiffs_dir = config["geotiffs dir"]
-    spill_date_hour = get_date(start_date, end_date, geotiffs_dir)
+    spill_date_hour = get_date(start_date, end_date, vte_probability)
 
 
-def get_date(start_date, end_date, geotiff_directory):
+def calc_vte_probability(geotiffs_dir):
+    """Calculate monthly spill probability weights from vessel traffic exposure (VTE)
+    in AIS GeoTIFF files.
+
+    :param geotiffs_dir: File path to read AIS GeoTIFF files from.
+    :type geotiffs_dir: str
+
+    :return: 12 elements array of monthly spill probability weights
+    :rtype: :py:class:`numpy.ndarray`
+    """
     # Load GeoTIFF files for each month and add up VTE
     months = array("i", range(1, 13))
     total_vte_by_month = []
 
     for month in months:
         # The filenames are formated as "all_2018_MM.tif"
-        f_name = f"{geotiff_directory}all_2018_{month:02.0f}.tif"
+        f_name = f"{geotiffs_dir}all_2018_{month:02.0f}.tif"
 
         # open GeoTIFF file for reading
         traffic_reader = rasterio.open(f_name)
@@ -77,8 +89,12 @@ def get_date(start_date, end_date, geotiff_directory):
     # calculate VTE probability by month based on total traffic for each month
     vte_probability = total_vte_by_month / numpy.sum(total_vte_by_month)
 
+    return vte_probability
+
+
+def get_date(start_date, end_date, vte_probability):
     # Randomly select month based on weighting by vessel traffic
-    month_random = numpy.random.choice(months, p=vte_probability)
+    month_random = numpy.random.choice(range(1, 13), p=vte_probability)
 
     # Now that month is selected, we need to choose day, year, and time.  We weight these all the same
     time_period = end_date - start_date
