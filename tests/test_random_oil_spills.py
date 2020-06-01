@@ -17,20 +17,56 @@
 import logging
 import textwrap
 
+import arrow
+import numpy
+import pytest
+
 from moad_tools.midoss import random_oil_spills
+
+
+@pytest.fixture
+def mock_calc_vte_probability():
+    def calc_vte_probability(geotiffs_dir):
+        return numpy.array(
+            [
+                0.06487016,
+                0.06428695,
+                0.07748246,
+                0.07491668,
+                0.09257998,
+                0.09288003,
+                0.09479203,
+                0.09825065,
+                0.09265614,
+                0.0888919,
+                0.08229943,
+                0.0760936,
+            ]
+        )
+
+    return calc_vte_probability
 
 
 class TestRandomOilSpills:
     """Unit tests for random_oil_spills() function.
     """
 
-    def test_read_config(self, caplog, tmp_path):
+    def test_read_config(
+        self, mock_calc_vte_probability, caplog, tmp_path, monkeypatch
+    ):
         config_file = tmp_path / "random_oil_spills.yaml"
         config_file.write_text(
             textwrap.dedent(
                 """\
+                start date: 2015-01-01
+                end date: 2018-12-31
+                
+                geotiffs dir: AIS/ShipTrackDensityGeoTIFFs/
                 """
             )
+        )
+        monkeypatch.setattr(
+            random_oil_spills, "calc_vte_probability", mock_calc_vte_probability
         )
         caplog.set_level(logging.INFO)
 
@@ -40,9 +76,28 @@ class TestRandomOilSpills:
         assert caplog.messages[0] == f"read config dict from {config_file}"
 
 
+class TestGetDate:
+    """Unit test for get_date() function.
+    """
+
+    def test_get_date(self, mock_calc_vte_probability):
+        start_date = arrow.get("2015-01-01").datetime
+        end_date = arrow.get("2018-12-31").datetime
+        vte_probability = mock_calc_vte_probability("AIS/ShipTrackDensityGeoTIFFs/")
+        # Specifying the random seed makes the random number stream deterministic
+        # so that calculated results are repeatable
+        random_generator = numpy.random.default_rng(43)
+
+        spill_date_hour = random_oil_spills.get_date(
+            start_date, end_date, vte_probability, random_generator
+        )
+
+        assert spill_date_hour == arrow.get("2016-08-19 18:00").datetime
+
+
 class TestWriteCSVFile:
     """Unit tests for write_csv_file() function.
     """
 
     def test_write_csv_file(self):
-        assert True
+        pass
