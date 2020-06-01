@@ -15,6 +15,7 @@
 """Functions and command-line tool to calculate a CSV file containing parameters of a set
 of random oil spills to drive Monte Carlo runs of MOHID.
 """
+import collections
 import logging
 import sys
 from datetime import timedelta
@@ -60,15 +61,13 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
     start_date = arrow.get(config["start date"]).datetime
     end_date = arrow.get(config["end date"]).datetime
 
-    spill_date_hour = get_date(start_date, end_date, vte_probability, random_generator)
+    spill_params = collections.defaultdict(list)
+    for spill in range(n_spills):
+        spill_params["spill_date_hour"].append(
+            get_date(start_date, end_date, vte_probability, random_generator)
+        )
 
-    df = pandas.DataFrame(
-        {
-            "spill_date_hour": [
-                pandas.Timestamp(spill_date_hour.strftime("%Y-%m-%d %H:%M"))
-            ],
-        },
-    )
+    df = pandas.DataFrame(spill_params)
 
     return df
 

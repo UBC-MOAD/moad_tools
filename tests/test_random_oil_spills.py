@@ -78,7 +78,7 @@ class TestRandomOilSpills:
         assert caplog.records[0].levelname == "INFO"
         assert caplog.messages[0] == f"read config dict from {config_file}"
 
-    def test_dataframe(
+    def test_dataframe_one_row(
         self, mock_calc_vte_probability, config_file, caplog, tmp_path, monkeypatch
     ):
         # Specifying the random seed makes the random number stream deterministic
@@ -86,7 +86,28 @@ class TestRandomOilSpills:
         df = random_oil_spills.random_oil_spills(1, config_file, random_seed=43)
 
         expected = pandas.DataFrame(
-            {"spill_date_hour": [pandas.Timestamp("2016-08-19 18:00")]}
+            {
+                "spill_date_hour": [
+                    pandas.Timestamp(arrow.get("2016-08-19 18:00").datetime)
+                ]
+            }
+        )
+        pandas.testing.assert_frame_equal(df, expected)
+
+    def test_dataframe_two_rows(
+        self, mock_calc_vte_probability, config_file, caplog, tmp_path, monkeypatch
+    ):
+        # Specifying the random seed makes the random number stream deterministic
+        # so that calculated results are repeatable
+        df = random_oil_spills.random_oil_spills(2, config_file, random_seed=43)
+
+        expected = pandas.DataFrame(
+            {
+                "spill_date_hour": [
+                    pandas.Timestamp(arrow.get("2016-08-19 18:00").datetime),
+                    pandas.Timestamp(arrow.get("2015-01-06 10:00").datetime),
+                ]
+            },
         )
         pandas.testing.assert_frame_equal(df, expected)
 
