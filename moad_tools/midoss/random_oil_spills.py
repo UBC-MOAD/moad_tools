@@ -155,7 +155,8 @@ def write_csv_file(df, csv_file):
 
     :param str csv_file: File path and name of CSV file to write to.
     """
-    pass
+    df.to_csv(csv_file, index=False, date_format="%Y-%m-%d %H:%M")
+    logging.info(f"write CSV file to {csv_file}")
 
 
 @click.command(

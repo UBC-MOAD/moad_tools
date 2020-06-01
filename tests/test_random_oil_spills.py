@@ -137,5 +137,25 @@ class TestWriteCSVFile:
     """Unit tests for write_csv_file() function.
     """
 
-    def test_write_csv_file(self):
-        pass
+    def test_write_csv_file(self, tmp_path):
+        df = pandas.DataFrame(
+            {
+                "spill_date_hour": [
+                    pandas.Timestamp(arrow.get("2016-08-19 18:00").datetime),
+                    pandas.Timestamp(arrow.get("2015-01-06 10:00").datetime),
+                ]
+            },
+        )
+        out_csv = tmp_path / "out.csv"
+
+        random_oil_spills.write_csv_file(df, str(out_csv))
+
+        expected = textwrap.dedent(
+            """\
+            spill_date_hour
+            2016-08-19 18:00
+            2015-01-06 10:00
+            """
+        )
+
+        assert out_csv.read_text() == expected
