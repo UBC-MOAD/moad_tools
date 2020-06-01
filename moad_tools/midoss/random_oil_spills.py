@@ -38,6 +38,12 @@ def random_oil_spills(n_spills, config_file):
     :param str config_file: File path and name of the YAML file to read processing configuration
                             dictionary from.
 
+    :param random_seed: Seed to initialize random number generator with.
+                        This is facilitates a reproducible stream of random number that is useful
+                        for unit testing.
+    :type random_seed: None or int
+
+    :return: Dataframe of random oil spill parameters with :kbd:`n_spills` rows.
     :rtype: :py:class:`pandas.DataFrame`
     """
     with Path(config_file).open("rt") as f:
@@ -48,7 +54,7 @@ def random_oil_spills(n_spills, config_file):
     vte_probability = calc_vte_probability(geotiffs_dir)
 
     # Initialize PCG-64 random number generator
-    random_generator = numpy.random.default_rng()
+    random_generator = numpy.random.default_rng(random_seed)
 
     start_date = arrow.get(config["start date"]).datetime
     end_date = arrow.get(config["end date"]).datetime

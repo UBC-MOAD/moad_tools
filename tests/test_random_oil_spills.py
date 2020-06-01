@@ -16,6 +16,7 @@
 """
 import logging
 import textwrap
+from pathlib import Path
 
 import arrow
 import numpy
@@ -25,7 +26,7 @@ from moad_tools.midoss import random_oil_spills
 
 
 @pytest.fixture
-def mock_calc_vte_probability():
+def mock_calc_vte_probability(monkeypatch):
     def calc_vte_probability(geotiffs_dir):
         return numpy.array(
             [
@@ -44,33 +45,34 @@ def mock_calc_vte_probability():
             ]
         )
 
-    return calc_vte_probability
+    monkeypatch.setattr(random_oil_spills, "calc_vte_probability", calc_vte_probability)
 
 
 class TestRandomOilSpills:
     """Unit tests for random_oil_spills() function.
     """
 
-    def test_read_config(
-        self, mock_calc_vte_probability, caplog, tmp_path, monkeypatch
-    ):
+    @pytest.fixture
+    def config_file(self, tmp_path):
         config_file = tmp_path / "random_oil_spills.yaml"
         config_file.write_text(
             textwrap.dedent(
                 """\
                 start date: 2015-01-01
                 end date: 2018-12-31
-                
+
                 geotiffs dir: AIS/ShipTrackDensityGeoTIFFs/
                 """
             )
         )
-        monkeypatch.setattr(
-            random_oil_spills, "calc_vte_probability", mock_calc_vte_probability
-        )
+        return str(config_file)
+
+    def test_read_config(
+        self, mock_calc_vte_probability, config_file, caplog, tmp_path, monkeypatch
+    ):
         caplog.set_level(logging.INFO)
 
-        random_oil_spills.random_oil_spills(1, str(config_file))
+        random_oil_spills.random_oil_spills(1, config_file)
 
         assert caplog.records[0].levelname == "INFO"
         assert caplog.messages[0] == f"read config dict from {config_file}"
@@ -83,10 +85,10 @@ class TestGetDate:
     def test_get_date(self, mock_calc_vte_probability):
         start_date = arrow.get("2015-01-01").datetime
         end_date = arrow.get("2018-12-31").datetime
-        vte_probability = mock_calc_vte_probability("AIS/ShipTrackDensityGeoTIFFs/")
+        vte_probability = random_oil_spills.calc_vte_probability(Path("AIS/ShipTrackDensityGeoTIFFs/"))
         # Specifying the random seed makes the random number stream deterministic
         # so that calculated results are repeatable
-        random_generator = numpy.random.default_rng(43)
+        random_generator = numpy.random.default_rng(seed=43)
 
         spill_date_hour = random_oil_spills.get_date(
             start_date, end_date, vte_probability, random_generator
