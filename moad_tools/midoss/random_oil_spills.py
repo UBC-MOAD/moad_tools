@@ -18,7 +18,6 @@ of random oil spills to drive Monte Carlo runs of MOHID.
 import logging
 import random
 import sys
-from array import array
 from datetime import timedelta
 from pathlib import Path
 
@@ -46,7 +45,7 @@ def random_oil_spills(n_spills, config_file):
         config = yaml.safe_load(f)
         logging.info(f"read config dict from {config_file}")
 
-    geotiffs_dir = config["geotiffs dir"]
+    geotiffs_dir = Path(config["geotiffs dir"])
     vte_probability = calc_vte_probability(geotiffs_dir)
 
     start_date = arrow.get(config["start date"]).datetime
@@ -59,18 +58,17 @@ def calc_vte_probability(geotiffs_dir):
     in AIS GeoTIFF files.
 
     :param geotiffs_dir: File path to read AIS GeoTIFF files from.
-    :type geotiffs_dir: str
+    :type geotiffs_dir: :py:class:`pathlib.Path`
 
     :return: 12 elements array of monthly spill probability weights
     :rtype: :py:class:`numpy.ndarray`
     """
     # Load GeoTIFF files for each month and add up VTE
-    months = array("i", range(1, 13))
-    total_vte_by_month = []
+    total_vte_by_month = numpy.empty(12)
 
-    for month in months:
+    for month in range(1, 13):
         # The filenames are formated as "all_2018_MM.tif"
-        f_name = f"{geotiffs_dir}all_2018_{month:02.0f}.tif"
+        f_name = geotiffs_dir / f"all_2018_{month:02d}.tif"
 
         # open GeoTIFF file for reading
         traffic_reader = rasterio.open(f_name)
@@ -84,7 +82,7 @@ def calc_vte_probability(geotiffs_dir):
             data = numpy.squeeze(data)
             data[data < 0] = 0
 
-            total_vte_by_month.append(data.sum())
+            total_vte_by_month[month - 1] = data.sum()
 
     # calculate VTE probability by month based on total traffic for each month
     vte_probability = total_vte_by_month / numpy.sum(total_vte_by_month)
