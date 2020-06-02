@@ -66,9 +66,10 @@ extensions = [
 ]
 
 intersphinx_mapping = {
+    "mohidcmd": ("https://mohid-cmd.readthedocs.io/en/latest", None),
     "pandas": ("https://pandas.pydata.org/docs/", None),
-    "python": ("https://docs.python.org/", None),
-    "xarray": ("https://xarray.pydata.org/en/stable/", None),
+    "python": ("https://docs.python.org/3/", None),
+    "xarray": ("https://xarray.pydata.org/en/stable", None),
 }
 
 autodoc_mock_imports = [

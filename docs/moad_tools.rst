@@ -56,21 +56,66 @@
     :show-inheritance:
 
 
+.. _RandomOilSpillsScript:
+
 :command:`random-oil-spills` Script
 -----------------------------------
+
+The :command:`random-oil-spills` script produces a CSV file of randomly selected oil spill parameters.
+Such a file is one of the items required to launch a collection of MOHID runs via the :ref:`mohidcmd:monte-carlo-sub-command` of the `MOHID command processor`_.
+
+.. _MOHID command processor: https://mohid-cmd.readthedocs.io/en/latest/
+
+Information about the :command:`random-oil-spills` command-line arguments and options is available via:
+
+.. code-block:: bash
+
+    random-oil-spills --help
+
+.. code-block:: text
+
+    Usage: random-oil-spills [OPTIONS] N_SPILLS CONFIG_FILE CSV_FILE
+
+      Calculate and store a CSV file containing parameters of a set of random
+      oil spills to drive Monte Carlo runs of MOHID.
+
+      Please see
+
+      https://ubc-moad-tools.readthedocs.io/en/latest/moad_tools.html#moad_tools.midoss.random_oil_spills.cli
+
+      for more information about arguments and options, and
+
+      https://ubc-moad-tools.readthedocs.io/en/latest/moad_tools.html#processing-configuration-yaml-file
+
+      for details of the contents of the config file.
+
+    Options:
+      --version                       Show the version and exit.
+      -v, --verbosity [debug|info|warning|error|critical]
+                                      Choose how much information you want to see
+                                      about the progress of the calculation;
+                                      warning, error, and critical should be
+                                      silent unless something bad goes wrong.
+                                      [default: warning]
+
+      --help                          Show this message and exit.
+
+
+The :ref:`RandomOilSpillsFunctionsAndCommand-lineInterface` section below provides API details for the public functions that make up the :command:`random-oil-spills` script.
+
 
 .. _RandomOilSpillsYAMLFile:
 
 Processing Configuration YAML File
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A collction of values for the processing that the :command:`random-oil-spills` performs are stored in a YAML file that is passed in as the command-line argument :kbd:`CONFIG_FILE`.
+A collection of values for the processing that the :command:`random-oil-spills` performs are stored in a YAML file that is passed in as the command-line argument :kbd:`CONFIG_FILE`.
 
 In contrast to the :command:`random-oil-spills` command-line arguments :kbd:`N_SPILLS` and :kbd:`CSV_FILE` that may be different every time the script is run,
 the values in the YAML file are likely to change only rarely.
 Storing them in a
 (version controlled)
-YAML file aviods the tedium of typing them for every invocation of :command:`random-oil-spills`.
+YAML file avoids the tedium of typing them for every invocation of :command:`random-oil-spills`.
 
 Here is an example YAML file:
 
@@ -86,6 +131,8 @@ Here is an example YAML file:
     # Directory path to read AIS GeoTIFF files from
     geotiffs dir: /media/doug/warehouse/MIDOSS/ShipTrackDensityGeoTIFFs/
 
+
+.. _RandomOilSpillsFunctionsAndCommand-lineInterface:
 
 Functions and Command-line Interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
