@@ -89,7 +89,8 @@ class TestRandomOilSpills:
             {
                 "spill_date_hour": [
                     pandas.Timestamp(arrow.get("2016-08-19 18:00").datetime)
-                ]
+                ],
+                "run_days": [7],
             }
         )
         pandas.testing.assert_frame_equal(df, expected)
@@ -106,7 +107,8 @@ class TestRandomOilSpills:
                 "spill_date_hour": [
                     pandas.Timestamp(arrow.get("2016-08-19 18:00").datetime),
                     pandas.Timestamp(arrow.get("2015-01-06 10:00").datetime),
-                ]
+                ],
+                "run_days": [7, 7],
             },
         )
         pandas.testing.assert_frame_equal(df, expected)
@@ -143,7 +145,8 @@ class TestWriteCSVFile:
                 "spill_date_hour": [
                     pandas.Timestamp(arrow.get("2016-08-19 18:00").datetime),
                     pandas.Timestamp(arrow.get("2015-01-06 10:00").datetime),
-                ]
+                ],
+                "run_days": [7, 7],
             },
         )
         out_csv = tmp_path / "out.csv"
@@ -152,9 +155,9 @@ class TestWriteCSVFile:
 
         expected = textwrap.dedent(
             """\
-            spill_date_hour
-            2016-08-19 18:00
-            2015-01-06 10:00
+            spill_date_hour,run_days
+            2016-08-19 18:00,7
+            2015-01-06 10:00,7
             """
         )
 

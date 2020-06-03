@@ -67,6 +67,7 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
         spill_params["spill_date_hour"].append(
             get_date(start_date, end_date, vte_probability, random_generator)
         )
+        spill_params["run_days"].append(7)
 
     df = pandas.DataFrame(spill_params)
 
