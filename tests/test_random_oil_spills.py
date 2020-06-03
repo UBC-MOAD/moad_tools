@@ -135,6 +135,11 @@ class TestGetDate:
         assert spill_date_hour == arrow.get("2016-08-19 18:00").datetime
 
 
+class TestGetLatLonIndices:
+    def test_get_lat_lon_indices(self):
+        assert False
+
+
 class TestWriteCSVFile:
     """Unit tests for write_csv_file() function.
     """
