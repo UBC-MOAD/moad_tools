@@ -17,6 +17,7 @@
 import logging
 import textwrap
 from pathlib import Path
+from types import SimpleNamespace
 
 import arrow
 import numpy
@@ -68,8 +69,35 @@ class TestRandomOilSpills:
         )
         return str(config_file)
 
+    @pytest.fixture
+    def mock_get_lat_lon_indices(self, monkeypatch):
+        def get_lat_lon_indices(
+            geotiff_directory,
+            spill_month,
+            n_locations,
+            upsample_factor,
+            random_generator,
+        ):
+            return (
+                numpy.array([-123.3461]),
+                numpy.array([48.8467]),
+                numpy.array([238]),
+                numpy.array([478]),
+                "data_out",
+            )
+
+        monkeypatch.setattr(
+            random_oil_spills, "get_lat_lon_indices", get_lat_lon_indices
+        )
+
     def test_read_config(
-        self, mock_calc_vte_probability, config_file, caplog, tmp_path, monkeypatch
+        self,
+        mock_calc_vte_probability,
+        mock_get_lat_lon_indices,
+        config_file,
+        caplog,
+        tmp_path,
+        monkeypatch,
     ):
         caplog.set_level(logging.INFO)
 
@@ -79,7 +107,13 @@ class TestRandomOilSpills:
         assert caplog.messages[0] == f"read config dict from {config_file}"
 
     def test_dataframe_one_row(
-        self, mock_calc_vte_probability, config_file, caplog, tmp_path, monkeypatch
+        self,
+        mock_calc_vte_probability,
+        mock_get_lat_lon_indices,
+        config_file,
+        caplog,
+        tmp_path,
+        monkeypatch,
     ):
         # Specifying the random seed makes the random number stream deterministic
         # so that calculated results are repeatable
@@ -96,7 +130,13 @@ class TestRandomOilSpills:
         pandas.testing.assert_frame_equal(df, expected)
 
     def test_dataframe_two_rows(
-        self, mock_calc_vte_probability, config_file, caplog, tmp_path, monkeypatch
+        self,
+        mock_calc_vte_probability,
+        mock_get_lat_lon_indices,
+        config_file,
+        caplog,
+        tmp_path,
+        monkeypatch,
     ):
         # Specifying the random seed makes the random number stream deterministic
         # so that calculated results are repeatable
@@ -136,8 +176,43 @@ class TestGetDate:
 
 
 class TestGetLatLonIndices:
-    def test_get_lat_lon_indices(self):
-        assert False
+    """Unit tests for get_lat_lon_indices() function.
+    """
+
+    @pytest.mark.parametrize(
+        "upsample_factor, expected",
+        (
+            (
+                1,
+                SimpleNamespace(
+                    lat=-123.3461, lon=48.8467, geotiff_x_index=238, geotiff_y_index=478
+                ),
+            ),
+        ),
+    )
+    def test_get_lat_lon_indices(self, upsample_factor, expected):
+        geotiffs_dir = Path("test_data/random_oil_spills/")
+        spill_date_hour = arrow.get("2016-08-19 18:00").datetime
+        # Specifying the random seed makes the random number stream deterministic
+        # so that calculated results are repeatable
+        random_generator = numpy.random.default_rng(seed=43)
+
+        lats, lons, x_index, y_index, _ = random_oil_spills.get_lat_lon_indices(
+            geotiffs_dir,
+            spill_date_hour.month,
+            n_locations=1,
+            upsample_factor=upsample_factor,
+            random_generator=random_generator,
+        )
+
+        numpy.testing.assert_array_equal(lats, numpy.array([expected.lat]))
+        numpy.testing.assert_array_equal(lons, numpy.array([expected.lon]))
+        numpy.testing.assert_array_equal(
+            x_index, numpy.array([expected.geotiff_x_index])
+        )
+        numpy.testing.assert_array_equal(
+            y_index, numpy.array([expected.geotiff_y_index])
+        )
 
 
 class TestWriteCSVFile:

@@ -74,7 +74,11 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
         spill_params["spill_date_hour"].append(spill_date_hour)
         spill_params["run_days"].append(7)
         lats, lons, x_index, y_index, data_out = get_lat_lon_indices(
-            geotiffs_dir, spill_date_hour.month, n_locations=1, upsample_factor=1
+            geotiffs_dir,
+            spill_date_hour.month,
+            n_locations=1,
+            upsample_factor=1,
+            random_generator=random_generator,
         )
 
     df = pandas.DataFrame(spill_params)
@@ -166,7 +170,13 @@ def truncate(f, n):
     return ".".join([i, (d + "0" * n)[:n]])
 
 
-def get_lat_lon_indices(geotiff_directory, spill_month, n_locations, upsample_factor):
+def get_lat_lon_indices(
+    geotiff_directory, spill_month, n_locations, upsample_factor, random_generator
+):
+    """
+    :param random_generator: PCG-64 random number generator
+    :type random_generator: :py:class:`numpy.random.Generator`
+    """
     print("Randomly selecting spill location from all-traffic GeoTIFF:")
 
     traffic_reader = rio.open(geotiff_directory / f"all_2018_{spill_month:02.0f}.tif")
@@ -213,7 +223,7 @@ def get_lat_lon_indices(geotiff_directory, spill_month, n_locations, upsample_fa
 
     # use 'choice' function to randomly select lat/lon locations
     print(f"...Selecting {n_locations} location(s)")
-    latlontxt_random = choice(
+    latlontxt_random = random_generator.choice(
         latlontxt.reshape(-1), n_locations, p=probability_distribution.reshape(-1)
     )
 
