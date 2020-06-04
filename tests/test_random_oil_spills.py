@@ -191,7 +191,7 @@ class TestGetLatLonIndices:
         ),
     )
     def test_get_lat_lon_indices(self, upsample_factor, expected):
-        geotiffs_dir = Path("test_data/random_oil_spills/")
+        geotiffs_dir = Path("tests/test_data/random_oil_spills/")
         spill_date_hour = arrow.get("2016-08-19 18:00").datetime
         # Specifying the random seed makes the random number stream deterministic
         # so that calculated results are repeatable
