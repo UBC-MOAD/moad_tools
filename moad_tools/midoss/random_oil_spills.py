@@ -24,12 +24,8 @@ from pathlib import Path
 import arrow
 import click
 import numpy
-import numpy as np
-from numpy.random import choice
 import pandas
 import rasterio
-import rasterio as rio
-from rasterio.enums import Resampling
 import yaml
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
@@ -179,7 +175,9 @@ def get_lat_lon_indices(
     """
     print("Randomly selecting spill location from all-traffic GeoTIFF:")
 
-    traffic_reader = rio.open(geotiff_directory / f"all_2018_{spill_month:02.0f}.tif")
+    traffic_reader = rasterio.open(
+        geotiff_directory / f"all_2018_{spill_month:02.0f}.tif"
+    )
 
     # dataset closes automatically using the method below
     with traffic_reader as dataset:
@@ -192,7 +190,7 @@ def get_lat_lon_indices(
                 int(dataset.height * upsample_factor),
                 int(dataset.width * upsample_factor),
             ),
-            resampling=Resampling.bilinear,
+            resampling=rasterio.enums.Resampling.bilinear,
         )
 
         # scale image transform
@@ -201,7 +199,7 @@ def get_lat_lon_indices(
         )
 
     # remove no-data values and singular dimension
-    data = np.squeeze(data)
+    data = numpy.squeeze(data)
     data[data < 0] = 0
 
     # calculate upsampled probability of traffic by VTE in given month
@@ -210,7 +208,7 @@ def get_lat_lon_indices(
 
     # create a matrix of lat/lon values
     print("...Creating 2D array of lat/lon strings (this may take a moment)")
-    latlontxt = np.chararray((nx, ny), itemsize=25)
+    latlontxt = numpy.chararray((nx, ny), itemsize=25)
     for y in range(ny):
         for x in range(nx):
             x2, y2 = traffic_reader.transform * (y, x)
@@ -228,27 +226,31 @@ def get_lat_lon_indices(
     )
 
     # extract lat/lon value(s)
-    lats = np.array([])
-    lons = np.array([])
-    x_index = np.array([], dtype=np.int)
-    y_index = np.array([], dtype=np.int)
-    data_out = np.array([])
+    lats = numpy.array([])
+    lons = numpy.array([])
+    x_index = numpy.array([], dtype=numpy.int)
+    y_index = numpy.array([], dtype=numpy.int)
+    data_out = numpy.array([])
 
     print("...Creating vectors of lat/lon pairs and x-index/y-index pairs")
     for latlontxt_str in latlontxt_random:
         # create lat/lon vectors
-        lats = np.append(lats, float(latlontxt_str[3:12]))
-        lons = np.append(lons, float(latlontxt_str[16:]))
+        lats = numpy.append(lats, float(latlontxt_str[3:12]))
+        lons = numpy.append(lons, float(latlontxt_str[16:]))
 
         # find x-, y-indices of selected lat/lon pair in 2D latlontxt array
-        another_x, another_y = np.where(latlontxt == latlontxt_str)
+        another_x, another_y = numpy.where(latlontxt == latlontxt_str)
 
         # create indice vectors
-        x_index = np.append(x_index, np.int(np.floor(another_x) / upsample_factor))
-        y_index = np.append(y_index, np.int(np.floor(another_y) / upsample_factor))
+        x_index = numpy.append(
+            x_index, numpy.int(numpy.floor(another_x) / upsample_factor)
+        )
+        y_index = numpy.append(
+            y_index, numpy.int(numpy.floor(another_y) / upsample_factor)
+        )
 
         # create data array at x-index, y-index location for QAQC/comparison
-        data_out = np.append(data_out, data[another_x, another_y])
+        data_out = numpy.append(data_out, data[another_x, another_y])
         print("That's a wrap, folks!")
 
     return lats, lons, x_index, y_index, data_out
