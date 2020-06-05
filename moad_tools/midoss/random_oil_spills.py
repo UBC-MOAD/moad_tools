@@ -167,93 +167,86 @@ def truncate(f, n):
 
 
 def get_lat_lon_indices(
-    geotiff_directory, spill_month, n_locations, upsample_factor, random_generator
+    geotiff_directory, spill_month, water_mask, mesh, random_generator
 ):
     """
     :param random_generator: PCG-64 random number generator
     :type random_generator: :py:class:`numpy.random.Generator`
     """
-    print("Randomly selecting spill location from all-traffic GeoTIFF:")
+#    print("Randomly selecting spill location from all-traffic GeoTIFF:")
 
-    traffic_reader = rasterio.open(
+    dataset = rasterio.open(
         geotiff_directory / f"all_2018_{spill_month:02.0f}.tif"
     )
 
-    # dataset closes automatically using the method below
-    with traffic_reader as dataset:
+    data = dataset.read(1)
 
-        # resample data to target shape
-        data = dataset.read(
-            1,
-            out_shape=(
-                dataset.count,
-                int(dataset.height * upsample_factor),
-                int(dataset.width * upsample_factor),
-            ),
-            resampling=rasterio.enums.Resampling.bilinear,
-        )
-
-        # scale image transform
-        transform = dataset.transform * dataset.transform.scale(
-            (dataset.width / data.shape[-1]), (dataset.height / data.shape[-2])
-        )
-
-    # remove no-data values and singular dimension
-    data = numpy.squeeze(data)
+    # remove no-data values
     data[data < 0] = 0
+
+    # remove any non-water or outside domain points
+    data = data * water_mask
 
     # calculate upsampled probability of traffic by VTE in given month
     probability_distribution = data / data.sum()
-    [nx, ny] = probability_distribution.shape
 
-    # create a matrix of lat/lon values
-    print("...Creating 2D array of lat/lon strings (this may take a moment)")
-    latlontxt = numpy.chararray((nx, ny), itemsize=25)
-    for y in range(ny):
-        for x in range(nx):
-            x2, y2 = traffic_reader.transform * (y, x)
-            latlontxt[x, y] = (
-                "lat" + str(truncate(x2, 5)) + "lon" + str(truncate(y2, 5))
-            )
+    # use 'choice' function to randomly select a geotif box, note mp is index of    # flattened array
+    mp = random_generator.choice(data.shape[0]*data.shape[1], 1,
+                                     p=probability_distribution.flatten())[0]
+    # find indices of 2-D array
+    px = int(numpy.floor(mp/data.shape[1]))
+    py = mp - px * data.shape[1]
 
-    # reshape 2D matrix to vector
-    latlontxt_1D = latlontxt.reshape(-1)
+    # find lat and lon of lower right and upper left corners of the chosen box
+    llx, lly = rasterio.transform.xy(dataset.transform,
+                                       px+0.5, py-0.5)
+    urx, ury = rasterio.transform.xy(dataset.transform,
+                                       px-0.5, py+0.5)
 
-    # use 'choice' function to randomly select lat/lon locations
-    print(f"...Selecting {n_locations} location(s)")
-    latlontxt_random = random_generator.choice(
-        latlontxt.reshape(-1), n_locations, p=probability_distribution.reshape(-1)
-    )
+    # find the SalishSeaCast water points in the box
+    inner_points = (numpy.where(mesh.glamt[0] > llx, 1, 0) *
+                numpy.where(mesh.glamt[0] < urx, 1, 0) *
+               numpy.where(mesh.gphit[0] > lly, 1, 0) *
+                numpy.where(mesh.gphit[0] < ury, 1, 0) *
+                numpy.where(mesh.tmask[0, 0] == 1, 1, 0))
 
-    # extract lat/lon value(s)
-    lats = numpy.array([])
-    lons = numpy.array([])
-    x_index = numpy.array([], dtype=numpy.int)
-    y_index = numpy.array([], dtype=numpy.int)
-    data_out = numpy.array([])
+    # choose one of those water points and its lat and lon
+    ssp = random_generator.choice(mesh.tmask.shape[2]*mesh.tmask.shape[3], 1,
+                              p=inner_points.flatten()/inner_points.sum())
+    sslon = numpy.array(mesh.glamt[0]).flatten()[ssp]
+    sslat = numpy.array(mesh.gphit[0]).flatten()[ssp]
 
-    print("...Creating vectors of lat/lon pairs and x-index/y-index pairs")
-    for latlontxt_str in latlontxt_random:
-        # create lat/lon vectors
-        lats = numpy.append(lats, float(latlontxt_str[3:12]))
-        lons = numpy.append(lons, float(latlontxt_str[16:]))
+    # define nine points in the SalishSeaCast grid cell (this should be moved)
+    one_third = 0.333
+    within_box = {'center': [0, 0],
+             'left': [one_third, 0],
+             'uleft': [one_third, one_third],
+             'upper' : [0, one_third],
+             'uright' : [-one_third, one_third],
+             'right' : [-one_third, 0],
+             'lright' : [-one_third, -one_third],
+             'lower' : [0, -one_third],
+             'lleft' : [one_third, -one_third]}
 
-        # find x-, y-indices of selected lat/lon pair in 2D latlontxt array
-        another_x, another_y = numpy.where(latlontxt == latlontxt_str)
+    # chose one of those nine
+    shift = (random_generator.choice(list(within_box.keys()), 1))[0]
 
-        # create indice vectors
-        x_index = numpy.append(
-            x_index, numpy.int(numpy.floor(another_x) / upsample_factor)
-        )
-        y_index = numpy.append(
-            y_index, numpy.int(numpy.floor(another_y) / upsample_factor)
-        )
+    # calculate the grid size in lat lon
+    width = mesh.tmask.shape[3]
+    londx, latdx = ((numpy.array(mesh.glamt[0]).flatten()[ssp+1] -
+                         numpy.array(mesh.glamt[0]).flatten()[ssp])[0],
+        (numpy.array(mesh.gphit[0]).flatten()[ssp+1] -
+             numpy.array(mesh.gphit[0]).flatten()[ssp])[0])
+    londy, latdy = ((numpy.array(mesh.glamt[0]).flatten()[ssp+width] -
+                         numpy.array(mesh.glamt[0]).flatten()[ssp])[0],
+     (numpy.array(mesh.gphit[0]).flatten()[ssp+width] -
+          numpy.array(mesh.gphit[0]).flatten()[ssp])[0])
 
-        # create data array at x-index, y-index location for QAQC/comparison
-        data_out = numpy.append(data_out, data[another_x, another_y])
-        print("That's a wrap, folks!")
+    # calculate lat/lon of our spill point
+    lat = sslat + latdx * within_box[shift][0] + latdy * within_box[shift][1]
+    lon = sslon + londx * within_box[shift][0] + londy * within_box[shift][1]
 
-    return lats, lons, x_index, y_index, data_out
+    return lat, lon, px, py, data[px, py]
 
 
 def write_csv_file(df, csv_file):
