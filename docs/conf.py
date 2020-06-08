@@ -67,8 +67,10 @@ extensions = [
 
 intersphinx_mapping = {
     "mohidcmd": ("https://mohid-cmd.readthedocs.io/en/latest", None),
+    "numpy": ("https://numpy.org/doc/1.18/", None),
     "pandas": ("https://pandas.pydata.org/docs/", None),
     "python": ("https://docs.python.org/3/", None),
+    "rasterio": ("https://rasterio.readthedocs.io/en/latest/", None),
     "xarray": ("https://xarray.pydata.org/en/stable", None),
 }
 
