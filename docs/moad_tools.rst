@@ -47,6 +47,15 @@
 :kbd:`moad_tools.midoss` Sub-package
 ====================================
 
+:command:`geotiff-watermask` Tool
+---------------------------------
+
+.. automodule:: moad_tools.midoss.geotiff_watermask
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
 :command:`hdf5-to-netCDF4` Tool
 -------------------------------
 
