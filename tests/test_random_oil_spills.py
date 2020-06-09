@@ -215,6 +215,20 @@ class TestGetLatLonIndices:
         )
 
 
+class TestChooseFractionSpilled:
+    """Unit test for choose_fraction_spilled() function.
+    """
+
+    def test_choose_fraction_spilled(self):
+        # Specifying the random seed makes the random number stream deterministic
+        # so that calculated results are repeatable
+        random_generator = numpy.random.default_rng(seed=101)
+
+        spill_fraction = random_oil_spills.choose_fraction_spilled(random_generator)
+
+        assert spill_fraction == pytest.approx(0.63)
+
+
 class TestCumulativeSpillFraction:
     """Unit test for _cumulative_spill_fraction() function.
     """

@@ -249,23 +249,25 @@ def get_lat_lon_indices(
     return lat, lon, px, py, data[px, py]
 
 
+def choose_fraction_spilled(random_generator):
+    """Randomly choose a fraction spilled based on the _cumulative_spill_fraction() fit.
 
-def ChoseFractionSpilled(random_generator):
-    """
-    Randomly choses a fraction spilled based on the CumulativeSpillFraction fit
-
-    :param random_generator: PCG-64 random number generator
+    :param random_generator: PCG-64 random number generator.
     :type random_generator: :py:class:`numpy.random.Generator`
+
+    :return: Fraction of oil colume spilled.
+    :rtype: float
     """
     nbins = 50
-    fraction = numpy.arange(0, 1 + 1/nbins, 1/nbins)
-    cumulative = CumulativeSpillFraction(fraction)
+    # We need both sides of the bins, so array is nbins+1 long
+    fraction = numpy.linspace(0, 1, num=nbins + 1)
+    cumulative = _cumulative_spill_fraction(fraction)
 
     probability = cumulative[1:] - cumulative[:-1]
-    central_value = 0.5*(fraction[1:] + fraction[:-1])
+    central_value = 0.5 * (fraction[1:] + fraction[:-1])
 
-    spillfraction = random_generator.choice(central_value, 1, p=probability)
-    return spillfraction[0]
+    spill_fraction = random_generator.choice(central_value, p=probability)
+    return spill_fraction
 
 
 def _cumulative_spill_fraction(fraction):
