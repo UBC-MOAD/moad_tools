@@ -103,8 +103,8 @@ def write_numpy_file(watermask, numpy_file):
     """Store a Numpy array file containing a boolean water mask to apply to
     AIS ship track density GeoTIFF files to restrict them to the SalishSeaCast NEMO domain.
 
-    :param watermask: Boolean water mask to apply to AIS ship track density GeoTIFF files to restrict
-                     them to the SalishSeaCast NEMO domain.
+    :param watermask: Boolean water mask to apply to AIS ship track density GeoTIFF files
+                      to restrict them to the SalishSeaCast NEMO domain.
     :type watermask: :py:class:`numpy.ndarray`
 
     :param str numpy_file: File path and name of Numpy array file to write the water mask to.
