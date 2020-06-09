@@ -215,6 +215,74 @@ class TestGetLatLonIndices:
         )
 
 
+class TestCumulativeSpillFraction:
+    """Unit test for _cumulative_spill_fraction() function.
+    """
+
+    def test_cumulative_spill_fraction(self):
+        nbins = 50
+        fraction = numpy.linspace(0, 1, num=nbins + 1)
+
+        cumulative = random_oil_spills._cumulative_spill_fraction(fraction)
+
+        expected = numpy.array(
+            [
+                0,
+                0.24266816,
+                0.35966341,
+                0.42851504,
+                0.47787627,
+                0.51841066,
+                0.55415534,
+                0.58670183,
+                0.61673461,
+                0.64459766,
+                0.67050337,
+                0.69460976,
+                0.71704939,
+                0.73794026,
+                0.75739031,
+                0.77549928,
+                0.79235978,
+                0.80805793,
+                0.82267388,
+                0.83628224,
+                0.84895248,
+                0.86074926,
+                0.87173281,
+                0.88195918,
+                0.89148058,
+                0.90034559,
+                0.90859948,
+                0.91628437,
+                0.92343948,
+                0.93010134,
+                0.93630395,
+                0.94207896,
+                0.94745587,
+                0.9524621,
+                0.95712322,
+                0.96146302,
+                0.96550364,
+                0.96926571,
+                0.97276844,
+                0.97602969,
+                0.97906613,
+                0.98189324,
+                0.98452546,
+                0.98697622,
+                0.98925803,
+                0.99138254,
+                0.9933606,
+                0.99520229,
+                0.99691702,
+                0.99851354,
+                1,
+            ]
+        )
+        numpy.testing.assert_allclose(cumulative, expected)
+
+
 class TestWriteCSVFile:
     """Unit tests for write_csv_file() function.
     """

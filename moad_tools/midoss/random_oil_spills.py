@@ -248,18 +248,6 @@ def get_lat_lon_indices(
 
     return lat, lon, px, py, data[px, py]
 
-def CumulativeSpillFraction(fraction):
-    """
-    Calculates the cumulative spill probability upto fraction based on 10 spill cases from Ryah
-    :param float fraction: spill fraction
-    """
-    typeonefrac = 0.7
-    typetwofrac = 1 - typeonefrac
-    typeonedec = 28/100
-    typetwodec = 2/100
-    multiplier = 1/(1 - typeonefrac * numpy.exp(-1/typeonedec) - typetwofrac*numpy.exp(-1/typetwodec))
-    return (1 - typeonefrac * numpy.exp(-fraction/typeonedec)
-            - typetwofrac*numpy.exp(-fraction/typetwodec)) * multiplier
 
 
 def ChoseFractionSpilled(random_generator):
@@ -278,6 +266,31 @@ def ChoseFractionSpilled(random_generator):
 
     spillfraction = random_generator.choice(central_value, 1, p=probability)
     return spillfraction[0]
+
+
+def _cumulative_spill_fraction(fraction):
+    """Calculate the cumulative spill probability up to fraction based on 10 spill cases from Ryah.
+
+    :param fraction: Spill fraction.
+    :type fraction: :py:class:`numpy.ndarray`
+
+    :return: Cumulative spill probability.
+    :rtype: :py:class:`numpy.ndarray`
+    """
+    typeonefrac = 0.7
+    typetwofrac = 1 - typeonefrac
+    typeonedec = 28 / 100
+    typetwodec = 2 / 100
+    multiplier = 1 / (
+        1
+        - typeonefrac * numpy.exp(-1 / typeonedec)
+        - typetwofrac * numpy.exp(-1 / typetwodec)
+    )
+    return (
+        1
+        - typeonefrac * numpy.exp(-fraction / typeonedec)
+        - typetwofrac * numpy.exp(-fraction / typetwodec)
+    ) * multiplier
 
 
 def write_csv_file(df, csv_file):
