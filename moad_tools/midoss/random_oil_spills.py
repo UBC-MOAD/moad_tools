@@ -54,7 +54,8 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
 
     # Load GeoTIFF files for each month and add up vessel traffic exposure (VTE)
     geotiffs_dir = Path(config["geotiffs dir"])
-    vte_probability = calc_vte_probability(geotiffs_dir)
+    geotiff_watermask = numpy.load(Path(config["geotiff watermask"]))
+    vte_probability = calc_vte_probability(geotiffs_dir, geotiff_watermask)
 
     # Initialize PCG-64 random number generator
     random_generator = numpy.random.default_rng(random_seed)
@@ -82,12 +83,16 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
     return df
 
 
-def calc_vte_probability(geotiffs_dir):
+def calc_vte_probability(geotiffs_dir, geotiff_watermask):
     """Calculate monthly spill probability weights from vessel traffic exposure (VTE)
     in AIS GeoTIFF files.
 
     :param geotiffs_dir: Directory path to read AIS GeoTIFF files from.
     :type geotiffs_dir: :py:class:`pathlib.Path`
+
+    :param geotiff_watermask: Boolean water mask to apply to AIS ship track density GeoTIFF files
+                              to restrict them to the SalishSeaCast NEMO domain.
+    :type geotiff_watermask: :py:class:`numpy.ndarray`
 
     :return: 12 elements array of monthly spill probability weights
     :rtype: :py:class:`numpy.ndarray`
@@ -95,25 +100,16 @@ def calc_vte_probability(geotiffs_dir):
     total_vte_by_month = numpy.empty(12)
 
     for month in range(1, 13):
-        # The filenames are formated as "all_2018_MM.tif"
+        # The filenames are formatted as "all_2018_MM.tif"
         f_name = geotiffs_dir / f"all_2018_{month:02d}.tif"
 
-        # open GeoTIFF file for reading
-        traffic_reader = rasterio.open(f_name)
-
-        # load data in a way that automatically closes file when finished
-        with traffic_reader as dataset:
-            # resample data to target shape
-            data = dataset.read(1)
-
-            # remove no-data values and singular dimension
-            data = numpy.squeeze(data)
-            data[data < 0] = 0
-
-            total_vte_by_month[month - 1] = data.sum()
+        with rasterio.open(f_name) as dataset:
+            total_vte_by_month[month - 1] = dataset.read(
+                1, boundless=True, fill_value=0
+            ).sum(where=geotiff_watermask)
 
     # calculate VTE probability by month based on total traffic for each month
-    vte_probability = total_vte_by_month / numpy.sum(total_vte_by_month)
+    vte_probability = total_vte_by_month / total_vte_by_month.sum()
 
     return vte_probability
 

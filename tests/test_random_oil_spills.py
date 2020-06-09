@@ -29,21 +29,21 @@ from moad_tools.midoss import random_oil_spills
 
 @pytest.fixture
 def mock_calc_vte_probability(monkeypatch):
-    def calc_vte_probability(geotiffs_dir):
+    def calc_vte_probability(geotiffs_dir, geotiff_watermask):
         return numpy.array(
             [
-                0.06487016,
-                0.06428695,
-                0.07748246,
-                0.07491668,
-                0.09257998,
-                0.09288003,
-                0.09479203,
-                0.09825065,
-                0.09265614,
-                0.0888919,
-                0.08229943,
-                0.0760936,
+                0.06782271,
+                0.06652719,
+                0.08085802,
+                0.07567714,
+                0.09073167,
+                0.09065133,
+                0.09295456,
+                0.09669558,
+                0.09007693,
+                0.08823724,
+                0.08245495,
+                0.07731268,
             ]
         )
 
@@ -64,10 +64,18 @@ class TestRandomOilSpills:
                 end date: 2018-12-31
 
                 geotiffs dir: AIS/ShipTrackDensityGeoTIFFs/
+                geotiff watermask: AIS/ShipTrackDensityGeoTIFFs/geotiff-watermask.npy
                 """
             )
         )
         return str(config_file)
+
+    @pytest.fixture
+    def mock_numpy_load(self, monkeypatch):
+        def numpy_load(path):
+            pass
+
+        monkeypatch.setattr(random_oil_spills.numpy, "load", numpy_load)
 
     @pytest.fixture
     def mock_get_lat_lon_indices(self, monkeypatch):
@@ -92,6 +100,7 @@ class TestRandomOilSpills:
 
     def test_read_config(
         self,
+        mock_numpy_load,
         mock_calc_vte_probability,
         mock_get_lat_lon_indices,
         config_file,
@@ -108,6 +117,7 @@ class TestRandomOilSpills:
 
     def test_dataframe_one_row(
         self,
+        mock_numpy_load,
         mock_calc_vte_probability,
         mock_get_lat_lon_indices,
         config_file,
@@ -131,6 +141,7 @@ class TestRandomOilSpills:
 
     def test_dataframe_two_rows(
         self,
+        mock_numpy_load,
         mock_calc_vte_probability,
         mock_get_lat_lon_indices,
         config_file,
@@ -161,18 +172,15 @@ class TestGetDate:
     def test_get_date(self, mock_calc_vte_probability):
         start_date = arrow.get("2015-01-01").datetime
         end_date = arrow.get("2018-12-31").datetime
-        vte_probability = random_oil_spills.calc_vte_probability(
-            Path("AIS/ShipTrackDensityGeoTIFFs/")
-        )
         # Specifying the random seed makes the random number stream deterministic
         # so that calculated results are repeatable
         random_generator = numpy.random.default_rng(seed=43)
 
         spill_date_hour = random_oil_spills.get_date(
-            start_date, end_date, vte_probability, random_generator
+            start_date, end_date, mock_calc_vte_probability, random_generator
         )
 
-        assert spill_date_hour == arrow.get("2016-08-19 18:00").datetime
+        assert spill_date_hour == arrow.get("2017-07-19 21:00").datetime
 
 
 class TestGetLatLonIndices:
