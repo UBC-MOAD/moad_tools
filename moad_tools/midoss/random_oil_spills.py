@@ -94,11 +94,10 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
         vessel_type = get_vessel_type(
             geotiffs_dir,
             vessel_types,
-            ais_data_year=2018,
-            spill_month=spill_date_hour.month,
-            geotiff_x_index=geotiff_x_index,
-            geotiff_y_index=geotiff_y_index,
-            random_generator=random_generator,
+            spill_date_hour.month,
+            geotiff_x_index,
+            geotiff_y_index,
+            random_generator,
         )
 
     df = pandas.DataFrame(spill_params)
@@ -299,7 +298,6 @@ def get_lat_lon_indices(
 def get_vessel_type(
     geotiffs_dir,
     vessel_types,
-    ais_data_year,
     spill_month,
     geotiff_x_index,
     geotiff_y_index,
@@ -311,8 +309,8 @@ def get_vessel_type(
     :type geotiffs_dir: :py:class:`pathlib.Path`
 
     :param vessel_types:
-    :param ais_data_year:
-    :param spill_month:
+
+    :param int spill_month: Month number for which to choose a spill location.
 
     :param int geotiff_x_index: x-index of GeoTIFF cell in which spill is located
 
@@ -326,9 +324,7 @@ def get_vessel_type(
     # loop through each vessel type and store VTE for each vessel type, at selected location
     vte_by_vessel_type = numpy.empty(len(vessel_types))
     for i, vessel_type in enumerate(vessel_types):
-        geotiff_file = (
-            geotiffs_dir / f"{vessel_type}_{ais_data_year}_{spill_month:02d}.tif"
-        )
+        geotiff_file = geotiffs_dir / f"{vessel_type}_2018_{spill_month:02d}.tif"
         with rasterio.open(geotiff_file) as dataset:
             data = dataset.read(1, boundless=True, fill_value=0)
 

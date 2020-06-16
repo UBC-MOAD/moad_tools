@@ -218,6 +218,7 @@ class TestGetVesselType:
         geotiffs_dir = Path(config["geotiffs dir"])
         vessel_types = config["vessel types"]
         spill_date_hour = arrow.get("2016-08-19 18:00").datetime
+        geotiff_x_index, geotiff_y_index = 243, 476
         # Specifying the random seed makes the random number stream deterministic
         # so that calculated results are repeatable
         random_generator = numpy.random.default_rng(seed=43)
@@ -225,11 +226,10 @@ class TestGetVesselType:
         vessel_type = random_oil_spills.get_vessel_type(
             geotiffs_dir,
             vessel_types,
-            ais_data_year=2018,
-            spill_month=spill_date_hour.month,
-            geotiff_x_index=243,
-            geotiff_y_index=476,
-            random_generator=random_generator,
+            spill_date_hour.month,
+            geotiff_x_index,
+            geotiff_y_index,
+            random_generator,
         )
 
         assert vessel_type == numpy.array(["ferry"])
