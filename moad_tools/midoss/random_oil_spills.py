@@ -303,12 +303,14 @@ def get_vessel_type(
     geotiff_y_index,
     random_generator,
 ):
-    """
+    """Randomly choose a vessel type from which the spill occurs, with the choice weighted by the
+    vessel traffic exposure (VTE) for the specified month and GeoTIFF cell.
 
     :param geotiffs_dir: Directory path to read AIS GeoTIFF files from.
     :type geotiffs_dir: :py:class:`pathlib.Path`
 
-    :param vessel_types:
+    :param list vessel_types: Vessel types from which spill can occur,
+                              and for which there are monthly 2018 VTE GeoTIFFs.
 
     :param int spill_month: Month number for which to choose a spill location.
 
@@ -319,22 +321,22 @@ def get_vessel_type(
     :param random_generator: PCG-64 random number generator.
     :type random_generator: :py:class:`numpy.random.Generator`
 
-    :return:
+    :return: Randomly selected vessel type from which spill occurs
+    :rtype: str
     """
-    # loop through each vessel type and store VTE for each vessel type, at selected location
+    # Calculate vessel traffic exposure (VTE) [hours/km^2] for each vessel type
+    # at the spill location for the month in which the spill occurs
     vte_by_vessel_type = numpy.empty(len(vessel_types))
     for i, vessel_type in enumerate(vessel_types):
         geotiff_file = geotiffs_dir / f"{vessel_type}_2018_{spill_month:02d}.tif"
         with rasterio.open(geotiff_file) as dataset:
             data = dataset.read(1, boundless=True, fill_value=0)
 
-        # Store vessel time exposure [hours/km^2] for each vessel-type in GeoTIFF
         vte_by_vessel_type[i] = data[geotiff_x_index, geotiff_y_index]
 
-    # Calculate relative probability of vessel occurance based on VTE by vessel-type
+    # Choose a randome vessel type, weighted by the vessel type VTE probability distribution
+    # for the month
     probability = vte_by_vessel_type / vte_by_vessel_type.sum()
-
-    # Randomly select vessel type based on relative vessel time exposure probability
     vessel_type = random_generator.choice(vessel_types, p=probability)
 
     return vessel_type
