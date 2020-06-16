@@ -95,10 +95,9 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
             f"{geotiffs_dir}/",
             vessel_types,
             ais_data_year=2018,
-            n_locations=1,
             spill_month=spill_date_hour.month,
-            x_index=[geotiff_x_index],
-            y_index=[geotiff_y_index],
+            x_index=geotiff_x_index,
+            y_index=geotiff_y_index,
             random_generator=random_generator,
         )
 
@@ -301,7 +300,6 @@ def get_vessel_type(
     geotiff_directory,
     vessel_types,
     ais_data_year,
-    n_locations,
     spill_month,
     x_index,
     y_index,
@@ -312,7 +310,6 @@ def get_vessel_type(
     :param geotiff_directory:
     :param vessel_types:
     :param ais_data_year:
-    :param n_locations:
     :param spill_month:
     :param x_index:
     :param y_index:
@@ -322,45 +319,31 @@ def get_vessel_type(
 
     :return:
     """
-    vessel_type = []
-
-    for location in range(n_locations):
-
-        # initialize array used to store vessel time exposure values for each vessel type
-        VTE_by_vessel_and_location = []
-
-        # loop through each vessel type and store VTE for each vessel type, at selected location
-        for name in vessel_types:
-            traffic_reader = rasterio.open(
-                f"{geotiff_directory}{name}_{ais_data_year}_{spill_month:02.0f}.tif"
-            )
-
-            # dataset closes automatically using the method below
-            with traffic_reader as dataset:
-                # resample data to target shape
-                data = dataset.read(
-                    1,
-                    out_shape=(dataset.count, int(dataset.height), int(dataset.width)),
-                )
-
-                # Set all no-data values to zero
-                data[data < 0] = 0
-
-            # Store vessel time exposure [hours/km^2] for each vessel-type in array
-            VTE_by_vessel_and_location.append(
-                data[x_index[location], y_index[location]]
-            )
-
-        # Calculate relative probability of vessel occurance based on VTE by vessel-type
-        probability = VTE_by_vessel_and_location / numpy.sum(VTE_by_vessel_and_location)
-
-        # Randomly select vessel type based on relative vessel time exposure probability
-        vessel_random = random_generator.choice(
-            vessel_types, n_locations, p=probability
+    # loop through each vessel type and store VTE for each vessel type, at selected location
+    vte_by_vessel_type = []
+    for name in vessel_types:
+        traffic_reader = rasterio.open(
+            f"{geotiff_directory}{name}_{ais_data_year}_{spill_month:02.0f}.tif"
         )
 
-        # populate vessel type selection for each n-locations
-        vessel_type.append(vessel_random)
+        # dataset closes automatically using the method below
+        with traffic_reader as dataset:
+            # resample data to target shape
+            data = dataset.read(
+                1, out_shape=(dataset.count, int(dataset.height), int(dataset.width)),
+            )
+
+            # Set all no-data values to zero
+            data[data < 0] = 0
+
+        # Store vessel time exposure [hours/km^2] for each vessel-type in array
+        vte_by_vessel_type.append(data[x_index, y_index])
+
+    # Calculate relative probability of vessel occurance based on VTE by vessel-type
+    probability = vte_by_vessel_type / numpy.sum(vte_by_vessel_type)
+
+    # Randomly select vessel type based on relative vessel time exposure probability
+    vessel_type = random_generator.choice(vessel_types, p=probability)
 
     return vessel_type
 

@@ -226,10 +226,9 @@ class TestGetVesselType:
             f"{geotiffs_dir}/",
             vessel_types,
             ais_data_year=2018,
-            n_locations=1,
             spill_month=spill_date_hour.month,
-            x_index=[243],
-            y_index=[476],
+            x_index=243,
+            y_index=476,
             random_generator=random_generator,
         )
 
