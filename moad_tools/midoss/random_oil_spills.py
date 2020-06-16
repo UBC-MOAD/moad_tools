@@ -20,12 +20,14 @@ import logging
 import sys
 from datetime import timedelta
 from pathlib import Path
+from types import SimpleNamespace
 
 import arrow
 import click
 import numpy
 import pandas
 import rasterio
+import xarray
 import yaml
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
@@ -65,6 +67,8 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
     start_date = arrow.get(config["start date"]).datetime
     end_date = arrow.get(config["end date"]).datetime
 
+    ssc_mesh = xarray.open_dataset(Path(config["nemo meshmask"]))
+
     spill_params = collections.defaultdict(list)
     for spill in range(n_spills):
         spill_date_hour = get_date(
@@ -72,13 +76,18 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
         )
         spill_params["spill_date_hour"].append(spill_date_hour)
         spill_params["run_days"].append(7)
-        lats, lons, x_index, y_index, data_out = get_lat_lon_indices(
+
+        spill_lat, spill_lon, geotiff_x_index, geotiff_y_index, _ = get_lat_lon_indices(
             geotiffs_dir,
             spill_date_hour.month,
-            n_locations=1,
-            upsample_factor=1,
-            random_generator=random_generator,
+            geotiff_watermask,
+            ssc_mesh,
+            random_generator,
         )
+        spill_params["spill_lon"].append(spill_lon)
+        spill_params["spill_lat"].append(spill_lat)
+        spill_params["geotiff_x_index"].append(geotiff_x_index)
+        spill_params["geotiff_y_index"].append(geotiff_y_index)
 
     df = pandas.DataFrame(spill_params)
 
@@ -155,96 +164,121 @@ def get_date(start_date, end_date, vte_probability, random_generator):
     return random_generator.choice(date_arr_select)
 
 
-def truncate(f, n):
-    """Truncates/pads a float f to n decimal places without rounding"""
-    s = "{}".format(f)
-    if "e" in s or "E" in s:
-        return "{0:.{1}f}".format(f, n)
-    i, p, d = s.partition(".")
-    return ".".join([i, (d + "0" * n)[:n]])
-
-
 def get_lat_lon_indices(
-    geotiff_directory, spill_month, water_mask, mesh, random_generator
+    geotiffs_dir, spill_month, geotiff_watermask, ssc_mesh, random_generator,
 ):
-    """
-    :param random_generator: PCG-64 random number generator
+    """Randomly select a spill lat/lon based on vessel traffic exposure (VTE)
+    in a particular month's AIS GeoTIFF file. The VTE data are masked to include
+    only cells that have water cells within the SalishSeaCast NEMO domain.
+    The lat/lon from VTE is used to select a SalishSeaCast NEMO surface grid cell
+    from which one of 9 uniformly distributed sub-grid points within the cell is
+    randomly selected as the spill location.
+
+    :param geotiffs_dir: Directory path to read AIS GeoTIFF files from.
+    :type geotiffs_dir: :py:class:`pathlib.Path`
+
+    :param int spill_month: Month number for which to choose a spill location.
+
+    :param geotiff_watermask: Boolean water mask to apply to AIS ship track density GeoTIFF files
+                              to restrict them to the SalishSeaCast NEMO domain.
+    :type geotiff_watermask: :py:class:`numpy.ndarray`
+
+    :param ssc_mesh: SalishSeaCast NEMO mesh mask dataset to use the NEMO grid lons/lats
+                     and T-grid water/land maks from to calculate the water mask.
+    :type ssc_mesh: :py:class:`xarray.Dataset`
+
+    :param random_generator: PCG-64 random number generator.
     :type random_generator: :py:class:`numpy.random.Generator`
+
+    :return: 5-tuple composed of:
+
+             * spill latitude [°N in [-90°, 90°] range]
+             * spill longitude [°E in [-180°, 180°] range]
+             * x-index of GeoTIFF pixel in which spill is located
+             * y-index of GeoTIFF pixel in which spill is located
+             * value of GeoTIFF pixel in which spill is located (for QA/QC)
+
+    :rtype: tuple
     """
-#    print("Randomly selecting spill location from all-traffic GeoTIFF:")
-
-    dataset = rasterio.open(
-        geotiff_directory / f"all_2018_{spill_month:02.0f}.tif"
+    logging.info(
+        f"Selecting random spill location within SalishSeaCast domain, "
+        f"weighted by 2018-{spill_month:02d} VTE"
     )
+    with rasterio.open(geotiffs_dir / f"all_2018_{spill_month:02d}.tif") as dataset:
+        data = dataset.read(1, boundless=True, fill_value=0)
 
-    data = dataset.read(1)
+        # Zero any points that are non-water or outside the SalishSeaCast domain
+        data = data * geotiff_watermask
 
-    # remove no-data values
-    data[data < 0] = 0
+        # Calculate probability of traffic by VTE in the month
+        probability_distribution = data / data.sum()
 
-    # remove any non-water or outside domain points
-    data = data * water_mask
+        # Choose a random GeoTIFF cell, weighted by the month's VTE probability distribution,
+        # and calculated the cell's x/y indices
+        mp = random_generator.choice(data.size, p=probability_distribution.flatten())
+        px = mp // dataset.width
+        py = mp % dataset.width
 
-    # calculate upsampled probability of traffic by VTE in given month
-    probability_distribution = data / data.sum()
+        # Get lats/lons of lower-right and upper-left corners of the chosen GeoTIFF cell
+        llx, lly = rasterio.transform.xy(dataset.transform, px + 0.5, py - 0.5)
+        urx, ury = rasterio.transform.xy(dataset.transform, px - 0.5, py + 0.5)
 
-    # use 'choice' function to randomly select a geotif box, note mp is index of    # flattened array
-    mp = random_generator.choice(data.shape[0]*data.shape[1], 1,
-                                     p=probability_distribution.flatten())[0]
-    # find indices of 2-D array
-    px = int(numpy.floor(mp/data.shape[1]))
-    py = mp - px * data.shape[1]
+        # Find the SalishSeaCast T-grid water points in the GeoTIFF cell
+        ssc_lons = ssc_mesh.glamt.isel(t=0)
+        ssc_lats = ssc_mesh.gphit.isel(t=0)
+        ssc_tmask = ssc_mesh.tmask.isel(t=0, z=0)
+        inner_points = (
+            numpy.where(ssc_tmask == 1, 1, 0)
+            * numpy.where(ssc_lons > llx, 1, 0)
+            * numpy.where(ssc_lons < urx, 1, 0)
+            * numpy.where(ssc_lats > lly, 1, 0)
+            * numpy.where(ssc_lats < ury, 1, 0)
+        )
 
-    # find lat and lon of lower right and upper left corners of the chosen box
-    llx, lly = rasterio.transform.xy(dataset.transform,
-                                       px+0.5, py-0.5)
-    urx, ury = rasterio.transform.xy(dataset.transform,
-                                       px-0.5, py+0.5)
+        # Choose a random SalishSeaCast T-grid water point, and calculate its lat/lon.
+        # The probability distribution here acts as a filter to restrict the choice of
+        # SalishSeaCast T-grid points to those that were found above to be within the chosen
+        # GeoTIFF cell.
+        ssp = random_generator.choice(
+            ssc_tmask.size, p=inner_points.flatten() / inner_points.sum(),
+        )
+        sslon = ssc_lons.values.flat[ssp]
+        sslat = ssc_lats.values.flat[ssp]
 
-    # find the SalishSeaCast water points in the box
-    inner_points = (numpy.where(mesh.glamt[0] > llx, 1, 0) *
-                numpy.where(mesh.glamt[0] < urx, 1, 0) *
-               numpy.where(mesh.gphit[0] > lly, 1, 0) *
-                numpy.where(mesh.gphit[0] < ury, 1, 0) *
-                numpy.where(mesh.tmask[0, 0] == 1, 1, 0))
+        # Define nine points in the horizontal plane of a SalishSeaCast T-grid cell,
+        # and choose a random one of them.
+        # This could be factored out into a separate function to avoid repeatedly building
+        # this dict, if performance becomes an issue.
+        one_third = 1 / 3
+        within_box = {
+            "center": SimpleNamespace(dx=0, dy=0),
+            "left": SimpleNamespace(dx=one_third, dy=0),
+            "uleft": SimpleNamespace(dx=one_third, dy=one_third),
+            "upper": SimpleNamespace(dx=0, dy=one_third),
+            "uright": SimpleNamespace(dx=-one_third, dy=one_third),
+            "right": SimpleNamespace(dx=-one_third, dy=0),
+            "lright": SimpleNamespace(dx=-one_third, dy=-one_third),
+            "lower": SimpleNamespace(dx=0, dy=-one_third),
+            "lleft": SimpleNamespace(dx=one_third, dy=-one_third),
+        }
+        shift = random_generator.choice(list(within_box.keys()))
 
-    # choose one of those water points and its lat and lon
-    ssp = random_generator.choice(mesh.tmask.shape[2]*mesh.tmask.shape[3], 1,
-                              p=inner_points.flatten()/inner_points.sum())
-    sslon = numpy.array(mesh.glamt[0]).flatten()[ssp]
-    sslat = numpy.array(mesh.gphit[0]).flatten()[ssp]
+        # Calculate the SalishSeaCast T-grid cell size in degrees of lat & lon
+        width = ssc_tmask.x.size
+        londx, latdx = (
+            ssc_lons.values.flat[ssp + 1] - ssc_lons.values.flat[ssp],
+            ssc_lats.values.flat[ssp + 1] - ssc_lats.values.flat[ssp],
+        )
+        londy, latdy = (
+            ssc_lons.values.flat[ssp + width] - ssc_lons.values.flat[ssp],
+            ssc_lats.values.flat[ssp + width] - ssc_lats.values.flat[ssp],
+        )
 
-    # define nine points in the SalishSeaCast grid cell (this should be moved)
-    one_third = 0.333
-    within_box = {'center': [0, 0],
-             'left': [one_third, 0],
-             'uleft': [one_third, one_third],
-             'upper' : [0, one_third],
-             'uright' : [-one_third, one_third],
-             'right' : [-one_third, 0],
-             'lright' : [-one_third, -one_third],
-             'lower' : [0, -one_third],
-             'lleft' : [one_third, -one_third]}
+        # Calculate lat/lon of the spill
+        lat = sslat + latdx * within_box[shift].dx + latdy * within_box[shift].dy
+        lon = sslon + londx * within_box[shift].dx + londy * within_box[shift].dy
 
-    # chose one of those nine
-    shift = (random_generator.choice(list(within_box.keys()), 1))[0]
-
-    # calculate the grid size in lat lon
-    width = mesh.tmask.shape[3]
-    londx, latdx = ((numpy.array(mesh.glamt[0]).flatten()[ssp+1] -
-                         numpy.array(mesh.glamt[0]).flatten()[ssp])[0],
-        (numpy.array(mesh.gphit[0]).flatten()[ssp+1] -
-             numpy.array(mesh.gphit[0]).flatten()[ssp])[0])
-    londy, latdy = ((numpy.array(mesh.glamt[0]).flatten()[ssp+width] -
-                         numpy.array(mesh.glamt[0]).flatten()[ssp])[0],
-     (numpy.array(mesh.gphit[0]).flatten()[ssp+width] -
-          numpy.array(mesh.gphit[0]).flatten()[ssp])[0])
-
-    # calculate lat/lon of our spill point
-    lat = sslat + latdx * within_box[shift][0] + latdy * within_box[shift][1]
-    lon = sslon + londx * within_box[shift][0] + londy * within_box[shift][1]
-
-    return lat, lon, px, py, data[px, py]
+        return lat, lon, px, py, data[px, py]
 
 
 def choose_fraction_spilled(random_generator):

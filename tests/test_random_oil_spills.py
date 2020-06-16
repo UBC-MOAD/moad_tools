@@ -23,8 +23,33 @@ import arrow
 import numpy
 import pandas
 import pytest
+import xarray
+import yaml
 
 from moad_tools.midoss import random_oil_spills
+
+
+@pytest.fixture
+def config_file(tmp_path):
+    test_data = Path(__file__).parent.joinpath("test_data", "random_oil_spills")
+    geotiffs_dir = test_data
+    geotiff_watermask = geotiffs_dir / "geotiff-watermask.npy"
+    ssc_mesh = test_data / "mesh_mask201702.nc"
+    config_file = tmp_path / "random_oil_spills.yaml"
+    config_file.write_text(
+        textwrap.dedent(
+            f"""\
+            start date: 2015-01-01
+            end date: 2018-12-31
+
+            geotiffs dir: {geotiffs_dir}
+            geotiff watermask: {geotiff_watermask}
+
+            nemo meshmask: {ssc_mesh}
+            """
+        )
+    )
+    return str(config_file)
 
 
 @pytest.fixture
@@ -54,76 +79,20 @@ class TestRandomOilSpills:
     """Unit tests for random_oil_spills() function.
     """
 
-    @pytest.fixture
-    def config_file(self, tmp_path):
-        config_file = tmp_path / "random_oil_spills.yaml"
-        config_file.write_text(
-            textwrap.dedent(
-                """\
-                start date: 2015-01-01
-                end date: 2018-12-31
-
-                geotiffs dir: AIS/ShipTrackDensityGeoTIFFs/
-                geotiff watermask: AIS/ShipTrackDensityGeoTIFFs/geotiff-watermask.npy
-                """
-            )
-        )
-        return str(config_file)
-
-    @pytest.fixture
-    def mock_numpy_load(self, monkeypatch):
-        def numpy_load(path):
-            pass
-
-        monkeypatch.setattr(random_oil_spills.numpy, "load", numpy_load)
-
-    @pytest.fixture
-    def mock_get_lat_lon_indices(self, monkeypatch):
-        def get_lat_lon_indices(
-            geotiff_directory,
-            spill_month,
-            n_locations,
-            upsample_factor,
-            random_generator,
-        ):
-            return (
-                numpy.array([-123.3461]),
-                numpy.array([48.8467]),
-                numpy.array([238]),
-                numpy.array([478]),
-                "data_out",
-            )
-
-        monkeypatch.setattr(
-            random_oil_spills, "get_lat_lon_indices", get_lat_lon_indices
-        )
-
     def test_read_config(
-        self,
-        mock_numpy_load,
-        mock_calc_vte_probability,
-        mock_get_lat_lon_indices,
-        config_file,
-        caplog,
-        tmp_path,
-        monkeypatch,
+        self, mock_calc_vte_probability, config_file, caplog, tmp_path, monkeypatch,
     ):
         caplog.set_level(logging.INFO)
 
-        random_oil_spills.random_oil_spills(1, config_file)
+        # Specifying the random seed makes the random number stream deterministic
+        # so that calculated results are repeatable
+        random_oil_spills.random_oil_spills(1, config_file, random_seed=43)
 
         assert caplog.records[0].levelname == "INFO"
         assert caplog.messages[0] == f"read config dict from {config_file}"
 
     def test_dataframe_one_row(
-        self,
-        mock_numpy_load,
-        mock_calc_vte_probability,
-        mock_get_lat_lon_indices,
-        config_file,
-        caplog,
-        tmp_path,
-        monkeypatch,
+        self, mock_calc_vte_probability, config_file, caplog, tmp_path, monkeypatch,
     ):
         # Specifying the random seed makes the random number stream deterministic
         # so that calculated results are repeatable
@@ -135,19 +104,16 @@ class TestRandomOilSpills:
                     pandas.Timestamp(arrow.get("2016-08-19 18:00").datetime)
                 ],
                 "run_days": [7],
+                "spill_lon": [-124.6175],
+                "spill_lat": [50.40640],
+                "geotiff_x_index": [134],
+                "geotiff_y_index": [393],
             }
         )
         pandas.testing.assert_frame_equal(df, expected)
 
     def test_dataframe_two_rows(
-        self,
-        mock_numpy_load,
-        mock_calc_vte_probability,
-        mock_get_lat_lon_indices,
-        config_file,
-        caplog,
-        tmp_path,
-        monkeypatch,
+        self, mock_calc_vte_probability, config_file, caplog, tmp_path, monkeypatch,
     ):
         # Specifying the random seed makes the random number stream deterministic
         # so that calculated results are repeatable
@@ -157,9 +123,13 @@ class TestRandomOilSpills:
             {
                 "spill_date_hour": [
                     pandas.Timestamp(arrow.get("2016-08-19 18:00").datetime),
-                    pandas.Timestamp(arrow.get("2015-01-06 10:00").datetime),
+                    pandas.Timestamp(arrow.get("2018-08-27 15:00").datetime),
                 ],
                 "run_days": [7, 7],
+                "spill_lon": [-124.6175, -123.0092],
+                "spill_lat": [50.4064, 48.5654],
+                "geotiff_x_index": [134, 256],
+                "geotiff_y_index": [393, 500],
             },
         )
         pandas.testing.assert_frame_equal(df, expected)
@@ -187,40 +157,40 @@ class TestGetLatLonIndices:
     """Unit tests for get_lat_lon_indices() function.
     """
 
-    @pytest.mark.parametrize(
-        "upsample_factor, expected",
-        (
-            (
-                1,
-                SimpleNamespace(
-                    lat=-123.3461, lon=48.8467, geotiff_x_index=238, geotiff_y_index=478
-                ),
-            ),
-        ),
-    )
-    def test_get_lat_lon_indices(self, upsample_factor, expected):
-        geotiffs_dir = Path("tests/test_data/random_oil_spills/")
+    def test_get_lat_lon_indices(self, config_file):
+        with Path(config_file).open("r") as f:
+            config = yaml.safe_load(f)
+        geotiffs_dir = Path(config["geotiffs dir"])
         spill_date_hour = arrow.get("2016-08-19 18:00").datetime
+        geotiff_watermask = numpy.load(
+            Path(config["geotiff watermask"]), allow_pickle=False, fix_imports=False
+        )
+        ssc_mesh = xarray.open_dataset(Path(config["nemo meshmask"]))
         # Specifying the random seed makes the random number stream deterministic
         # so that calculated results are repeatable
         random_generator = numpy.random.default_rng(seed=43)
 
-        lats, lons, x_index, y_index, _ = random_oil_spills.get_lat_lon_indices(
+        (
+            lat,
+            lon,
+            geotiff_x_index,
+            geotiff_y_index,
+            _,
+        ) = random_oil_spills.get_lat_lon_indices(
             geotiffs_dir,
             spill_date_hour.month,
-            n_locations=1,
-            upsample_factor=upsample_factor,
-            random_generator=random_generator,
+            geotiff_watermask,
+            ssc_mesh,
+            random_generator,
         )
 
-        numpy.testing.assert_array_equal(lats, numpy.array([expected.lat]))
-        numpy.testing.assert_array_equal(lons, numpy.array([expected.lon]))
-        numpy.testing.assert_array_equal(
-            x_index, numpy.array([expected.geotiff_x_index])
+        expected = SimpleNamespace(
+            lat=48.756462, lon=-123.37341, geotiff_x_index=243, geotiff_y_index=476
         )
-        numpy.testing.assert_array_equal(
-            y_index, numpy.array([expected.geotiff_y_index])
-        )
+        assert lat == pytest.approx(expected.lat)
+        assert lon == pytest.approx(expected.lon)
+        assert geotiff_x_index == expected.geotiff_x_index
+        assert geotiff_y_index == expected.geotiff_y_index
 
 
 class TestChooseFractionSpilled:
