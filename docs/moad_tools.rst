@@ -146,6 +146,18 @@ Here is an example YAML file:
     # File to read SalishSeaCast NEMO mesh mask from
     nemo meshmask: /media/doug/warehouse/MEOPAR/grid/mesh_mask201702.nc
 
+    # List of vessel types
+    vessel types:
+      - tanker
+      - atb
+      - barge
+      - cargo
+      - cruise
+      - ferry
+      - fishing
+      - smallpass
+      - other
+
 
 .. _RandomOilSpillsFunctionsAndCommand-lineInterface:
 

@@ -154,7 +154,7 @@ class TestGetDate:
 
 
 class TestGetLatLonIndices:
-    """Unit tests for get_lat_lon_indices() function.
+    """Unit test for get_lat_lon_indices() function.
     """
 
     def test_get_lat_lon_indices(self, config_file):
@@ -191,6 +191,14 @@ class TestGetLatLonIndices:
         assert lon == pytest.approx(expected.lon)
         assert geotiff_x_index == expected.geotiff_x_index
         assert geotiff_y_index == expected.geotiff_y_index
+
+
+class TestGetVesselType:
+    """Unit tests for get_vessel_type() function.
+    """
+
+    def test_get_vessel_type(self):
+        pass
 
 
 class TestChooseFractionSpilled:
@@ -276,7 +284,7 @@ class TestCumulativeSpillFraction:
 
 
 class TestWriteCSVFile:
-    """Unit tests for write_csv_file() function.
+    """Unit test for write_csv_file() function.
     """
 
     def test_write_csv_file(self, tmp_path):
