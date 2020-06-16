@@ -96,7 +96,8 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
 
 def calc_vte_probability(geotiffs_dir, geotiff_watermask):
     """Calculate monthly spill probability weights from vessel traffic exposure (VTE)
-    in AIS GeoTIFF files.
+    in AIS GeoTIFF files, masked to include only cells that are within the SalishSeaCast
+    NEMO domain.
 
     :param geotiffs_dir: Directory path to read AIS GeoTIFF files from.
     :type geotiffs_dir: :py:class:`pathlib.Path`
@@ -108,6 +109,7 @@ def calc_vte_probability(geotiffs_dir, geotiff_watermask):
     :return: 12 elements array of monthly spill probability weights
     :rtype: :py:class:`numpy.ndarray`
     """
+    logging.info("Calculating monthly spill probability weights from VTE")
     total_vte_by_month = numpy.empty(12)
 
     for month in range(1, 13):
@@ -116,7 +118,7 @@ def calc_vte_probability(geotiffs_dir, geotiff_watermask):
 
         with rasterio.open(f_name) as dataset:
             total_vte_by_month[month - 1] = dataset.read(
-                1, boundless=True, fill_value=0
+                boundless=True, fill_value=0
             ).sum(where=geotiff_watermask)
 
     # calculate VTE probability by month based on total traffic for each month
@@ -144,6 +146,7 @@ def get_date(start_date, end_date, vte_probability, random_generator):
     :return: Randomly selected spill date and hour
     :rtype: :py:class:`datetime.datetime`
     """
+    logging.info("Selecting random spill date and hour, weighted by VTE")
     # Randomly select month based on weighting by vessel traffic
     month_random = random_generator.choice(range(1, 13), p=vte_probability)
 
