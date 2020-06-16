@@ -143,6 +143,9 @@ Here is an example YAML file:
     # File to read SalishSeaCast NEMO domain water mask for AIS GeoTIFF files from
     geotiff watermask: /media/doug/warehouse/MIDOSS/ShipTrackDensityGeoTIFFs/geotiff-watermask.npy
 
+    # File to read SalishSeaCast NEMO mesh mask from
+    nemo meshmask: /media/doug/warehouse/MEOPAR/grid/mesh_mask201702.nc
+
 
 .. _RandomOilSpillsFunctionsAndCommand-lineInterface:
 
