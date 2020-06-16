@@ -92,7 +92,7 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
         spill_params["geotiff_y_index"].append(geotiff_y_index)
 
         vessel_type = get_vessel_type(
-            f"{geotiffs_dir}/",
+            geotiffs_dir,
             vessel_types,
             ais_data_year=2018,
             spill_month=spill_date_hour.month,
@@ -297,7 +297,7 @@ def get_lat_lon_indices(
 
 
 def get_vessel_type(
-    geotiff_directory,
+    geotiffs_dir,
     vessel_types,
     ais_data_year,
     spill_month,
@@ -307,7 +307,9 @@ def get_vessel_type(
 ):
     """
 
-    :param geotiff_directory:
+    :param geotiffs_dir: Directory path to read AIS GeoTIFF files from.
+    :type geotiffs_dir: :py:class:`pathlib.Path`
+
     :param vessel_types:
     :param ais_data_year:
     :param spill_month:
@@ -322,9 +324,10 @@ def get_vessel_type(
     # loop through each vessel type and store VTE for each vessel type, at selected location
     vte_by_vessel_type = []
     for vessel_type in vessel_types:
-        with rasterio.open(
-            f"{geotiff_directory}{vessel_type}_{ais_data_year}_{spill_month:02.0f}.tif"
-        ) as dataset:
+        geotiff_file = (
+            geotiffs_dir / f"{vessel_type}_{ais_data_year}_{spill_month:02d}.tif"
+        )
+        with rasterio.open(geotiff_file) as dataset:
             data = dataset.read(1, boundless=True, fill_value=0)
 
         # Store vessel time exposure [hours/km^2] for each vessel-type in GeoTIFF

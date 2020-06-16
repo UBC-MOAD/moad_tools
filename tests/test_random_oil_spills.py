@@ -223,7 +223,7 @@ class TestGetVesselType:
         random_generator = numpy.random.default_rng(seed=43)
 
         vessel_type = random_oil_spills.get_vessel_type(
-            f"{geotiffs_dir}/",
+            geotiffs_dir,
             vessel_types,
             ais_data_year=2018,
             spill_month=spill_date_hour.month,
