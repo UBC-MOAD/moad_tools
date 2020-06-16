@@ -25,13 +25,10 @@ from types import SimpleNamespace
 import arrow
 import click
 import numpy
-import numpy as np
 import pandas
 import rasterio
-import rasterio as rio
 import xarray
 import yaml
-from numpy.random import choice
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 
@@ -334,7 +331,7 @@ def get_vessel_type(
 
         # loop through each vessel type and store VTE for each vessel type, at selected location
         for name in vessel_types:
-            traffic_reader = rio.open(
+            traffic_reader = rasterio.open(
                 f"{geotiff_directory}{name}_{ais_data_year}_{spill_month:02.0f}.tif"
             )
 
@@ -355,7 +352,7 @@ def get_vessel_type(
             )
 
         # Calculate relative probability of vessel occurance based on VTE by vessel-type
-        probability = VTE_by_vessel_and_location / np.sum(VTE_by_vessel_and_location)
+        probability = VTE_by_vessel_and_location / numpy.sum(VTE_by_vessel_and_location)
 
         # Randomly select vessel type based on relative vessel time exposure probability
         vessel_random = random_generator.choice(
