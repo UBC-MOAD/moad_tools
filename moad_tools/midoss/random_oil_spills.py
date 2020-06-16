@@ -322,8 +322,8 @@ def get_vessel_type(
     :return:
     """
     # loop through each vessel type and store VTE for each vessel type, at selected location
-    vte_by_vessel_type = []
-    for vessel_type in vessel_types:
+    vte_by_vessel_type = numpy.empty(len(vessel_types))
+    for i, vessel_type in enumerate(vessel_types):
         geotiff_file = (
             geotiffs_dir / f"{vessel_type}_{ais_data_year}_{spill_month:02d}.tif"
         )
@@ -331,10 +331,10 @@ def get_vessel_type(
             data = dataset.read(1, boundless=True, fill_value=0)
 
         # Store vessel time exposure [hours/km^2] for each vessel-type in GeoTIFF
-        vte_by_vessel_type.append(data[x_index, y_index])
+        vte_by_vessel_type[i] = data[geotiff_x_index, geotiff_y_index]
 
     # Calculate relative probability of vessel occurance based on VTE by vessel-type
-    probability = vte_by_vessel_type / numpy.sum(vte_by_vessel_type)
+    probability = vte_by_vessel_type / vte_by_vessel_type.sum()
 
     # Randomly select vessel type based on relative vessel time exposure probability
     vessel_type = random_generator.choice(vessel_types, p=probability)
