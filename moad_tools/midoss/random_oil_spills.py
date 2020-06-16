@@ -102,6 +102,7 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
             spill_month=spill_date_hour.month,
             x_index=[geotiff_x_index],
             y_index=[geotiff_y_index],
+            random_generator=random_generator,
         )
 
     df = pandas.DataFrame(spill_params)
@@ -307,7 +308,23 @@ def get_vessel_type(
     spill_month,
     x_index,
     y_index,
+    random_generator,
 ):
+    """
+
+    :param geotiff_directory:
+    :param vessel_types:
+    :param ais_data_year:
+    :param n_locations:
+    :param spill_month:
+    :param x_index:
+    :param y_index:
+
+    :param random_generator: PCG-64 random number generator.
+    :type random_generator: :py:class:`numpy.random.Generator`
+
+    :return:
+    """
     vessel_type = []
 
     for location in range(n_locations):
@@ -341,7 +358,9 @@ def get_vessel_type(
         probability = VTE_by_vessel_and_location / np.sum(VTE_by_vessel_and_location)
 
         # Randomly select vessel type based on relative vessel time exposure probability
-        vessel_random = choice(vessel_types, n_locations, p=probability)
+        vessel_random = random_generator.choice(
+            vessel_types, n_locations, p=probability
+        )
 
         # populate vessel type selection for each n-locations
         vessel_type.append(vessel_random)

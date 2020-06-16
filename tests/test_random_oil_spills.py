@@ -46,6 +46,17 @@ def config_file(tmp_path):
             geotiff watermask: {geotiff_watermask}
 
             nemo meshmask: {ssc_mesh}
+
+            vessel types:
+              - tanker
+              - atb
+              - barge
+              - cargo
+              - cruise
+              - ferry
+              - fishing
+              - smallpass
+              - other
             """
         )
     )
@@ -112,6 +123,10 @@ class TestRandomOilSpills:
         )
         pandas.testing.assert_frame_equal(df, expected)
 
+    @pytest.mark.xfail(
+        reason="2nd dataframe row changes every time a random_generator.choice() call is added; "
+        "finalize when script is complete"
+    )
     def test_dataframe_two_rows(
         self, mock_calc_vte_probability, config_file, caplog, tmp_path, monkeypatch,
     ):
@@ -197,8 +212,28 @@ class TestGetVesselType:
     """Unit tests for get_vessel_type() function.
     """
 
-    def test_get_vessel_type(self):
-        pass
+    def test_get_vessel_type(self, config_file):
+        with Path(config_file).open("r") as f:
+            config = yaml.safe_load(f)
+        geotiffs_dir = Path(config["geotiffs dir"])
+        vessel_types = config["vessel types"]
+        spill_date_hour = arrow.get("2016-08-19 18:00").datetime
+        # Specifying the random seed makes the random number stream deterministic
+        # so that calculated results are repeatable
+        random_generator = numpy.random.default_rng(seed=43)
+
+        vessel_type = random_oil_spills.get_vessel_type(
+            f"{geotiffs_dir}/",
+            vessel_types,
+            ais_data_year=2018,
+            n_locations=1,
+            spill_month=spill_date_hour.month,
+            x_index=[243],
+            y_index=[476],
+            random_generator=random_generator,
+        )
+
+        assert vessel_type == numpy.array(["ferry"])
 
 
 class TestChooseFractionSpilled:
