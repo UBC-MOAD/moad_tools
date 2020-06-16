@@ -227,8 +227,8 @@ class TestGetVesselType:
             vessel_types,
             ais_data_year=2018,
             spill_month=spill_date_hour.month,
-            x_index=243,
-            y_index=476,
+            geotiff_x_index=243,
+            geotiff_y_index=476,
             random_generator=random_generator,
         )
 

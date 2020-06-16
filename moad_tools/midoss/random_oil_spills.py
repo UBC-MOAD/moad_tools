@@ -96,8 +96,8 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
             vessel_types,
             ais_data_year=2018,
             spill_month=spill_date_hour.month,
-            x_index=geotiff_x_index,
-            y_index=geotiff_y_index,
+            geotiff_x_index=geotiff_x_index,
+            geotiff_y_index=geotiff_y_index,
             random_generator=random_generator,
         )
 
@@ -209,9 +209,9 @@ def get_lat_lon_indices(
 
              * spill latitude [°N in [-90°, 90°] range]
              * spill longitude [°E in [-180°, 180°] range]
-             * x-index of GeoTIFF pixel in which spill is located
-             * y-index of GeoTIFF pixel in which spill is located
-             * value of GeoTIFF pixel in which spill is located (for QA/QC)
+             * x-index of GeoTIFF cell in which spill is located
+             * y-index of GeoTIFF cell in which spill is located
+             * value of GeoTIFF cell in which spill is located (for QA/QC)
 
     :rtype: tuple
     """
@@ -301,8 +301,8 @@ def get_vessel_type(
     vessel_types,
     ais_data_year,
     spill_month,
-    x_index,
-    y_index,
+    geotiff_x_index,
+    geotiff_y_index,
     random_generator,
 ):
     """
@@ -313,8 +313,10 @@ def get_vessel_type(
     :param vessel_types:
     :param ais_data_year:
     :param spill_month:
-    :param x_index:
-    :param y_index:
+
+    :param int geotiff_x_index: x-index of GeoTIFF cell in which spill is located
+
+    :param int geotiff_y_index: y-index of GeoTIFF cell in which spill is located
 
     :param random_generator: PCG-64 random number generator.
     :type random_generator: :py:class:`numpy.random.Generator`
