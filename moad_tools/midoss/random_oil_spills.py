@@ -54,7 +54,9 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
 
     # Load GeoTIFF files for each month and add up vessel traffic exposure (VTE)
     geotiffs_dir = Path(config["geotiffs dir"])
-    geotiff_watermask = numpy.load(Path(config["geotiff watermask"]))
+    geotiff_watermask = numpy.load(
+        Path(config["geotiff watermask"]), allow_pickle=False, fix_imports=False
+    )
     vte_probability = calc_vte_probability(geotiffs_dir, geotiff_watermask)
 
     # Initialize PCG-64 random number generator
