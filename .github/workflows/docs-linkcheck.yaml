@@ -36,7 +36,7 @@ jobs:
       - name: linkcheck docs
         shell: bash -l {0}
         run: |
-          make linkcheck
+          (cd docs && make linkcheck)
 
       - uses: pioug/le-slack-message@v1.0.0
         with:
