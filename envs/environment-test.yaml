@@ -27,6 +27,10 @@ dependencies:
   - pytest
   - pytest-cov
 
+  # For documentation links checking
+  - sphinx
+  - sphinx_rtd_theme
+
   - pip:
     # For unit tests
     - pytest-randomly

@@ -1,4 +1,4 @@
-name: CI
+name: sphinx-linkcheck
 
 on:
   push:
@@ -9,13 +9,13 @@ on:
     - '*'
 
 jobs:
-  test-coverage:
-    name: pytest & coverage report
+  sphinx-linkcheck:
+    name: linkcheck docs
     runs-on: 'ubuntu-latest'
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.6', '3.7', '3.8']
+        python-version: ['3.8']
 
     steps:
       - uses: actions/checkout@v2
@@ -33,29 +33,21 @@ jobs:
         run: |
           python3 -m pip install --editable $GITHUB_WORKSPACE
 
-      - name: pytest package with coverage
+      - name: linkcheck docs
         shell: bash -l {0}
         run: |
-          pytest --cov=$GITHUB_WORKSPACE --cov-report=xml
+          make linkcheck
 
       - uses: pioug/le-slack-message@v1.0.0
         with:
-          ACTION_NAME: ${{ github.repository }} pytest suite for Python ${{ matrix.python-version }}
+          ACTION_NAME: ${{ github.repository }} Sphinx linkcheck
           JOB: ${{ toJson(job) }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_SALISHSEACAST_WEBHOOK_URL }}
         if: always()
 
       - uses: pioug/le-slack-message@v1.0.0
         with:
-          ACTION_NAME: ${{ github.repository }} pytest suite for Python ${{ matrix.python-version }}
+          ACTION_NAME: ${{ github.repository }} Sphinx linkcheck
           JOB: ${{ toJson(job) }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_MIDOSS_WEBHOOK_URL }}
-        if: always()
-
-      - name: Upload coverage report to Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.xml
-          flags: unittests
         if: always()
