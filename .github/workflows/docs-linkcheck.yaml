@@ -33,7 +33,9 @@ jobs:
         with:
            auto-update-conda: true
            auto-activate-base: false
+           channel-priority: strict
            environment-file: envs/environment-test.yaml
+           use-only-tar-bz2: true # Required for caching to work properly!
            python-version: ${{ matrix.python-version }}
            activate-environment: moad-tools-test
 
