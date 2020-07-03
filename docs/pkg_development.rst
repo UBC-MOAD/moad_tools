@@ -90,7 +90,7 @@ or
 if you don't have `ssh key authentication`_ set up on GitHub
 (or copy the link from the :guilabel:`Clone or download` button on the `repository`_ page).
 
-.. _ssh key authentication: https://help.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh
+.. _ssh key authentication: https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh
 
 
 .. _moad_toolsDevelopmentEnvironment:
@@ -104,8 +104,8 @@ you can create and activate an environment called :kbd:`moad-tools` that will ha
 testing,
 and building the documentation with the commands below:
 
-.. _Conda: https://conda.io/docs/
-.. _Anaconda Python Distribution: https://www.anaconda.com/download/
+.. _Conda: https://conda.io/en/latest/
+.. _Anaconda Python Distribution: https://www.anaconda.com/products/individual
 .. _Miniconda3: https://docs.conda.io/en/latest/miniconda.html
 
 .. code-block:: bash
@@ -168,8 +168,8 @@ Documentation
 
 The ::kbd:`moad_tools` documentation is written in `reStructuredText`_ and converted to HTML using `Sphinx`_.
 
-.. _reStructuredText: http://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
-.. _Sphinx: http://www.sphinx-doc.org/en/master/
+.. _reStructuredText: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
+.. _Sphinx: https://www.sphinx-doc.org/en/master/
 
 If you have write access to the `repository`_ on GitHub,
 whenever you push changes to GitHub the documentation is automatically re-built and rendered at https://ubc-moad-tools.readthedocs.io/en/latest/.
