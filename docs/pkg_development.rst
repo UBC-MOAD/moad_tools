@@ -214,26 +214,29 @@ to do a clean build of the documentation.
 The output looks something like::
 
   Removing everything under '_build'...
-  Running Sphinx v1.7.4
-  making output directory...
-  loading pickled environment... not yet created
-  loading intersphinx inventory from https://docs.python.org/objects.inv...
-  intersphinx inventory has moved: https://docs.python.org/objects.inv -> https://docs.python.org/3/objects.inv
+  Running Sphinx v3.1.1
+  making output directory... done
+  loading intersphinx inventory from https://mohid-cmd.readthedocs.io/en/latest/objects.inv...
+  loading intersphinx inventory from https://numpy.org/doc/1.18/objects.inv...
+  loading intersphinx inventory from https://pandas.pydata.org/docs/objects.inv...
+  loading intersphinx inventory from https://docs.python.org/3/objects.inv...
+  loading intersphinx inventory from https://rasterio.readthedocs.io/en/latest/objects.inv...
+  loading intersphinx inventory from https://xarray.pydata.org/en/stable/objects.inv...
   building [mo]: targets for 0 po files that are out of date
-  building [html]: targets for 4 source files that are out of date
-  updating environment: 4 added, 0 changed, 0 removed
+  building [html]: targets for 3 source files that are out of date
+  updating environment: [new config] 3 added, 0 changed, 0 removed
   reading sources... [100%] pkg_development
   looking for now-outdated files... none found
   pickling environment... done
   checking consistency... done
   preparing documents... done
   writing output... [100%] pkg_development
-  generating indices... genindex py-modindex
+  generating indices...  genindex py-modindexdone
   highlighting module code... [100%] moad_tools.observations
-  writing additional pages... search
-  copying static files... done
+  writing additional pages...  searchdone
+  copying static files... ... done
   copying extra files... done
-  dumping search index in English (code: en) ... done
+  dumping search index in English (code: en)... done
   dumping object inventory... done
   build succeeded.
 
@@ -267,43 +270,82 @@ use:
 
 The output looks something like::
 
-  Running Sphinx v1.7.4
-  making output directory...
-  loading pickled environment... done
+  Running Sphinx v3.1.1
+  making output directory... done
+  loading intersphinx inventory from https://mohid-cmd.readthedocs.io/en/latest/objects.inv...
+  loading intersphinx inventory from https://numpy.org/doc/1.18/objects.inv...
+  loading intersphinx inventory from https://pandas.pydata.org/docs/objects.inv...
+  loading intersphinx inventory from https://docs.python.org/3/objects.inv...
+  loading intersphinx inventory from https://rasterio.readthedocs.io/en/latest/objects.inv...
+  loading intersphinx inventory from https://xarray.pydata.org/en/stable/objects.inv...
   building [mo]: targets for 0 po files that are out of date
-  building [linkcheck]: targets for 4 source files that are out of date
-  updating environment: 0 added, 0 changed, 0 removed
+  building [linkcheck]: targets for 3 source files that are out of date
+  updating environment: [new config] 3 added, 0 changed, 0 removed
+  reading sources... [100%] pkg_development
   looking for now-outdated files... none found
+  pickling environment... done
+  checking consistency... done
   preparing documents... done
-  writing output... [ 25%] index
+  writing output... [ 33%] index
   (line    6) ok        http://www.apache.org/licenses/LICENSE-2.0
   (line    4) ok        https://github.com/UBC-MOAD/docs/blob/master/CONTRIBUTORS.rst
-  writing output... [ 50%] moad_tools
+  writing output... [ 66%] moad_tools
+  (line   21) ok        https://docs.python.org/3/library/stdtypes.html#str
+  (line   21) ok        https://docs.python.org/3/library/stdtypes.html#str
+  (line   21) ok        https://docs.python.org/3/library/stdtypes.html#str
+  (line   21) ok        https://docs.python.org/3/library/stdtypes.html#str
+  (line   21) ok        https://docs.python.org/3/library/stdtypes.html#str
   (line    3) ok        https://docs.python.org/3/library/exceptions.html#KeyError
-  (line    8) ok        https://docs.python.org/3/library/functions.html#int
   (line    1) ok        https://www.ndbc.noaa.gov/data/realtime2/
-  writing output... [ 75%] modules
+  (line   30) ok        https://docs.python.org/3/library/functions.html#int
+  (line   51) ok        https://rasterio.readthedocs.io/en/latest/api/rasterio.io.html#rasterio.io.DatasetReader
+  (line   51) ok        https://numpy.org/doc/1.18/reference/generated/numpy.ndarray.html#numpy.ndarray
+  (line   51) ok        https://numpy.org/doc/1.18/reference/generated/numpy.ndarray.html#numpy.ndarray
+  (line   60) ok        https://docs.python.org/3/library/pathlib.html#pathlib.Path
+  (line   60) ok        https://docs.python.org/3/library/pathlib.html#pathlib.Path
+  (line   73) ok        https://mohid-cmd.readthedocs.io/en/latest/monte-carlo.html#monte-carlo-sub-command
+  (line   73) ok        https://mohid-cmd.readthedocs.io/en/latest/
+  (line    5) ok        https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame
+  (line   30) ok        https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame
+  (line   51) ok        https://xarray.pydata.org/en/stable/generated/xarray.Dataset.html#xarray.Dataset
+  (line  165) ok        https://docs.python.org/3/library/functions.html#float
+  (line  165) ok        https://numpy.org/doc/1.18/reference/random/generator.html#numpy.random.Generator
+  (line  165) ok        https://docs.python.org/3/library/datetime.html#datetime.datetime
+  (line  165) ok        https://docs.python.org/3/library/datetime.html#datetime.datetime
+  (line  165) ok        https://numpy.org/doc/1.18/reference/random/generator.html#numpy.random.Generator
+  (line  165) ok        https://docs.python.org/3/library/datetime.html#datetime.datetime
+  (line  165) ok        https://docs.python.org/3/library/constants.html#None
+  (line  165) ok        https://docs.python.org/3/library/stdtypes.html#list
+  (line  165) ok        https://docs.python.org/3/library/stdtypes.html#tuple
   writing output... [100%] pkg_development
-  (line   21) ok        https://docs.python.org/3.6/
+  (line   21) ok        https://docs.python.org/3.8/
   (line   21) ok        https://black.readthedocs.io/en/stable/
   (line   21) ok        https://ubc-moad-tools.readthedocs.io/en/latest/
-  (line   54) ok        https://www.python.org/
   (line   58) ok        https://docs.python.org/3/reference/lexical_analysis.html#f-strings
+  (line   54) ok        https://www.python.org/
   (line   60) ok        https://docs.python.org/3/whatsnew/3.6.html#whatsnew36-pep519
-  (line   21) ok        https://github.com/UBC-MOAD/moad_tools/issues?status=new&status=open
+  (line   70) ok        https://github.com/UBC-MOAD/moad_tools
+  (line   21) ok        https://github.com/UBC-MOAD/moad_tools
+  (line   76) ok        https://github.com/UBC-MOAD/moad_tools
+  (line   21) ok        https://github.com/SalishSeaCast/SalishSeaNowcast/issues
   (line   21) ok        https://www.apache.org/licenses/LICENSE-2.0
-  (line   90) ok        https://confluence.atlassian.com/bitbucket/set-up-an-ssh-key-728138079.html
-  (line   70) ok        https://github.com/UBC-MOAD/moad_tools/
-  (line   21) ok        https://github.com/UBC-MOAD/moad_tools/
-  (line  102) ok        https://www.anaconda.com/download/
-  (line   76) ok        https://github.com/UBC-MOAD/moad_tools/
-  (line  102) ok        https://conda.io/docs/
-  (line  102) ok        https://conda.io/docs/install/quick.html
-  (line   90) ok        https://github.com/UBC-MOAD/moad_tools/
-  (line  137) ok        https://www.python.org/dev/peps/pep-0008/
-  (line  170) ok        http://www.sphinx-doc.org/en/master/
-  (line  170) ok        http://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
-  (line  186) ok        https://readthedocs.org/projects/ubc-moad-tools/builds/
+  (line  136) ok        https://www.python.org/dev/peps/pep-0008/
+  (line   90) ok        https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh
+  (line  169) ok        https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
+  (line  169) ok        https://www.sphinx-doc.org/en/master/
+  (line  101) ok        https://www.anaconda.com/products/individual
+  (line  322) ok        https://git-scm.com/
+  (line  101) ok        https://docs.conda.io/en/latest/miniconda.html
+  (line   21) ok        https://img.shields.io/badge/license-Apache%202-cb2533.svg
+  (line   21) ok        https://img.shields.io/badge/python-3.6+-blue.svg
+  (line   21) ok        https://img.shields.io/badge/version%20control-git-blue.svg?logo=github
+  (line   21) ok        https://img.shields.io/badge/code%20style-black-000000.svg
+  (line   21) ok        https://readthedocs.org/projects/ubc-moad-tools/badge/?version=latest
+  (line  163) ok        https://readthedocs.org/projects/ubc-moad-tools/badge/?version=latest
+  (line  185) ok        https://readthedocs.org/projects/ubc-moad-tools/builds/
+  (line  101) ok        https://conda.io/en/latest/
+  (line   21) ok        https://img.shields.io/github/issues/SalishSeaCast/SalishSeaNowcast?logo=github
+  (line  330) ok        https://img.shields.io/github/issues/SalishSeaCast/SalishSeaNowcast?logo=github
 
   build succeeded.
 
