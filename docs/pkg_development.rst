@@ -295,61 +295,151 @@ The output looks something like::
   (line   21) ok        https://docs.python.org/3/library/stdtypes.html#str
   (line   21) ok        https://docs.python.org/3/library/stdtypes.html#str
   (line   21) ok        https://docs.python.org/3/library/stdtypes.html#str
-  (line    3) ok        https://docs.python.org/3/library/exceptions.html#KeyError
   (line    1) ok        https://www.ndbc.noaa.gov/data/realtime2/
+  (line    3) ok        https://docs.python.org/3/library/exceptions.html#KeyError
   (line   30) ok        https://docs.python.org/3/library/functions.html#int
   (line   51) ok        https://rasterio.readthedocs.io/en/latest/api/rasterio.io.html#rasterio.io.DatasetReader
   (line   51) ok        https://numpy.org/doc/1.18/reference/generated/numpy.ndarray.html#numpy.ndarray
   (line   51) ok        https://numpy.org/doc/1.18/reference/generated/numpy.ndarray.html#numpy.ndarray
   (line   60) ok        https://docs.python.org/3/library/pathlib.html#pathlib.Path
   (line   60) ok        https://docs.python.org/3/library/pathlib.html#pathlib.Path
+  (line   51) ok        https://xarray.pydata.org/en/stable/generated/xarray.Dataset.html#xarray.Dataset
   (line   73) ok        https://mohid-cmd.readthedocs.io/en/latest/monte-carlo.html#monte-carlo-sub-command
   (line   73) ok        https://mohid-cmd.readthedocs.io/en/latest/
   (line    5) ok        https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame
   (line   30) ok        https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame
-  (line   51) ok        https://xarray.pydata.org/en/stable/generated/xarray.Dataset.html#xarray.Dataset
+  (line  165) ok        https://numpy.org/doc/1.18/reference/random/generator.html#numpy.random.Generator
+  (line  165) ok        https://numpy.org/doc/1.18/reference/random/generator.html#numpy.random.Generator
   (line  165) ok        https://docs.python.org/3/library/functions.html#float
-  (line  165) ok        https://numpy.org/doc/1.18/reference/random/generator.html#numpy.random.Generator
   (line  165) ok        https://docs.python.org/3/library/datetime.html#datetime.datetime
   (line  165) ok        https://docs.python.org/3/library/datetime.html#datetime.datetime
-  (line  165) ok        https://numpy.org/doc/1.18/reference/random/generator.html#numpy.random.Generator
   (line  165) ok        https://docs.python.org/3/library/datetime.html#datetime.datetime
   (line  165) ok        https://docs.python.org/3/library/constants.html#None
-  (line  165) ok        https://docs.python.org/3/library/stdtypes.html#list
   (line  165) ok        https://docs.python.org/3/library/stdtypes.html#tuple
+  (line  165) ok        https://docs.python.org/3/library/stdtypes.html#list
   writing output... [100%] pkg_development
   (line   21) ok        https://docs.python.org/3.8/
   (line   21) ok        https://black.readthedocs.io/en/stable/
   (line   21) ok        https://ubc-moad-tools.readthedocs.io/en/latest/
-  (line   58) ok        https://docs.python.org/3/reference/lexical_analysis.html#f-strings
   (line   54) ok        https://www.python.org/
+  (line   58) ok        https://docs.python.org/3/reference/lexical_analysis.html#f-strings
   (line   60) ok        https://docs.python.org/3/whatsnew/3.6.html#whatsnew36-pep519
-  (line   70) ok        https://github.com/UBC-MOAD/moad_tools
   (line   21) ok        https://github.com/UBC-MOAD/moad_tools
+  (line   70) ok        https://github.com/UBC-MOAD/moad_tools
   (line   76) ok        https://github.com/UBC-MOAD/moad_tools
-  (line   21) ok        https://github.com/SalishSeaCast/SalishSeaNowcast/issues
-  (line   21) ok        https://www.apache.org/licenses/LICENSE-2.0
-  (line  136) ok        https://www.python.org/dev/peps/pep-0008/
   (line   90) ok        https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh
+  (line   21) ok        https://www.apache.org/licenses/LICENSE-2.0
+  (line   21) ok        https://github.com/SalishSeaCast/SalishSeaNowcast/issues
+  (line  136) ok        https://www.python.org/dev/peps/pep-0008/
   (line  169) ok        https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
   (line  169) ok        https://www.sphinx-doc.org/en/master/
-  (line  101) ok        https://www.anaconda.com/products/individual
-  (line  322) ok        https://git-scm.com/
+  (line  360) ok        https://docs.pytest.org/en/latest/
+  (line  385) ok        https://coverage.readthedocs.io/en/latest/
+  (line  385) ok        https://pytest-cov.readthedocs.io/en/latest/
   (line  101) ok        https://docs.conda.io/en/latest/miniconda.html
+  (line  101) ok        https://conda.io/en/latest/
+  (line  101) ok        https://www.anaconda.com/products/individual
+  (line  185) ok        https://readthedocs.org/projects/ubc-moad-tools/builds/
+  (line  410) ok        https://codecov.io/gh/UBC-MOAD/moad_tools
+  (line  430) ok        https://docs.github.com/en/actions
+  (line  444) ok        https://git-scm.com/
+  (line  419) ok        https://codecov.io/gh/UBC-MOAD/moad_tools
   (line   21) ok        https://img.shields.io/badge/license-Apache%202-cb2533.svg
   (line   21) ok        https://img.shields.io/badge/python-3.6+-blue.svg
   (line   21) ok        https://img.shields.io/badge/version%20control-git-blue.svg?logo=github
   (line   21) ok        https://img.shields.io/badge/code%20style-black-000000.svg
   (line   21) ok        https://readthedocs.org/projects/ubc-moad-tools/badge/?version=latest
-  (line  163) ok        https://readthedocs.org/projects/ubc-moad-tools/badge/?version=latest
-  (line  185) ok        https://readthedocs.org/projects/ubc-moad-tools/builds/
-  (line  101) ok        https://conda.io/en/latest/
+  (line  410) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3ACI
+  (line  419) ok        https://github.com/UBC-MOAD/moad_tools/actions
+  (line  410) ok        https://github.com/UBC-MOAD/moad_tools/workflows/CI/badge.svg
   (line   21) ok        https://img.shields.io/github/issues/SalishSeaCast/SalishSeaNowcast?logo=github
-  (line  330) ok        https://img.shields.io/github/issues/SalishSeaCast/SalishSeaNowcast?logo=github
+  (line  419) ok        https://github.com/UBC-MOAD/moad_tools/commits/master
+  (line  410) ok        https://codecov.io/gh/UBC-MOAD/moad_tools/branch/master/graph/badge.svg
+  (line  452) ok        https://img.shields.io/github/issues/SalishSeaCast/SalishSeaNowcast?logo=github
 
   build succeeded.
 
   Look for any errors in the above output or in _build/linkcheck/output.txt
+
+
+.. _moad_toolsRunningTheUnitTests:
+
+Running the Unit Tests
+======================
+
+The test suite for the :kbd:`moad_tools` package is in :file:`moad_tools/tests/`.
+The `pytest`_ tool is used for test parametrization and as the test runner for the suite.
+
+.. _pytest: https://docs.pytest.org/en/latest/
+
+With your :kbd:`moad-tools` development environment activated,
+use:
+
+.. code-block:: bash
+
+    (mohid-cmd)$ cd moad_tools/
+    (mohid-cmd)$ pytest
+
+to run the test suite.
+The output looks something like::
+
+  ============================ test session starts ============================
+  platform linux -- Python 3.8.3, pytest-5.4.3, py-1.9.0, pluggy-0.13.1
+  rootdir: /media/doug/warehouse/MOAD/moad_tools
+  collected 11 items
+  tests/test_observations.py ..                                          [ 18%]
+  tests/test_random_oil_spills.py .........                              [100%]
+
+  ============================ 11 passed in 1.98s =============================
+
+You can monitor what lines of code the test suite exercises using the `coverage.py`_ and `pytest-cov`_ tools with the command:
+
+.. _coverage.py: https://coverage.readthedocs.io/en/latest/
+.. _pytest-cov: https://pytest-cov.readthedocs.io/en/latest/
+
+.. code-block:: bash
+
+    (mohid-cmd)$ cd moad_tools/
+    (mohid-cmd)$ pytest --cov=./
+
+The test coverage report will be displayed below the test suite run output.
+
+Alternatively,
+you can use
+
+.. code-block:: bash
+
+    (mohid-cmd)$ pytest --cov=./ --cov-report html
+
+to produce an HTML report that you can view in your browser by opening :file:`moad_tools/htmlcov/index.html`.
+
+
+.. _moad_toolsContinuousIntegration:
+
+Continuous Integration
+----------------------
+
+.. image:: https://github.com/UBC-MOAD/moad_tools/workflows/CI/badge.svg
+    :target: https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3ACI
+    :alt: GitHub Workflow Status
+.. image:: https://codecov.io/gh/UBC-MOAD/moad_tools/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/UBC-MOAD/moad_tools
+    :alt: Codecov Testing Coverage Report
+
+The :kbd:`moad_tools` package unit test suite is run and a coverage report is generated whenever changes are pushed to GitHub.
+The results are visible on the `repo actions page`_,
+from the green checkmarks beside commits on the `repo commits page`_,
+or from the green checkmark to the left of the "Latest commit" message on the `repo code overview page`_ .
+The testing coverage report is uploaded to `codecov.io`_
+
+.. _repo actions page: https://github.com/UBC-MOAD/moad_tools/actions
+.. _repo commits page: https://github.com/UBC-MOAD/moad_tools/commits/master
+.. _repo code overview page: https://github.com/UBC-MOAD/moad_tools
+.. _codecov.io: https://codecov.io/gh/UBC-MOAD/moad_tools
+
+The `GitHub Actions`_ workflow configuration that defines the continuous integration tasks is in the :file:`.github/workflows/pytest-coverage.yaml` file.
+
+.. _GitHub Actions: https://docs.github.com/en/actions
 
 
 .. _moad_toolsVersionControlRepository:
