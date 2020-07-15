@@ -35,8 +35,11 @@
 .. image:: https://readthedocs.org/projects/ubc-moad-tools/badge/?version=latest
     :target: https://ubc-moad-tools.readthedocs.io/en/latest/
     :alt: Documentation Status
-.. image:: https://img.shields.io/github/issues/SalishSeaCast/SalishSeaNowcast?logo=github
-    :target: https://github.com/SalishSeaCast/SalishSeaNowcast/issues
+.. image:: https://github.com/UBC-MOAD/moad_tools/workflows/sphinx-linkcheck/badge.svg
+    :target: https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Asphinx-linkcheck
+    :alt: Sphinx linkcheck
+.. image:: https://img.shields.io/github/issues/UBC-MOAD/moad_tools?logo=github
+    :target: https://github.com/UBC-MOAD/moad_tools/issues
     :alt: Issue Tracker
 
 The UBC EOAS MOAD Group Tools package (:kbd:`moad_tools`) is a collection of Python modules that facilitate code reuse for the UBC EOAS MOAD Group.
@@ -259,6 +262,10 @@ whenever you push changes to GitHub the documentation is automatically re-built 
 Link Checking the Documentation
 -------------------------------
 
+.. image:: https://github.com/UBC-MOAD/moad_tools/workflows/sphinx-linkcheck/badge.svg
+    :target: https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Asphinx-linkcheck
+    :alt: Sphinx linkcheck
+
 Sphinx also provides a link checker utility which can be run to find broken or redirected links in the docs.
 With your :kbd:`moad-tools` environment activated,
 use:
@@ -360,6 +367,10 @@ The output looks something like::
   build succeeded.
 
   Look for any errors in the above output or in _build/linkcheck/output.txt
+
+:command:`make linkcheck` is run monthly via a `scheduled GitHub Actions workflow`_
+
+.. _scheduled GitHub Actions workflow: https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Asphinx-linkcheck
 
 
 .. _moad_toolsRunningTheUnitTests:
