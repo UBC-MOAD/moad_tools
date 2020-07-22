@@ -84,7 +84,14 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
         spill_params["spill_date_hour"].append(spill_date_hour)
         spill_params["run_days"].append(7)
 
-        spill_lat, spill_lon, geotiff_x_index, geotiff_y_index, _ = get_lat_lon_indices(
+        (
+            spill_lat,
+            spill_lon,
+            geotiff_x_index,
+            geotiff_y_index,
+            geotiff_bbox,
+            _,
+        ) = get_lat_lon_indices(
             geotiffs_dir,
             spill_date_hour.month,
             geotiff_watermask,
