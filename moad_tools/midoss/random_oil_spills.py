@@ -29,6 +29,7 @@ import geopandas
 import numpy
 import pandas
 import rasterio
+import shapely.geometry
 import xarray
 import yaml
 
@@ -220,12 +221,13 @@ def get_lat_lon_indices(
     :param random_generator: PCG-64 random number generator.
     :type random_generator: :py:class:`numpy.random.Generator`
 
-    :return: 5-tuple composed of:
+    :return: 6-tuple composed of:
 
              * spill latitude [°N in [-90°, 90°] range]
              * spill longitude [°E in [-180°, 180°] range]
              * x-index of GeoTIFF cell in which spill is located
              * y-index of GeoTIFF cell in which spill is located
+             * GeoTIFF cell bounding box
              * value of GeoTIFF cell in which spill is located (for QA/QC)
 
     :rtype: tuple
@@ -250,8 +252,12 @@ def get_lat_lon_indices(
         py = mp % dataset.width
 
         # Get lats/lons of lower-right and upper-left corners of the chosen GeoTIFF cell
+        # and construct its bounding box
         llx, lly = rasterio.transform.xy(dataset.transform, px + 0.5, py - 0.5)
         urx, ury = rasterio.transform.xy(dataset.transform, px - 0.5, py + 0.5)
+        geotiff_bbox = shapely.geometry.Polygon(
+            [(llx, lly), (urx, lly), (urx, ury), (llx, ury), (llx, lly)]
+        )
 
         # Find the SalishSeaCast T-grid water points in the GeoTIFF cell
         ssc_lons = ssc_mesh.glamt.isel(t=0)
@@ -308,7 +314,7 @@ def get_lat_lon_indices(
         lat = sslat + latdx * within_box[shift].dx + latdy * within_box[shift].dy
         lon = sslon + londx * within_box[shift].dx + londy * within_box[shift].dy
 
-        return lat, lon, px, py, data[px, py]
+        return lat, lon, px, py, geotiff_bbox, data[px, py]
 
 
 def get_vessel_type(

@@ -23,6 +23,7 @@ import arrow
 import numpy
 import pandas
 import pytest
+import shapely.geometry
 import xarray
 import yaml
 
@@ -229,6 +230,7 @@ class TestGetLatLonIndices:
             lon,
             geotiff_x_index,
             geotiff_y_index,
+            geotiff_bbox,
             _,
         ) = random_oil_spills.get_lat_lon_indices(
             geotiffs_dir,
@@ -239,12 +241,25 @@ class TestGetLatLonIndices:
         )
 
         expected = SimpleNamespace(
-            lat=48.756462, lon=-123.37341, geotiff_x_index=243, geotiff_y_index=476
+            lat=48.756462,
+            lon=-123.37341,
+            geotiff_x_index=243,
+            geotiff_y_index=476,
+            geotiff_bbox=shapely.geometry.Polygon(
+                [
+                    (-123.3762496, 48.7565228),
+                    (-123.3612191, 48.7565228),
+                    (-123.3612191, 48.7715534),
+                    (-123.3762496, 48.7715534),
+                    (-123.3762496, 48.7565228),
+                ]
+            ),
         )
         assert lat == pytest.approx(expected.lat)
         assert lon == pytest.approx(expected.lon)
         assert geotiff_x_index == expected.geotiff_x_index
         assert geotiff_y_index == expected.geotiff_y_index
+        assert geotiff_bbox.almost_equals(expected.geotiff_bbox)
 
 
 class TestGetVesselType:
