@@ -16,6 +16,7 @@
 of random oil spills to drive Monte Carlo runs of MOHID.
 """
 import collections
+import datetime
 import logging
 import sys
 from datetime import timedelta
@@ -24,6 +25,7 @@ from types import SimpleNamespace
 
 import arrow
 import click
+import geopandas
 import numpy
 import pandas
 import rasterio
@@ -71,6 +73,8 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
 
     vessel_types = config["vessel types"]
 
+    shapefiles_dir = Path(config["shapefiles dir"])
+
     spill_params = collections.defaultdict(list)
     for spill in range(n_spills):
         spill_date_hour = get_date(
@@ -98,6 +102,20 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
             geotiff_x_index,
             geotiff_y_index,
             random_generator,
+        )
+
+        month_shapefiles_dir = (
+            shapefiles_dir / f"{vessel_type}_2018_{spill_date_hour.month:02d}"
+        )
+        search_radius = 0.5  # km
+        vessel_len, vessel_origin, vessel_dest = get_length_origin_destination(
+            f"{month_shapefiles_dir}/",
+            vessel_type,
+            f"{spill_date_hour.month:02d}",
+            spill_lat,
+            spill_lon,
+            search_radius,
+            random_seed,
         )
 
     df = pandas.DataFrame(spill_params)
@@ -340,6 +358,119 @@ def get_vessel_type(
     vessel_type = random_generator.choice(vessel_types, p=probability)
 
     return vessel_type
+
+
+def get_length_origin_destination(
+    shapefile_directory,
+    vessel_type,
+    month,
+    spill_lat,
+    spill_lon,
+    search_radius,
+    random_seed=None,
+):
+    # These are the values to use for testing
+    # search_radius = 0.5 # km
+    # vessel_type = 'cargo'
+    # month       = '01'
+    # shapefile_directory  = '/Users/rmueller/Data/MIDOSS/{vessel_type}_2018_{month}/'
+
+    ### the shapefile and directory are hardcoded for now
+
+    shapefile = f"{vessel_type}_2018_{month}.shp"
+
+    # load data
+    data = geopandas.read_file(shapefile_directory + shapefile)
+    [nrows, ncols] = data.shape
+
+    # think about a way of doing this that doesn't require
+    # loading all lat/lon values (with a healthy dose of patience)
+    logging.info("this is going to take a minute....")
+    lon_array = [data.geometry[i].coords[0][0] for i in range(nrows)]
+    lat_array = [data.geometry[i].coords[0][1] for i in range(nrows)]
+
+    # identify all the lines within search_radius
+    distance = _haversine(spill_lon, spill_lat, lon_array, lat_array)
+    array_index = numpy.where(distance < search_radius)
+
+    total_seconds = numpy.zeros(len(array_index))
+    total_distance = numpy.zeros(len(array_index))
+    vte = numpy.zeros(len(array_index))
+
+    # loop through values in array_index values to calculate
+    for index in range(len(array_index)):
+        # calculate the duration of travel for each poly line segment
+        start_date = datetime.datetime.strptime(
+            data.ST_DATE[index], "%Y-%m-%d %H:%M:%S"
+        )
+        end_date = datetime.datetime.strptime(data.EN_DATE[index], "%Y-%m-%d %H:%M:%S")
+        delta_time = end_date - start_date
+        total_seconds[index] = delta_time.total_seconds()
+
+        # calculate the distance of each poly line
+        start_lon = data.geometry[index].coords[0][0]
+        start_lat = data.geometry[index].coords[0][1]
+        end_lon = data.geometry[index].coords[1][0]
+        end_lat = data.geometry[index].coords[1][1]
+
+        # calculate the distance in km of vessel line segment
+        total_distance[index] = _haversine(start_lon, start_lat, end_lon, end_lat)
+        vte[index] = total_seconds[index] / total_distance[index]
+
+    # find the index for greatest vte (for cases where there is
+    # more than one polyline)
+    (i,) = numpy.where(vte == max(vte))
+    the_one = array_index[i.item()]
+
+    # now that we have found the one true polyline, lets get its digits!
+    length = data.LENGTH[the_one.item()]
+    origin = data.FROM_[the_one.item()]
+    destination = data.TO[the_one.item()]
+
+    # standardize ATB and tug lengths to represent length of tug and tank barge
+    # see [AIS data attribute table](https://docs.google.com/document/d/14hAxrTFpKloy88zRYLL4TiqLwbn8s53MYQeCt6B3MJ4/edit)
+    # for more information
+
+    # Initialize PCG-64 random number generator
+    random_generator = numpy.random.default_rng(random_seed)
+    if vessel_type == "barge" or vessel_type == "atb" and length < 100:
+        length = random_generator.choice([147, 172, 178, 206, 207])
+
+    # that's a wrap, folks.
+    return length, origin, destination
+
+
+def _haversine(lon1, lat1, lon2, lat2):
+    """Calculate the great-circle distance in kilometers between two points
+    on a sphere from their longitudes and latitudes.
+
+    Reference: http://www.movable-type.co.uk/scripts/latlong.html
+
+    :arg lon1: Longitude of point 1.
+    :type lon1: float or :py:class:`numpy.ndarray`
+
+    :arg lat1: Latitude of point 1.
+    :type lat1: float or :py:class:`numpy.ndarray`
+
+    :arg lon2: Longitude of point 2.
+    :type lon2: float or :py:class:`numpy.ndarray`
+
+    :arg lat2: Latitude of point 2.
+    :type lat2: float or :py:class:`numpy.ndarray`
+
+    :returns: Great-circle distance between two points in km
+    :rtype: float or :py:class:`numpy.ndarray`
+    """
+    lon1, lat1, lon2, lat2 = map(numpy.radians, [lon1, lat1, lon2, lat2])
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+    a = (
+        numpy.sin(dlat / 2) ** 2
+        + numpy.cos(lat1) * numpy.cos(lat2) * numpy.sin(dlon / 2) ** 2
+    )
+    c = 2 * numpy.arcsin(numpy.sqrt(a))
+    km = 6367 * c
+    return km
 
 
 def choose_fraction_spilled(random_generator):

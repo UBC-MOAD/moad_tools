@@ -33,6 +33,7 @@ from moad_tools.midoss import random_oil_spills
 def config_file(tmp_path):
     test_data = Path(__file__).parent.joinpath("test_data", "random_oil_spills")
     geotiffs_dir = test_data
+    shapefiles_dir = test_data
     geotiff_watermask = geotiffs_dir / "geotiff-watermask.npy"
     ssc_mesh = test_data / "mesh_mask201702.nc"
     config_file = tmp_path / "random_oil_spills.yaml"
@@ -43,6 +44,7 @@ def config_file(tmp_path):
             end date: 2018-12-31
 
             geotiffs dir: {geotiffs_dir}
+            shapefiles dir: {shapefiles_dir}
             geotiff watermask: {geotiff_watermask}
 
             nemo meshmask: {ssc_mesh}
@@ -86,12 +88,38 @@ def mock_calc_vte_probability(monkeypatch):
     monkeypatch.setattr(random_oil_spills, "calc_vte_probability", calc_vte_probability)
 
 
+@pytest.fixture
+def mock_get_length_origin_destination(monkeypatch):
+    def get_length_origin_destination(
+        shapefile_directory,
+        vessel_type,
+        month,
+        spill_lat,
+        spill_lon,
+        search_radius,
+        random_seed=None,
+    ):
+        return 16, None, None
+
+    monkeypatch.setattr(
+        random_oil_spills,
+        "get_length_origin_destination",
+        get_length_origin_destination,
+    )
+
+
 class TestRandomOilSpills:
     """Unit tests for random_oil_spills() function.
     """
 
     def test_read_config(
-        self, mock_calc_vte_probability, config_file, caplog, tmp_path, monkeypatch,
+        self,
+        mock_calc_vte_probability,
+        mock_get_length_origin_destination,
+        config_file,
+        caplog,
+        tmp_path,
+        monkeypatch,
     ):
         caplog.set_level(logging.INFO)
 
@@ -103,7 +131,13 @@ class TestRandomOilSpills:
         assert caplog.messages[0] == f"read config dict from {config_file}"
 
     def test_dataframe_one_row(
-        self, mock_calc_vte_probability, config_file, caplog, tmp_path, monkeypatch,
+        self,
+        mock_calc_vte_probability,
+        mock_get_length_origin_destination,
+        config_file,
+        caplog,
+        tmp_path,
+        monkeypatch,
     ):
         # Specifying the random seed makes the random number stream deterministic
         # so that calculated results are repeatable
@@ -128,7 +162,13 @@ class TestRandomOilSpills:
         "finalize when script is complete"
     )
     def test_dataframe_two_rows(
-        self, mock_calc_vte_probability, config_file, caplog, tmp_path, monkeypatch,
+        self,
+        mock_calc_vte_probability,
+        mock_get_length_origin_destination,
+        config_file,
+        caplog,
+        tmp_path,
+        monkeypatch,
     ):
         # Specifying the random seed makes the random number stream deterministic
         # so that calculated results are repeatable
@@ -232,7 +272,47 @@ class TestGetVesselType:
             random_generator,
         )
 
-        assert vessel_type == numpy.array(["ferry"])
+        assert vessel_type == "ferry"
+
+
+class TestGetLengthOriginDestination:
+    """Unit test for get_length_origin_destination() function.
+    """
+
+    @pytest.mark.skipif(
+        not Path(__file__)
+        .parent.joinpath("test_data", "random_oil_spills", "cargo_2018_01.shp")
+        .exists(),
+        reason="shapefile is too large to commit, so only run this test in dev where local file is provided",
+    )
+    def test_get_length_origin_destination(self, config_file):
+        with Path(config_file).open("r") as f:
+            config = yaml.safe_load(f)
+        shapefiles_dir = Path(config["shapefiles dir"])
+        vessel_type = "cargo"
+        spill_month = "01"
+        spill_lat = 50.18442
+        spill_lon = -124.9243
+        search_radius = 0.5
+        random_seed = 43
+
+        (
+            vessel_len,
+            vessel_origin,
+            vessel_dest,
+        ) = random_oil_spills.get_length_origin_destination(
+            f"{shapefiles_dir}/",
+            vessel_type,
+            spill_month,
+            spill_lat,
+            spill_lon,
+            search_radius,
+            random_seed,
+        )
+
+        assert vessel_len == 16
+        assert vessel_origin is None
+        assert vessel_dest is None
 
 
 class TestChooseFractionSpilled:

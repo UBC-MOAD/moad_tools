@@ -140,6 +140,9 @@ Here is an example YAML file:
     # Directory path to read AIS GeoTIFF files from
     geotiffs dir: /media/doug/warehouse/MIDOSS/ShipTrackDensityGeoTIFFs/
 
+    # Directory path to read AIS vessel track shapefiles from
+    shapefiles dir: /media/doug/warehouse/MIDOSS/ShipTrackShapefiles/
+
     # File to read SalishSeaCast NEMO domain water mask for AIS GeoTIFF files from
     geotiff watermask: /media/doug/warehouse/MIDOSS/ShipTrackDensityGeoTIFFs/geotiff-watermask.npy
 
