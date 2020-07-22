@@ -337,7 +337,7 @@ def get_vessel_type(
     :param random_generator: PCG-64 random number generator.
     :type random_generator: :py:class:`numpy.random.Generator`
 
-    :return: Randomly selected vessel type from which spill occurs
+    :return: Randomly selected vessel type from which spill occurs.
     :rtype: str
     """
     # Calculate vessel traffic exposure (VTE) [hours/km^2] for each vessel type
@@ -380,12 +380,18 @@ def get_length_origin_destination(
 
     :param float spill_lon: Spill longitude [°E in [-180°, 180°] range].
 
-    :param float search_radius: Radius around spill location to search for ship track segments.
+    :param float search_radius: Radius around spill location to search for AIS track segments.
 
     :param random_generator: PCG-64 random number generator.
     :type random_generator: :py:class:`numpy.random.Generator`
 
-    :return:
+    :return: 3-tuple composed of:
+
+             * length of vessel from which spill occurs [m]
+             * origin of AIS track segment from which spill occurs
+             * destination of AIS track segment from which spill occurs
+
+    :rtype: tuple
     """
     # load data
     vessel_type_spill_month = f"{vessel_type}_2018_{spill_month:02d}"
