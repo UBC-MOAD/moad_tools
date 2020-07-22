@@ -112,6 +112,9 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
             spill_lon,
             random_generator,
         )
+        vessel_len = adjust_tug_tank_barge_length(
+            vessel_type, vessel_len, random_generator
+        )
 
     df = pandas.DataFrame(spill_params)
 
@@ -436,14 +439,32 @@ def get_length_origin_destination(
     origin = data.FROM_[the_one.item()]
     destination = data.TO[the_one.item()]
 
-    # standardize ATB and tug lengths to represent length of tug and tank barge
-    # see [AIS data attribute table](https://docs.google.com/document/d/14hAxrTFpKloy88zRYLL4TiqLwbn8s53MYQeCt6B3MJ4/edit)
-    # for more information
-    if vessel_type == "barge" or vessel_type == "atb" and length < 100:
-        length = random_generator.choice([147, 172, 178, 206, 207])
-
-    # that's a wrap, folks.
     return length, origin, destination
+
+
+def adjust_tug_tank_barge_length(vessel_type, vessel_len, random_generator):
+    """Standardize ATB and tug lengths to represent length of tug and tank barge.
+    See `AIS data attribute table`_ for more information.
+
+    .. _AIS data attribute table: https://docs.google.com/document/d/14hAxrTFpKloy88zRYLL4TiqLwbn8s53MYQeCt6B3MJ4/edit
+
+    :param str vessel_type: Vessel type from which spill occurs.
+
+    :param int vessel_len: Length of vessel from which spill occurs [m].
+
+    :param random_generator: PCG-64 random number generator.
+    :type random_generator: :py:class:`numpy.random.Generator`
+
+    :return: Randomly selected tug and tank barge length [m].
+    :rtype: int
+    """
+    if vessel_type not in {"atb", "barge"}:
+        # Adjustment only applies to ATB and barge vessel types
+        return vessel_len
+    if vessel_len >= 100:  # meters
+        # Adjustment only applies to ATBs and barges <100m in length
+        return vessel_len
+    return random_generator.choice([147, 172, 178, 206, 207])
 
 
 def _haversine(lon1, lat1, lon2, lat2):
