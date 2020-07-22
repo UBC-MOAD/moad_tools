@@ -97,7 +97,7 @@ def mock_get_length_origin_destination(monkeypatch):
         spill_lat,
         spill_lon,
         search_radius,
-        random_seed=None,
+        random_generator,
     ):
         return 16, None, None
 
@@ -294,7 +294,9 @@ class TestGetLengthOriginDestination:
         spill_lat = 50.18442
         spill_lon = -124.9243
         search_radius = 0.5
-        random_seed = 43
+        # Specifying the random seed makes the random number stream deterministic
+        # so that calculated results are repeatable
+        random_generator = numpy.random.default_rng(seed=43)
 
         (
             vessel_len,
@@ -307,7 +309,7 @@ class TestGetLengthOriginDestination:
             spill_lat,
             spill_lon,
             search_radius,
-            random_seed,
+            random_generator,
         )
 
         assert vessel_len == 16

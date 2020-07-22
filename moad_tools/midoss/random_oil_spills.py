@@ -115,7 +115,7 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
             spill_lat,
             spill_lon,
             search_radius,
-            random_seed,
+            random_generator,
         )
 
     df = pandas.DataFrame(spill_params)
@@ -367,7 +367,7 @@ def get_length_origin_destination(
     spill_lat,
     spill_lon,
     search_radius,
-    random_seed=None,
+    random_generator,
 ):
     # These are the values to use for testing
     # search_radius = 0.5 # km
@@ -430,9 +430,6 @@ def get_length_origin_destination(
     # standardize ATB and tug lengths to represent length of tug and tank barge
     # see [AIS data attribute table](https://docs.google.com/document/d/14hAxrTFpKloy88zRYLL4TiqLwbn8s53MYQeCt6B3MJ4/edit)
     # for more information
-
-    # Initialize PCG-64 random number generator
-    random_generator = numpy.random.default_rng(random_seed)
     if vessel_type == "barge" or vessel_type == "atb" and length < 100:
         length = random_generator.choice([147, 172, 178, 206, 207])
 
