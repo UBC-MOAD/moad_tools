@@ -104,14 +104,12 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
             random_generator,
         )
 
-        search_radius = 0.5  # km
         vessel_len, vessel_origin, vessel_dest = get_length_origin_destination(
             shapefiles_dir,
             vessel_type,
             spill_date_hour.month,
             spill_lat,
             spill_lon,
-            search_radius,
             random_generator,
         )
 
@@ -363,8 +361,8 @@ def get_length_origin_destination(
     spill_month,
     spill_lat,
     spill_lon,
-    search_radius,
     random_generator,
+    search_radius=0.5,  # km
 ):
     """
 
@@ -379,7 +377,7 @@ def get_length_origin_destination(
 
     :param float spill_lon: Spill longitude [°E in [-180°, 180°] range].
 
-    :param float search_radius:
+    :param float search_radius: Radius around spill location to search for ship track segments.
 
     :param random_generator: PCG-64 random number generator.
     :type random_generator: :py:class:`numpy.random.Generator`

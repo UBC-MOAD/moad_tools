@@ -91,12 +91,11 @@ def mock_calc_vte_probability(monkeypatch):
 @pytest.fixture
 def mock_get_length_origin_destination(monkeypatch):
     def get_length_origin_destination(
-        shapefile_directory,
+        shapefiles_dir,
         vessel_type,
-        month,
+        spill_month,
         spill_lat,
         spill_lon,
-        search_radius,
         random_generator,
     ):
         return 16, None, None
@@ -295,7 +294,6 @@ class TestGetLengthOriginDestination:
         spill_month = 1
         spill_lat = 50.18442
         spill_lon = -124.9243
-        search_radius = 0.5
         # Specifying the random seed makes the random number stream deterministic
         # so that calculated results are repeatable
         random_generator = numpy.random.default_rng(seed=43)
@@ -310,13 +308,50 @@ class TestGetLengthOriginDestination:
             spill_month,
             spill_lat,
             spill_lon,
-            search_radius,
             random_generator,
         )
 
         assert vessel_len == 16
         assert vessel_origin is None
         assert vessel_dest is None
+
+
+class TestAdjustTugTankBargeLength:
+    """Unit tests for adjust_tug_tank_barge_length() function.
+    """
+
+    @pytest.mark.parametrize(
+        "vessel_type, vessel_len",
+        (
+            ("tanker", 243),
+            ("atb", 143),
+            ("barge", 243),
+            ("cargo", 143),
+            ("cruise", 343),
+            ("ferry", 143),
+            ("fishing", 43),
+            ("smallpass", 43),
+            ("other", 43),
+        ),
+    )
+    def test_no_adjustment(self, vessel_type, vessel_len):
+        random_generator = numpy.random.default_rng()
+
+        vessel_len = random_oil_spills.adjust_tug_tank_barge_length(
+            vessel_type, vessel_len, random_generator,
+        )
+
+        assert vessel_len == vessel_len
+
+    @pytest.mark.parametrize("vessel_type, vessel_len", (("atb", 43), ("barge", 34),))
+    def test_adjustment(self, vessel_type, vessel_len):
+        random_generator = numpy.random.default_rng()
+
+        vessel_len = random_oil_spills.adjust_tug_tank_barge_length(
+            vessel_type, vessel_len, random_generator,
+        )
+
+        assert vessel_len in [147, 172, 178, 206, 207]
 
 
 class TestChooseFractionSpilled:
