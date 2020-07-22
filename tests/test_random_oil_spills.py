@@ -281,7 +281,9 @@ class TestGetLengthOriginDestination:
 
     @pytest.mark.skipif(
         not Path(__file__)
-        .parent.joinpath("test_data", "random_oil_spills", "cargo_2018_01.shp")
+        .parent.joinpath(
+            "test_data", "random_oil_spills", "cargo_2018_01", "cargo_2018_01.shp"
+        )
         .exists(),
         reason="shapefile is too large to commit, so only run this test in dev where local file is provided",
     )
@@ -290,7 +292,7 @@ class TestGetLengthOriginDestination:
             config = yaml.safe_load(f)
         shapefiles_dir = Path(config["shapefiles dir"])
         vessel_type = "cargo"
-        spill_month = "01"
+        spill_month = 1
         spill_lat = 50.18442
         spill_lon = -124.9243
         search_radius = 0.5
@@ -303,7 +305,7 @@ class TestGetLengthOriginDestination:
             vessel_origin,
             vessel_dest,
         ) = random_oil_spills.get_length_origin_destination(
-            f"{shapefiles_dir}/",
+            shapefiles_dir,
             vessel_type,
             spill_month,
             spill_lat,

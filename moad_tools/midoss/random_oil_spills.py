@@ -104,14 +104,11 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
             random_generator,
         )
 
-        month_shapefiles_dir = (
-            shapefiles_dir / f"{vessel_type}_2018_{spill_date_hour.month:02d}"
-        )
         search_radius = 0.5  # km
         vessel_len, vessel_origin, vessel_dest = get_length_origin_destination(
-            f"{month_shapefiles_dir}/",
+            shapefiles_dir,
             vessel_type,
-            f"{spill_date_hour.month:02d}",
+            spill_date_hour.month,
             spill_lat,
             spill_lon,
             search_radius,
@@ -361,27 +358,41 @@ def get_vessel_type(
 
 
 def get_length_origin_destination(
-    shapefile_directory,
+    shapefiles_dir,
     vessel_type,
-    month,
+    spill_month,
     spill_lat,
     spill_lon,
     search_radius,
     random_generator,
 ):
-    # These are the values to use for testing
-    # search_radius = 0.5 # km
-    # vessel_type = 'cargo'
-    # month       = '01'
-    # shapefile_directory  = '/Users/rmueller/Data/MIDOSS/{vessel_type}_2018_{month}/'
+    """
 
-    ### the shapefile and directory are hardcoded for now
+    :param shapefiles_dir: Directory path to read shapefiles from
+    :type shapefiles_dir: :py:class:`pathlib.Path`
 
-    shapefile = f"{vessel_type}_2018_{month}.shp"
+    :param str vessel_type: Vessel type from which spill occurs.
 
+    :param int spill_month: Month number for which to choose a spill location.
+
+    :param float spill_lat: Spill latitude [°N in [-90°, 90°] range].
+
+    :param float spill_lon: Spill longitude [°E in [-180°, 180°] range].
+
+    :param float search_radius:
+
+    :param random_generator: PCG-64 random number generator.
+    :type random_generator: :py:class:`numpy.random.Generator`
+
+    :return:
+    """
     # load data
-    data = geopandas.read_file(shapefile_directory + shapefile)
-    [nrows, ncols] = data.shape
+    vessel_type_spill_month = f"{vessel_type}_2018_{spill_month:02d}"
+    shapefile = (
+        shapefiles_dir / vessel_type_spill_month / f"{vessel_type_spill_month}.shp"
+    )
+    data = geopandas.read_file(shapefile)
+    nrows, ncols = data.shape
 
     # think about a way of doing this that doesn't require
     # loading all lat/lon values (with a healthy dose of patience)
