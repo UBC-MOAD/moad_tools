@@ -455,39 +455,6 @@ def adjust_tug_tank_barge_length(vessel_type, vessel_len, random_generator):
     return random_generator.choice([147, 172, 178, 206, 207])
 
 
-def _haversine(lon1, lat1, lon2, lat2):
-    """Calculate the great-circle distance in kilometers between two points
-    on a sphere from their longitudes and latitudes.
-
-    Reference: http://www.movable-type.co.uk/scripts/latlong.html
-
-    :arg lon1: Longitude of point 1.
-    :type lon1: float or :py:class:`numpy.ndarray`
-
-    :arg lat1: Latitude of point 1.
-    :type lat1: float or :py:class:`numpy.ndarray`
-
-    :arg lon2: Longitude of point 2.
-    :type lon2: float or :py:class:`numpy.ndarray`
-
-    :arg lat2: Latitude of point 2.
-    :type lat2: float or :py:class:`numpy.ndarray`
-
-    :returns: Great-circle distance between two points in km
-    :rtype: float or :py:class:`numpy.ndarray`
-    """
-    lon1, lat1, lon2, lat2 = map(numpy.radians, [lon1, lat1, lon2, lat2])
-    dlon = lon2 - lon1
-    dlat = lat2 - lat1
-    a = (
-        numpy.sin(dlat / 2) ** 2
-        + numpy.cos(lat1) * numpy.cos(lat2) * numpy.sin(dlon / 2) ** 2
-    )
-    c = 2 * numpy.arcsin(numpy.sqrt(a))
-    km = 6367 * c
-    return km
-
-
 def choose_fraction_spilled(random_generator):
     """Randomly choose a fraction spilled based on the _cumulative_spill_fraction() fit.
 
