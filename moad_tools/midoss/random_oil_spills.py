@@ -116,8 +116,7 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
             shapefiles_dir,
             vessel_type,
             spill_date_hour.month,
-            spill_lat,
-            spill_lon,
+            geotiff_bbox,
             random_generator,
         )
         vessel_len = adjust_tug_tank_barge_length(
@@ -363,7 +362,7 @@ def get_vessel_type(
 
         vte_by_vessel_type[i] = data[geotiff_x_index, geotiff_y_index]
 
-    # Choose a randome vessel type, weighted by the vessel type VTE probability distribution
+    # Choose a random vessel type, weighted by the vessel type VTE probability distribution
     # for the month
     probability = vte_by_vessel_type / vte_by_vessel_type.sum()
     vessel_type = random_generator.choice(vessel_types, p=probability)
