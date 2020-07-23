@@ -92,12 +92,7 @@ def mock_calc_vte_probability(monkeypatch):
 @pytest.fixture
 def mock_get_length_origin_destination(monkeypatch):
     def get_length_origin_destination(
-        shapefiles_dir,
-        vessel_type,
-        spill_month,
-        spill_lat,
-        spill_lon,
-        random_generator,
+        shapefiles_dir, vessel_type, spill_month, geotiff_bbox, random_generator,
     ):
         return 16, None, None
 
@@ -307,26 +302,28 @@ class TestGetLengthOriginDestination:
         shapefiles_dir = Path(config["shapefiles dir"])
         vessel_type = "cargo"
         spill_month = 1
-        spill_lat = 50.18442
-        spill_lon = -124.9243
+        geotiff_bbox = shapely.geometry.Polygon(
+            [
+                (-122.7750273158484, 48.7264617481489),
+                (-122.759996756868, 48.7264617481489),
+                (-122.759996756868, 48.74149230712925),
+                (-122.7750273158484, 48.74149230712925),
+                (-122.7750273158484, 48.7264617481489),
+            ]
+        )
         # Specifying the random seed makes the random number stream deterministic
         # so that calculated results are repeatable
-        random_generator = numpy.random.default_rng(seed=43)
+        random_generator = numpy.random.default_rng(seed=4343)
 
         (
             vessel_len,
             vessel_origin,
             vessel_dest,
         ) = random_oil_spills.get_length_origin_destination(
-            shapefiles_dir,
-            vessel_type,
-            spill_month,
-            spill_lat,
-            spill_lon,
-            random_generator,
+            shapefiles_dir, vessel_type, spill_month, geotiff_bbox, random_generator
         )
 
-        assert vessel_len == 16
+        assert vessel_len == 74
         assert vessel_origin is None
         assert vessel_dest is None
 

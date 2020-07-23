@@ -372,28 +372,22 @@ def get_vessel_type(
 
 
 def get_length_origin_destination(
-    shapefiles_dir,
-    vessel_type,
-    spill_month,
-    spill_lat,
-    spill_lon,
-    random_generator,
-    search_radius=0.5,  # km
+    shapefiles_dir, vessel_type, spill_month, geotiff_bbox, random_generator,
 ):
-    """
+    """Randomly choose an AIS vessel track from which the spill occurs, with the choice
+    weighted by the vessel traffic exposure (VTE) for the specified vessel type, month,
+    and GeoTIFF cell. Return the length of the vessel, and voyage origin & destination
+    from the chosen AIS track.
 
     :param shapefiles_dir: Directory path to read shapefiles from
     :type shapefiles_dir: :py:class:`pathlib.Path`
 
     :param str vessel_type: Vessel type from which spill occurs.
 
-    :param int spill_month: Month number for which to choose a spill location.
+    :param int spill_month: Month number in which spill occurs.
 
-    :param float spill_lat: Spill latitude [°N in [-90°, 90°] range].
-
-    :param float spill_lon: Spill longitude [°E in [-180°, 180°] range].
-
-    :param float search_radius: Radius around spill location to search for AIS track segments.
+    :param geotiff_bbox: Bounding box of GeoTIFF cell containing spill location.
+    :type geotiff_bbox: :py:class:`shapely.geometry.Polygon`
 
     :param random_generator: PCG-64 random number generator.
     :type random_generator: :py:class:`numpy.random.Generator`
@@ -401,64 +395,40 @@ def get_length_origin_destination(
     :return: 3-tuple composed of:
 
              * length of vessel from which spill occurs [m]
-             * origin of AIS track segment from which spill occurs
-             * destination of AIS track segment from which spill occurs
+             * origin of AIS track from which spill occurs
+             * destination of AIS track from which spill occurs
 
     :rtype: tuple
     """
-    # load data
+    # Load AIS track segments that pass through or are contained in GeoTIFF cell in which
+    # spill occurs
     vessel_type_spill_month = f"{vessel_type}_2018_{spill_month:02d}"
     shapefile = (
         shapefiles_dir / vessel_type_spill_month / f"{vessel_type_spill_month}.shp"
     )
-    data = geopandas.read_file(shapefile)
-    nrows, ncols = data.shape
+    ais_tracks = geopandas.read_file(shapefile, bbox=geotiff_bbox)
 
-    # think about a way of doing this that doesn't require
-    # loading all lat/lon values (with a healthy dose of patience)
-    logging.info("this is going to take a minute....")
-    lon_array = [data.geometry[i].coords[0][0] for i in range(nrows)]
-    lat_array = [data.geometry[i].coords[0][1] for i in range(nrows)]
-
-    # identify all the lines within search_radius
-    distance = _haversine(spill_lon, spill_lat, lon_array, lat_array)
-    array_index = numpy.where(distance < search_radius)
-
-    total_seconds = numpy.zeros(len(array_index))
-    total_distance = numpy.zeros(len(array_index))
-    vte = numpy.zeros(len(array_index))
-
-    # loop through values in array_index values to calculate
-    for index in range(len(array_index)):
-        # calculate the duration of travel for each poly line segment
-        start_date = datetime.datetime.strptime(
-            data.ST_DATE[index], "%Y-%m-%d %H:%M:%S"
+    vte = numpy.empty(len(ais_tracks.index))
+    for i, ais_track in ais_tracks.iterrows():
+        track_in_cell = ais_track.geometry.intersection(geotiff_bbox)
+        # The lengths used here are Cartesian plane lengths,
+        # note spherical coordinate distances, but we are working on
+        # a small patch of the Earth's surface, and we are using the
+        # length construct consistently, so the error is acceptably small.
+        frac_in_cell = track_in_cell.length / ais_track.geometry.length
+        track_duration = pandas.to_datetime(ais_track.EN_DATE) - pandas.to_datetime(
+            ais_track.ST_DATE
         )
-        end_date = datetime.datetime.strptime(data.EN_DATE[index], "%Y-%m-%d %H:%M:%S")
-        delta_time = end_date - start_date
-        total_seconds[index] = delta_time.total_seconds()
+        vte[i] = frac_in_cell * track_duration.total_seconds()
 
-        # calculate the distance of each poly line
-        start_lon = data.geometry[index].coords[0][0]
-        start_lat = data.geometry[index].coords[0][1]
-        end_lon = data.geometry[index].coords[1][0]
-        end_lat = data.geometry[index].coords[1][1]
+    chosen_track_index = random_generator.choice(
+        range(len(ais_tracks.index)), p=vte / vte.sum()
+    )
+    vessel_len = ais_tracks.LENGTH[chosen_track_index]
+    vessel_origin = ais_tracks.FROM_[chosen_track_index]
+    vessel_dest = ais_tracks.TO[chosen_track_index]
 
-        # calculate the distance in km of vessel line segment
-        total_distance[index] = _haversine(start_lon, start_lat, end_lon, end_lat)
-        vte[index] = total_seconds[index] / total_distance[index]
-
-    # find the index for greatest vte (for cases where there is
-    # more than one polyline)
-    (i,) = numpy.where(vte == max(vte))
-    the_one = array_index[i.item()]
-
-    # now that we have found the one true polyline, lets get its digits!
-    length = data.LENGTH[the_one.item()]
-    origin = data.FROM_[the_one.item()]
-    destination = data.TO[the_one.item()]
-
-    return length, origin, destination
+    return vessel_len, vessel_origin, vessel_dest
 
 
 def adjust_tug_tank_barge_length(vessel_type, vessel_len, random_generator):
