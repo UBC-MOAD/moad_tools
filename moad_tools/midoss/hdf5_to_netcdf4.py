@@ -239,8 +239,7 @@ def _calc_oil_times_file(grid_indices, h5file, netcdf4_file, tmp_dir):
     for group in h5file.root.Results.OilSpill.Data_2D:
         if group._v_name not in (
             "Beaching Time",
-            "Oil Arrival Time",
-            "Beaching Volume",
+            "Oil Arrival Time"
         ):
             continue
         data_vars.update(
