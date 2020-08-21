@@ -237,17 +237,25 @@ def _calc_oil_times_file(grid_indices, h5file, netcdf4_file, tmp_dir):
     time_coord = _calc_time_coord(h5file, 1)
     data_vars = {}
     for group in h5file.root.Results.OilSpill.Data_2D:
-        if group._v_name not in (
+        if group._v_name in (
             "Beaching Time",
             "Oil Arrival Time"
         ):
-            continue
-        data_vars.update(
+            data_vars.update(
+                _calc_data_var(
+                    group,
+                    group._v_nchildren,
+                    (grid_indices.y_index, grid_indices.x_index),
+                    time_coord.values[0],
+                )
+            )
+        else:
+            # its not a time but Volume
+            data_vars.update(
             _calc_data_var(
                 group,
                 group._v_nchildren,
                 (grid_indices.y_index, grid_indices.x_index),
-                time_coord.values[0],
             )
         )
         logging.debug(
