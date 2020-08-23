@@ -124,6 +124,7 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
             geotiff_bbox,
             random_generator,
         )
+        spill_params["vessel_mmsi"].append(vessel_mmsi)
         vessel_len = adjust_tug_tank_barge_length(
             vessel_type, vessel_len, random_generator
         )
