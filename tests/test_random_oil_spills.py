@@ -94,7 +94,7 @@ def mock_get_length_origin_destination(monkeypatch):
     def get_length_origin_destination(
         shapefiles_dir, vessel_type, spill_month, geotiff_bbox, random_generator,
     ):
-        return 16, None, None
+        return 16, None, None, "367704540"
 
     monkeypatch.setattr(
         random_oil_spills,
@@ -319,6 +319,7 @@ class TestGetLengthOriginDestination:
             vessel_len,
             vessel_origin,
             vessel_dest,
+            vessel_mmsi,
         ) = random_oil_spills.get_length_origin_destination(
             shapefiles_dir, vessel_type, spill_month, geotiff_bbox, random_generator
         )
@@ -326,6 +327,7 @@ class TestGetLengthOriginDestination:
         assert vessel_len == 74
         assert vessel_origin is None
         assert vessel_dest is None
+        assert vessel_mmsi == "367704540"
 
 
 class TestAdjustTugTankBargeLength:

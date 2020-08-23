@@ -112,7 +112,12 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
             random_generator,
         )
 
-        vessel_len, vessel_origin, vessel_dest = get_length_origin_destination(
+        (
+            vessel_len,
+            vessel_origin,
+            vessel_dest,
+            vessel_mmsi,
+        ) = get_length_origin_destination(
             shapefiles_dir,
             vessel_type,
             spill_date_hour.month,
@@ -375,8 +380,8 @@ def get_length_origin_destination(
 ):
     """Randomly choose an AIS vessel track from which the spill occurs, with the choice
     weighted by the vessel traffic exposure (VTE) for the specified vessel type, month,
-    and GeoTIFF cell. Return the length of the vessel, and voyage origin & destination
-    from the chosen AIS track.
+    and GeoTIFF cell. Return the length of the vessel, and voyage origin & destination,
+    and vessel MMSI from the chosen AIS track.
 
     :param shapefiles_dir: Directory path to read shapefiles from
     :type shapefiles_dir: :py:class:`pathlib.Path`
@@ -391,11 +396,12 @@ def get_length_origin_destination(
     :param random_generator: PCG-64 random number generator.
     :type random_generator: :py:class:`numpy.random.Generator`
 
-    :return: 3-tuple composed of:
+    :return: 4-tuple composed of:
 
-             * length of vessel from which spill occurs [m]
-             * origin of AIS track from which spill occurs
-             * destination of AIS track from which spill occurs
+             * length of vessel from which spill occurs [m] (int)
+             * origin of AIS track from which spill occurs (str)
+             * destination of AIS track from which spill occurs (str)
+             * vessel MMSI (str)
 
     :rtype: tuple
     """
@@ -426,8 +432,9 @@ def get_length_origin_destination(
     vessel_len = ais_tracks.LENGTH[chosen_track_index]
     vessel_origin = ais_tracks.FROM_[chosen_track_index]
     vessel_dest = ais_tracks.TO[chosen_track_index]
+    vessel_mmsi = ais_tracks.MMSI[chosen_track_index]
 
-    return vessel_len, vessel_origin, vessel_dest
+    return vessel_len, vessel_origin, vessel_dest, vessel_mmsi
 
 
 def adjust_tug_tank_barge_length(vessel_type, vessel_len, random_generator):
