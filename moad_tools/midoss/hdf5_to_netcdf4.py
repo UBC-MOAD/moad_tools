@@ -16,11 +16,11 @@
 """
 import logging
 import os
-from pathlib import Path
 import shlex
 import subprocess
 import sys
 import tempfile
+from pathlib import Path
 from types import SimpleNamespace
 
 import arrow
