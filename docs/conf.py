@@ -71,7 +71,7 @@ intersphinx_mapping = {
     "pandas": ("https://pandas.pydata.org/docs/", None),
     "python": ("https://docs.python.org/3/", None),
     "rasterio": ("https://rasterio.readthedocs.io/en/latest/", None),
-    "shapely": ("https://shapely.readthedocs.io/", None),
+    "shapely": ("https://shapely.readthedocs.io/en/latest/", None),
     "xarray": ("https://xarray.pydata.org/en/stable", None),
 }
 
