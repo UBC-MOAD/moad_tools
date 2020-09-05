@@ -78,11 +78,13 @@ intersphinx_mapping = {
 autodoc_mock_imports = [
     "arrow",
     "click",
+    "geopandas",
     "matplotlib",
     "numpy",
     "pandas",
     "rasterio",
     "scipy",
+    "shapely",
     "tables",
     "xarray",
     "yaml",
