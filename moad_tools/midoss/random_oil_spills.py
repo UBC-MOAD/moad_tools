@@ -414,10 +414,7 @@ def get_length_origin_destination(
     """
     # Load AIS track segments that pass through or are contained in GeoTIFF cell in which
     # spill occurs
-    vessel_type_spill_month = f"{vessel_type}_2018_{spill_month:02d}"
-    shapefile = (
-        shapefiles_dir / vessel_type_spill_month / f"{vessel_type_spill_month}.shp"
-    )
+    shapefile = shapefiles_dir / f"{vessel_type}_2018_{spill_month:02d}.shp"
     ais_tracks = geopandas.read_file(shapefile, bbox=geotiff_bbox)
 
     vte = numpy.empty(len(ais_tracks.index))

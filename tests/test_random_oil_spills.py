@@ -293,9 +293,7 @@ class TestGetLengthOriginDestination:
 
     @pytest.mark.skipif(
         not Path(__file__)
-        .parent.joinpath(
-            "test_data", "random_oil_spills", "cargo_2018_01", "cargo_2018_01.shp"
-        )
+        .parent.joinpath("test_data", "random_oil_spills", "cargo_2018_01.shp")
         .exists(),
         reason="shapefile is too large to commit, so only run this test in dev where local file is provided",
     )
