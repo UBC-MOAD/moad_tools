@@ -130,7 +130,6 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
         )
 
         oil_attribution_file = Path(config["oil attribution"])
-        vessel_len, vessel_type = 74, "cargo"
         fuel_capacity, cargo_capacity = get_oil_capacity(
             oil_attribution_file, vessel_len, vessel_type, random_generator
         )
