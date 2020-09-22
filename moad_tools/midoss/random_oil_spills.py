@@ -130,8 +130,10 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
         )
 
         oil_attribution_file = Path(config["oil attribution"])
+        with oil_attribution_file.open("rt") as f:
+            oil_attrs = yaml.safe_load(f)
         fuel_capacity, cargo_capacity = get_oil_capacity(
-            oil_attribution_file, vessel_len, vessel_type, random_generator
+            oil_attrs, vessel_len, vessel_type, random_generator
         )
 
     df = pandas.DataFrame(spill_params)
@@ -473,9 +475,7 @@ def adjust_tug_tank_barge_length(vessel_type, vessel_len, random_generator):
     return random_generator.choice([147, 172, 178, 206, 207])
 
 
-def get_oil_capacity(
-    oil_attribution_file, vessel_length, vessel_type, random_generator
-):
+def get_oil_capacity(oil_attrs, vessel_length, vessel_type, random_generator):
     """Calculate fuel_capacity [liters] and cargo_capacity [liters] based on vessel
     length and type, with the exception of ATBs and barges.  Tank_capacity
     is estimated by length for ATBs > 50 m only.  For all other ATB and barge
@@ -486,20 +486,15 @@ def get_oil_capacity(
     capacities for non-ATB tug and tank barges is well represented by the
     ATB data.
 
-    :param oil_attribution_file: File path to read oil attribution information from;
-                                 the output file from make_oil_attrs.py.
-    :type oil_attribution_file: :py:class:`pathlib.Path`
+    :param dict oil_attrs: Oil attribution information from the output of make_oil_attrs.py.
 
-    :param int vessel_len: Length of vessel from which spill occurs [m].
+    :param int vessel_length: Length of vessel from which spill occurs [m].
 
     :param str vessel_type: Vessel type from which spill occurs.
 
     :param random_generator: PCG-64 random number generator.
     :type random_generator: :py:class:`numpy.random.Generator`
     """
-    with open(oil_attribution_file) as file:
-        oil_attrs = yaml.load(file, Loader=yaml.Loader)
-
     if vessel_type not in oil_attrs["categories"]["all_vessels"]:
         raise ValueError(
             [

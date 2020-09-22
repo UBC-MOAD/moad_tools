@@ -380,15 +380,14 @@ class TestGetOilCapacity:
         # so that calculated results are repeatable
         random_generator = numpy.random.default_rng(seed=43)
 
-        oil_attribution_file = Path(config["oil attribution"])
+        with Path(config["oil attribution"]).open("r") as f:
+            oil_attrs = yaml.safe_load(f)
         vessel_len = 74
         vessel_type = "cargo"
         fuel_capacity, cargo_capacity = random_oil_spills.get_oil_capacity(
-            oil_attribution_file, vessel_len, vessel_type, random_generator
+            oil_attrs, vessel_len, vessel_type, random_generator
         )
 
-        with oil_attribution_file.open("r") as f:
-            oil_attrs = yaml.safe_load(f)
         assert fuel_capacity == oil_attrs["vessel_attributes"][vessel_type]["min_fuel"]
         assert cargo_capacity == 0
 
