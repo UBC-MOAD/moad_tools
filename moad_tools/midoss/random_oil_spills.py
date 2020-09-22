@@ -476,7 +476,7 @@ def adjust_tug_tank_barge_length(vessel_type, vessel_len, random_generator):
 def get_oil_capacity(
     oil_attribution_file, vessel_length, vessel_type, random_generator
 ):
-    """Returns fuel_capacity [liters] and cargo_capacity [liters] based on vessel
+    """Calculate fuel_capacity [liters] and cargo_capacity [liters] based on vessel
     length and type, with the exception of ATBs and barges.  Tank_capacity
     is estimated by length for ATBs > 50 m only.  For all other ATB and barge
     traffic, as well as fuel capacity for ATBs > 50 m, both fuel and cargo
@@ -486,9 +486,16 @@ def get_oil_capacity(
     capacities for non-ATB tug and tank barges is well represented by the
     ATB data.
 
-    oil_attrs_file [string]: This is the output file from make_oil_attrs.yaml
-    vessel_length [meters]: Can be any number representing ship length
-    vessel_type [string]: tanker, atb, barge, cargo, cruise, ferry, fishing, smallpass, or other
+    :param oil_attribution_file: File path to read oil attribution information from;
+                                 the output file from make_oil_attrs.py.
+    :type oil_attribution_file: :py:class:`pathlib.Path`
+
+    :param int vessel_len: Length of vessel from which spill occurs [m].
+
+    :param str vessel_type: Vessel type from which spill occurs.
+
+    :param random_generator: PCG-64 random number generator.
+    :type random_generator: :py:class:`numpy.random.Generator`
     """
     with open(oil_attribution_file) as file:
         oil_attrs = yaml.load(file, Loader=yaml.Loader)
