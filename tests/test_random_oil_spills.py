@@ -151,6 +151,7 @@ class TestRandomOilSpills:
                 "geotiff_x_index": [134],
                 "geotiff_y_index": [393],
                 "vessel_mmsi": ["367704540"],
+                "spill_volume": [13.9543],
             }
         )
         pandas.testing.assert_frame_equal(df, expected)
