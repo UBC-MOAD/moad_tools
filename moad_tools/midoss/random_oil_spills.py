@@ -433,9 +433,17 @@ def get_length_origin_destination(
         range(len(ais_tracks.index)), p=vte / vte.sum()
     )
     vessel_len = ais_tracks.LENGTH[chosen_track_index]
-    vessel_origin = ais_tracks.FROM_[chosen_track_index]
-    vessel_dest = ais_tracks.TO[chosen_track_index]
-    vessel_mmsi = ais_tracks.MMSI[chosen_track_index]
+    try:
+        vessel_origin = ais_tracks.FROM_[chosen_track_index]
+    except AttributeError:
+        vessel_origin = None
+    try:
+        vessel_dest = ais_tracks.TO[chosen_track_index]
+    except AttributeError:
+        vessel_dest = None
+    # MMSI is a label that happens to be composed of digits
+    # Cast it to a str even though it is stored as a float the shapefile
+    vessel_mmsi = f"{ais_tracks.MMSI_NUM[chosen_track_index]:.0f}"
 
     return vessel_len, vessel_origin, vessel_dest, vessel_mmsi
 
