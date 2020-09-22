@@ -60,6 +60,8 @@ def config_file(tmp_path):
               - fishing
               - smallpass
               - other
+
+            oil attribution: {test_data}/oil_attribution.yaml
             """
         )
     )
@@ -291,9 +293,7 @@ class TestGetLengthOriginDestination:
 
     @pytest.mark.skipif(
         not Path(__file__)
-        .parent.joinpath(
-            "test_data", "random_oil_spills", "cargo_2018_01", "cargo_2018_01.shp"
-        )
+        .parent.joinpath("test_data", "random_oil_spills", "cargo_2018_01.shp")
         .exists(),
         reason="shapefile is too large to commit, so only run this test in dev where local file is provided",
     )
@@ -367,6 +367,29 @@ class TestAdjustTugTankBargeLength:
         )
 
         assert vessel_len in [147, 172, 178, 206, 207]
+
+
+class TestGetOilCapacity:
+    """Unit test for get_oil_capacity() function.
+    """
+
+    def test_get_oil_capacity(self, config_file):
+        with Path(config_file).open("r") as f:
+            config = yaml.safe_load(f)
+        # Specifying the random seed makes the random number stream deterministic
+        # so that calculated results are repeatable
+        random_generator = numpy.random.default_rng(seed=43)
+
+        with Path(config["oil attribution"]).open("r") as f:
+            oil_attrs = yaml.safe_load(f)
+        vessel_len = 74
+        vessel_type = "cargo"
+        fuel_capacity, cargo_capacity = random_oil_spills.get_oil_capacity(
+            oil_attrs, vessel_len, vessel_type, random_generator
+        )
+
+        assert fuel_capacity == oil_attrs["vessel_attributes"][vessel_type]["min_fuel"]
+        assert cargo_capacity == 0
 
 
 class TestChooseFractionSpilled:

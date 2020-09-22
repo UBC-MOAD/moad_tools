@@ -1,0 +1,148 @@
+categories:
+  CAD_origin_destination: [ESSO Nanaimo Departure Bay, Suncor Nanaimo, Shell Chemainus
+      Bare Point, Chevron Cobble Hill, Chevron Stanovan, Barge Mooring Near Stanovan,
+    Shell Shellburn, Westridge Marine Terminal, ESSO IOCO Vancouver, Suncor Vancouver]
+  US_origin_destination: [BP Cherry Point Refinery, Shell Puget Sound Refinery, Shell
+      Oil LP Seattle Distribution Terminal, Maxum (Rainer Petroleum), Tidewater Snake
+      River Terminal, Nustar Energy Tacoma, SeaPort Sound Terminal, Tesoro Vancouver
+      Terminal, Phillips 66 Ferndale Refinery, Phillips 66 Tacoma Terminal, Andeavor
+      Anacortes Refinery (formerly Tesoro), Tesoro Port Angeles Terminal, U.S. Oil
+      & Refining, Naval Air Station Whidbey Island (NASWI), NAVSUP Manchester, Alon
+      Asphalt Company (Paramount Petroleum), Kinder Morgan Liquids Terminal - Harbor
+      Island, Tesoro Pasco Terminal, 'REG Grays Harbor, LLC', Tidewater Vancouver
+      Terminal, TLP Management Services LLC (TMS)]
+  all_vessels: [tanker, atb, barge, cargo, cruise, ferry, fishing, smallpass, other]
+  fuel_type: [akns, bunker, dilbit, jet, diesel, gas, other]
+  generic_origin_destination: [Pacific, US, Canada]
+  tank_vessels: [tanker, atb, barge]
+  tanker_size_classes: &id005 [Small Tanker (< 150 m), Handymax (151-200 m), Aframax
+      (201-250 m), SuezMax (251-300 m)]
+directories: {data: /Users/rmueller/Data/MIDOSS/marine_transport_data, geotiff: /Users/rmueller/Data/MIDOSS/AIS/ShipTrackDensityGeoTIFFs}
+files: {CAD_origin: /Users/rmueller/Data/MIDOSS/marine_transport_data/CAD_origin.yaml,
+  Pacific_origin: /Users/rmueller/Data/MIDOSS/marine_transport_data/Pacific_origin.yaml,
+  US_combined: /Users/rmueller/Data/MIDOSS/marine_transport_data/US_all.yaml, US_origin: /Users/rmueller/Data/MIDOSS/marine_transport_data/US_origin.yaml,
+  WA_destination: /Users/rmueller/Data/MIDOSS/marine_transport_data/WA_destination.yaml,
+  WA_origin: /Users/rmueller/Data/MIDOSS/marine_transport_data/WA_origin.yaml, barge_weights: /Users/rmueller/Data/MIDOSS/marine_transport_data/barge_capacity.yaml,
+  fuel: /Users/rmueller/Data/MIDOSS/marine_transport_data/fuel_by_vessel.yaml, oil_capacity: /Users/rmueller/Data/MIDOSS/marine_transport_data/oil_capacity.xlsx}
+vessel_attributes:
+  atb:
+    cargo_capacity_bin_centers: &id001 [5000000.0, 7000000.0, 9000000.0, 11000000.0,
+      13000000.0, 15000000.0, 17000000.0, 19000000.0, 21000000.0, 23000000.0, 25000000.0,
+      27000000.0, 29000000.0]
+    cargo_capacity_bins: &id002
+    - [4000000, 6000000]
+    - [6000000, 8000000]
+    - [8000000, 10000000]
+    - [10000000, 12000000]
+    - [12000000, 14000000]
+    - [14000000, 16000000]
+    - [16000000, 18000000]
+    - [18000000, 20000000]
+    - [20000000, 22000000]
+    - [22000000, 24000000]
+    - [24000000, 26000000]
+    - [26000000, 28000000]
+    - [28000000, 30000000]
+    cargo_capacity_probability: [0.170319029698005, 0.0, 0.0, 0.0563356392580657,
+      0.5011937134639792, 0.0, 0.0, 0.0, 0.0, 0.08045404799745069, 0.0, 0.0, 0.19169756958249953]
+    cargo_fit_coefs: [236476.57106585326, -20810153.330618978]
+    fuel_capacity_bin_centers: &id003 [87500.0, 112500.0, 137500.0, 162500.0, 187500.0,
+      212500.0, 237500.0, 262500.0, 287500.0, 312500.0, 337500.0, 362500.0, 387500.0,
+      412500.0, 437500.0, 462500.0, 487500.0, 512500.0, 537500.0, 562500.0, 587500.0,
+      612500.0, 637500.0, 662500.0]
+    fuel_capacity_bins: &id004
+    - [75000, 100000]
+    - [100000, 125000]
+    - [125000, 150000]
+    - [150000, 175000]
+    - [175000, 200000]
+    - [200000, 225000]
+    - [225000, 250000]
+    - [250000, 275000]
+    - [275000, 300000]
+    - [300000, 325000]
+    - [325000, 350000]
+    - [350000, 375000]
+    - [375000, 400000]
+    - [400000, 425000]
+    - [425000, 450000]
+    - [450000, 475000]
+    - [475000, 500000]
+    - [500000, 525000]
+    - [525000, 550000]
+    - [550000, 575000]
+    - [575000, 600000]
+    - [600000, 625000]
+    - [625000, 650000]
+    - [650000, 675000]
+    fuel_capacity_probability: [0.16178669573136084, 0.017610043564113005, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.06751632602362127, 0.0, 0.0, 0.4818673114755418,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.16207847686953045, 0.06170393599035275, 0.0, 0.0,
+      0.0, 0.04743721034547984]
+    fuel_fit_coefs: [4422.89119653408, -314866.3850874612]
+    max_cargo: 29413150
+    max_fuel: 550000
+    min_cargo: 4000000
+    min_fuel: 99000
+    probability_cargo: 0.8
+    probability_fuel: 0.2
+  barge:
+    cargo_capacity_bin_centers: *id001
+    cargo_capacity_bins: *id002
+    cargo_capacity_probability: [0.170319029698005, 0.0, 0.0, 0.0563356392580657,
+      0.5011937134639792, 0.0, 0.0, 0.0, 0.0, 0.08045404799745069, 0.0, 0.0, 0.19169756958249953]
+    fuel_capacity_bin_centers: *id003
+    fuel_capacity_bins: *id004
+    fuel_capacity_probability: [0.16178669573136084, 0.017610043564113005, 0.0, 0.0,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.06751632602362127, 0.0, 0.0, 0.4818673114755418,
+      0.0, 0.0, 0.0, 0.0, 0.0, 0.16207847686953045, 0.06170393599035275, 0.0, 0.0,
+      0.0, 0.04743721034547984]
+    max_cargo: 32000000
+    max_fuel: 710000
+    min_cargo: 1500000
+    min_fuel: 6000
+    probability_cargo: 0.8
+    probability_fuel: 0.2
+    probability_oilcargo: 0.06496402877697842
+  cargo:
+    fuel_fit_coefs: [0.009765906995537785, 12.802005313078846]
+    max_fuel: 2000000
+    min_fuel: 1500000
+  cruise:
+    fuel_fit_coefs: [47621.19349630031, -9978945.603958681]
+    max_fuel: 5500000
+    min_fuel: 1000000
+  ferry:
+    fuel_fit_coefs: [0.03627497943115485, 8.31842031942603]
+    max_fuel: 500000
+    min_fuel: 30000
+  fishing:
+    fuel_fit_coefs: [59.449199238168845, -731.4111659311534, 857.5596337732318]
+    max_fuel: 300000
+    min_fuel: 150
+  other:
+    fuel_fit_coefs: [0.25853080128793177, 3.1044720668977868]
+    max_fuel: 12000
+    min_fuel: 100
+  smallpass:
+    fuel_fit_coefs: [0.25853080128793177, 3.1044720668977868]
+    max_fuel: 12000
+    min_fuel: 100
+  tanker:
+    cargo_capacity: [7748600, 53000000, 126211000, 185447000]
+    fuel_capacity: [740700, 1956000, 2984000, 4155000]
+    fuel_hfo_to_diesel: [12.793296089385475, 14.046153846153846, 17.419753086419753,
+      30.96153846153846]
+    length_bins:
+    - [0, 151]
+    - [151, 201]
+    - [201, 251]
+    - [251, 301]
+    max_cargo: 185447000
+    max_fuel: 4155000
+    min_cargo: 7593628
+    min_fuel: 740700
+    probability_cargo: 0.8
+    probability_fuel: 0.2
+    tanker_types: *id005
+    vessel_lengths: [108.5, 182.0, 247.24, 281.0]
