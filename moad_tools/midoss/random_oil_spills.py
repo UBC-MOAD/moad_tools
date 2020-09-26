@@ -527,8 +527,15 @@ def get_oil_capacity(oil_attrs, vessel_length, vessel_type, random_generator):
                 + "Go fish! (or try 'fishing' instead)"
             ]
         )
-
-    if vessel_length < oil_attrs["vessel_attributes"][vessel_type]["min_length"]:
+    # The way I'm setting up the .yaml file appears to cause an incorrect key error
+    # in certain conda environments that I haven't yet figured out. This key error 
+    # was triggered here with min_ and max_lenght variables.  I introduced a 
+    # temporary work-aroud by hard-coding the values in here. 
+    length_index = oil_attrs["categories"]["all_vessels"].index(vessel_type)
+    min_length = numpy.array([150, 22, 22, 50, 60, 26, 20, 10, 10])
+    max_length = numpy.array([300, 209, 100, 369, 334, 168, 200, 75, 75])
+    
+    if vessel_length < min_length[length_index]: #oil_attrs["vessel_attributes"][vessel_type]["min_length"]:
         # set lower bound
         fuel_capacity = oil_attrs["vessel_attributes"][vessel_type]["min_fuel"]
         cargo_capacity = (
@@ -537,7 +544,7 @@ def get_oil_capacity(oil_attrs, vessel_length, vessel_type, random_generator):
             else 0
         )
 
-    elif vessel_length > oil_attrs["vessel_attributes"][vessel_type]["max_length"]:
+    elif vessel_length > max_length[length_index]: #oil_attrs["vessel_attributes"][vessel_type]["max_length"]:
         # set upper bound
         fuel_capacity = oil_attrs["vessel_attributes"][vessel_type]["max_fuel"]
         cargo_capacity = (
