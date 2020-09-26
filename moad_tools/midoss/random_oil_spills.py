@@ -111,41 +111,50 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
             geotiff_y_index,
             random_generator,
         )
+        shapefile = shapefiles_dir / f"{vessel_type}_2018_{spill_date_hour.month:02d}.shp"
+        ais_tracks = geopandas.read_file(shapefile, bbox=geotiff_bbox)
+	
+        if len(ais_tracks.index) > 0.0:
+            print(f'Line 118 ais_tracks: {len(ais_tracks)}')
+            (
+                vessel_len,
+                vessel_origin,
+                vessel_dest,
+                vessel_mmsi,
+            ) = get_length_origin_destination(
+                shapefiles_dir,
+                vessel_type,
+                spill_date_hour.month,
+                geotiff_bbox,
+                random_generator,
+            )
 
-        (
-            vessel_len,
-            vessel_origin,
-            vessel_dest,
-            vessel_mmsi,
-        ) = get_length_origin_destination(
-            shapefiles_dir,
-            vessel_type,
-            spill_date_hour.month,
-            geotiff_bbox,
-            random_generator,
-        )
-        spill_params["vessel_mmsi"].append(vessel_mmsi)
-        vessel_len = adjust_tug_tank_barge_length(
-            vessel_type, vessel_len, random_generator
-        )
+            spill_params["vessel_mmsi"].append(vessel_mmsi)
+            vessel_len = adjust_tug_tank_barge_length(
+                vessel_type, vessel_len, random_generator
+            )
 
-        oil_attribution_file = Path(config["oil attribution"])
-        with oil_attribution_file.open("rt") as f:
-            oil_attrs = yaml.safe_load(f)
-        fuel_capacity, cargo_capacity = get_oil_capacity(
-            oil_attrs, vessel_len, vessel_type, random_generator
-        )
-        try:
-            fuel_spill = random_generator.choice([False, True], p=[
-                oil_attrs['vessel_attributes'][vessel_type]['probability_cargo'],
-                oil_attrs['vessel_attributes'][vessel_type]['probability_fuel']
-            ])
-        except KeyError:
-            # No probability_cargo or probability_fuel key means that vessel type carries only fuel
-            fuel_spill = 1
-        max_spill_volume = fuel_capacity if fuel_spill else cargo_capacity
-        spill_params["spill_volume"].append(max_spill_volume * choose_fraction_spilled(random_generator))
-
+            oil_attribution_file = Path(config["oil attribution"])
+            with oil_attribution_file.open("rt") as f:
+                oil_attrs = yaml.safe_load(f)
+            fuel_capacity, cargo_capacity = get_oil_capacity(
+                oil_attrs, vessel_len, vessel_type, random_generator
+            )
+            try:
+                fuel_spill = random_generator.choice([False, True], p=[
+                    oil_attrs['vessel_attributes'][vessel_type]['probability_cargo'],
+                    oil_attrs['vessel_attributes'][vessel_type]['probability_fuel']
+                ])
+            except KeyError:
+                # No probability_cargo or probability_fuel key means that vessel type carries only fuel
+                fuel_spill = 1
+            max_spill_volume = fuel_capacity if fuel_spill else cargo_capacity
+            spill_params["spill_volume"].append(max_spill_volume * choose_fraction_spilled(random_generator))
+        else:
+            print(f'No vte for {len(ais_tracks.index)} tracks located in {shapefile}') 
+            spill_params["vessel_mmsi"].append(-99999)
+            spill_params["spill_volume"].append(-99999)  
+    
     df = pandas.DataFrame(spill_params)
 
     return df
@@ -441,23 +450,28 @@ def get_length_origin_destination(
         )
         vte[i] = frac_in_cell * track_duration.total_seconds()
 
-    chosen_track_index = random_generator.choice(
-        range(len(ais_tracks.index)), p=vte / vte.sum()
-    )
-    vessel_len = ais_tracks.LENGTH[chosen_track_index]
-    try:
-        vessel_origin = ais_tracks.FROM_[chosen_track_index]
-    except AttributeError:
-        vessel_origin = None
-    try:
-        vessel_dest = ais_tracks.TO[chosen_track_index]
-    except AttributeError:
-        vessel_dest = None
-    # MMSI is a label that happens to be composed of digits
-    # Cast it to a str even though it is stored as a float the shapefile
-    vessel_mmsi = f"{ais_tracks.MMSI_NUM[chosen_track_index]:.0f}"
+    if len(vte) == 0 :
+        print(f'No vte for {len(ais_tracks.index)} tracks located in {shapefile}')
+        return None
+    else:
 
-    return vessel_len, vessel_origin, vessel_dest, vessel_mmsi
+        chosen_track_index = random_generator.choice(
+            range(len(ais_tracks.index)), p=vte / vte.sum()
+        )
+        vessel_len = ais_tracks.LENGTH[chosen_track_index]
+        try:
+            vessel_origin = ais_tracks.FROM_[chosen_track_index]
+        except AttributeError:
+            vessel_origin = None
+        try:
+            vessel_dest = ais_tracks.TO[chosen_track_index]
+        except AttributeError:
+            vessel_dest = None
+        # MMSI is a label that happens to be composed of digits
+        # Cast it to a str even though it is stored as a float the shapefile
+        vessel_mmsi = f"{ais_tracks.MMSI_NUM[chosen_track_index]:.0f}"
+    
+        return vessel_len, vessel_origin, vessel_dest, vessel_mmsi
 
 
 def adjust_tug_tank_barge_length(vessel_type, vessel_len, random_generator):
