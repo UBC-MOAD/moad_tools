@@ -151,7 +151,7 @@ class TestRandomOilSpills:
                 "geotiff_x_index": [134],
                 "geotiff_y_index": [393],
                 "vessel_mmsi": ["367704540"],
-                "spill_volume": [13.9543],
+                "spill_volume": [13.95439],
             }
         )
         pandas.testing.assert_frame_equal(df, expected)
@@ -391,6 +391,105 @@ class TestGetOilCapacity:
 
         assert fuel_capacity == oil_attrs["vessel_attributes"][vessel_type]["min_fuel"]
         assert cargo_capacity == 0
+
+    @pytest.mark.parametrize(
+        "vessel_type, vessel_len",
+        (
+            ("tanker", 0.10),
+            ("atb", 0.10),
+            ("barge", 0.10),
+            ("cargo", 0.10),
+            ("cruise", 0.10),
+            ("ferry", 0.10),
+            ("fishing", 0.10),
+            ("smallpass", 0.10),
+            ("other", 0.10),
+        ),
+    )
+    def test_min_fuel_capacity(self, vessel_type, vessel_len, config_file):
+        with Path(config_file).open("r") as f:
+            config = yaml.safe_load(f)
+        # Specifying the random seed makes the random number stream deterministic
+        # so that calculated results are repeatable
+        random_generator = numpy.random.default_rng(seed=43)
+
+        with Path(config["oil attribution"]).open("r") as f:
+            oil_attrs = yaml.safe_load(f)
+        fuel_capacity, cargo_capacity = random_oil_spills.get_oil_capacity(
+            oil_attrs, vessel_len, vessel_type, random_generator
+        )
+
+        assert fuel_capacity == oil_attrs["vessel_attributes"][vessel_type]["min_fuel"]
+
+    @pytest.mark.parametrize(
+        "vessel_type, vessel_len",
+        (
+            ("tanker", 1_000_000),
+            ("atb", 1_000_000),
+            ("barge", 1_000_000),
+            ("cargo", 1_000_000),
+            ("cruise", 1_000_000),
+            ("ferry", 1_000_000),
+            ("fishing", 1_000_000),
+            ("smallpass", 1_000_000),
+            ("other", 1_000_000),
+        ),
+    )
+    def test_max_fuel_capacity(self, vessel_type, vessel_len, config_file):
+        with Path(config_file).open("r") as f:
+            config = yaml.safe_load(f)
+        # Specifying the random seed makes the random number stream deterministic
+        # so that calculated results are repeatable
+        random_generator = numpy.random.default_rng(seed=43)
+
+        with Path(config["oil attribution"]).open("r") as f:
+            oil_attrs = yaml.safe_load(f)
+        fuel_capacity, cargo_capacity = random_oil_spills.get_oil_capacity(
+            oil_attrs, vessel_len, vessel_type, random_generator
+        )
+
+        assert fuel_capacity == oil_attrs["vessel_attributes"][vessel_type]["max_fuel"]
+
+    @pytest.mark.parametrize(
+        "vessel_type, vessel_len", (("tanker", 0.10), ("atb", 0.10), ("barge", 0.10),)
+    )
+    def test_min_cargo_capacity(self, vessel_type, vessel_len, config_file):
+        with Path(config_file).open("r") as f:
+            config = yaml.safe_load(f)
+        # Specifying the random seed makes the random number stream deterministic
+        # so that calculated results are repeatable
+        random_generator = numpy.random.default_rng(seed=43)
+
+        with Path(config["oil attribution"]).open("r") as f:
+            oil_attrs = yaml.safe_load(f)
+        fuel_capacity, cargo_capacity = random_oil_spills.get_oil_capacity(
+            oil_attrs, vessel_len, vessel_type, random_generator
+        )
+
+        assert (
+            cargo_capacity == oil_attrs["vessel_attributes"][vessel_type]["min_cargo"]
+        )
+
+    @pytest.mark.parametrize(
+        "vessel_type, vessel_len",
+        (("tanker", 1_000_000), ("atb", 1_000_000), ("barge", 1_000_000),),
+    )
+    def test_max_cargo_capacity(self, vessel_type, vessel_len, config_file):
+        with Path(config_file).open("r") as f:
+            config = yaml.safe_load(f)
+        # Specifying the random seed makes the random number stream deterministic
+        # so that calculated results are repeatable
+        random_generator = numpy.random.default_rng(seed=43)
+
+        with Path(config["oil attribution"]).open("r") as f:
+            oil_attrs = yaml.safe_load(f)
+        fuel_capacity, cargo_capacity = random_oil_spills.get_oil_capacity(
+            oil_attrs, vessel_len, vessel_type, random_generator
+        )
+
+        assert (
+            cargo_capacity == oil_attrs["vessel_attributes"][vessel_type]["max_cargo"]
+        )
 
 
 class TestChooseFractionSpilled:

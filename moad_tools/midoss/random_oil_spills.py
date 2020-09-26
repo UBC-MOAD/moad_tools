@@ -136,15 +136,20 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
             oil_attrs, vessel_len, vessel_type, random_generator
         )
         try:
-            fuel_spill = random_generator.choice([False, True], p=[
-                oil_attrs['vessel_attributes'][vessel_type]['probability_cargo'],
-                oil_attrs['vessel_attributes'][vessel_type]['probability_fuel']
-            ])
+            fuel_spill = random_generator.choice(
+                [False, True],
+                p=[
+                    oil_attrs["vessel_attributes"][vessel_type]["probability_cargo"],
+                    oil_attrs["vessel_attributes"][vessel_type]["probability_fuel"],
+                ],
+            )
         except KeyError:
             # No probability_cargo or probability_fuel key means that vessel type carries only fuel
             fuel_spill = 1
         max_spill_volume = fuel_capacity if fuel_spill else cargo_capacity
-        spill_params["spill_volume"].append(max_spill_volume * choose_fraction_spilled(random_generator))
+        spill_params["spill_volume"].append(
+            max_spill_volume * choose_fraction_spilled(random_generator)
+        )
 
     df = pandas.DataFrame(spill_params)
 
@@ -498,7 +503,7 @@ def get_oil_capacity(oil_attrs, vessel_length, vessel_type, random_generator):
 
     :param dict oil_attrs: Oil attribution information from the output of make_oil_attrs.py.
 
-    :param int vessel_length: Length of vessel from which spill occurs [m].
+    :param int or float vessel_length: Length of vessel from which spill occurs [m].
 
     :param str vessel_type: Vessel type from which spill occurs.
 
@@ -515,10 +520,23 @@ def get_oil_capacity(oil_attrs, vessel_length, vessel_type, random_generator):
             ]
         )
 
-    if vessel_length < 0:
+    if vessel_length < oil_attrs["vessel_attributes"][vessel_type]["min_length"]:
+        # set lower bound
         fuel_capacity = oil_attrs["vessel_attributes"][vessel_type]["min_fuel"]
-        cargo_capacity = oil_attrs["vessel_attributes"][vessel_type]["min_cargo"]
+        cargo_capacity = (
+            oil_attrs["vessel_attributes"][vessel_type]["min_cargo"]
+            if vessel_type in oil_attrs["categories"]["tank_vessels"]
+            else 0
+        )
 
+    elif vessel_length > oil_attrs["vessel_attributes"][vessel_type]["max_length"]:
+        # set upper bound
+        fuel_capacity = oil_attrs["vessel_attributes"][vessel_type]["max_fuel"]
+        cargo_capacity = (
+            oil_attrs["vessel_attributes"][vessel_type]["max_cargo"]
+            if vessel_type in oil_attrs["categories"]["tank_vessels"]
+            else 0
+        )
     else:
 
         # ~~~ tankers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

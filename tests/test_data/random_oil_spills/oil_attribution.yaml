@@ -43,8 +43,8 @@ vessel_attributes:
     - [24000000, 26000000]
     - [26000000, 28000000]
     - [28000000, 30000000]
-    cargo_capacity_probability: [0.170319029698005, 0.0, 0.0, 0.0563356392580657,
-      0.5011937134639792, 0.0, 0.0, 0.0, 0.0, 0.08045404799745069, 0.0, 0.0, 0.19169756958249953]
+    cargo_capacity_probability: [0.17, 0.0, 0.0, 0.06, 0.5, 0.0, 0.0, 0.0, 0.0, 0.08,
+      0.0, 0.0, 0.19]
     cargo_fit_coefs: [236476.57106585326, -20810153.330618978]
     fuel_capacity_bin_centers: &id003 [87500.0, 112500.0, 137500.0, 162500.0, 187500.0,
       212500.0, 237500.0, 262500.0, 287500.0, 312500.0, 337500.0, 362500.0, 387500.0,
@@ -75,59 +75,71 @@ vessel_attributes:
     - [600000, 625000]
     - [625000, 650000]
     - [650000, 675000]
-    fuel_capacity_probability: [0.16178669573136084, 0.017610043564113005, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.06751632602362127, 0.0, 0.0, 0.4818673114755418,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.16207847686953045, 0.06170393599035275, 0.0, 0.0,
-      0.0, 0.04743721034547984]
+    fuel_capacity_probability: [0.16, 0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.07,
+      0.0, 0.0, 0.48, 0.0, 0.0, 0.0, 0.0, 0.0, 0.16, 0.06, 0.0, 0.0, 0.0, 0.05]
     fuel_fit_coefs: [4422.89119653408, -314866.3850874612]
     max_cargo: 29413150
     max_fuel: 550000
+    max_length: 209
     min_cargo: 4000000
     min_fuel: 99000
+    min_length: 22
     probability_cargo: 0.8
     probability_fuel: 0.2
   barge:
     cargo_capacity_bin_centers: *id001
     cargo_capacity_bins: *id002
-    cargo_capacity_probability: [0.170319029698005, 0.0, 0.0, 0.0563356392580657,
-      0.5011937134639792, 0.0, 0.0, 0.0, 0.0, 0.08045404799745069, 0.0, 0.0, 0.19169756958249953]
+    cargo_capacity_probability: [0.17, 0.0, 0.0, 0.06, 0.5, 0.0, 0.0, 0.0, 0.0, 0.08,
+      0.0, 0.0, 0.19]
     fuel_capacity_bin_centers: *id003
     fuel_capacity_bins: *id004
-    fuel_capacity_probability: [0.16178669573136084, 0.017610043564113005, 0.0, 0.0,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.06751632602362127, 0.0, 0.0, 0.4818673114755418,
-      0.0, 0.0, 0.0, 0.0, 0.0, 0.16207847686953045, 0.06170393599035275, 0.0, 0.0,
-      0.0, 0.04743721034547984]
+    fuel_capacity_probability: [0.16, 0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.07,
+      0.0, 0.0, 0.48, 0.0, 0.0, 0.0, 0.0, 0.0, 0.16, 0.06, 0.0, 0.0, 0.0, 0.05]
     max_cargo: 32000000
     max_fuel: 710000
+    max_length: 100
     min_cargo: 1500000
     min_fuel: 6000
+    min_length: 22
     probability_cargo: 0.8
     probability_fuel: 0.2
     probability_oilcargo: 0.06496402877697842
   cargo:
     fuel_fit_coefs: [0.009765906995537785, 12.802005313078846]
     max_fuel: 2000000
+    max_length: 369
     min_fuel: 1500000
+    min_length: 50
   cruise:
     fuel_fit_coefs: [47621.19349630031, -9978945.603958681]
     max_fuel: 5500000
+    max_length: 334
     min_fuel: 1000000
+    min_length: 60
   ferry:
     fuel_fit_coefs: [0.03627497943115485, 8.31842031942603]
     max_fuel: 500000
+    max_length: 168
     min_fuel: 30000
+    min_length: 26
   fishing:
     fuel_fit_coefs: [59.449199238168845, -731.4111659311534, 857.5596337732318]
     max_fuel: 300000
+    max_length: 200
     min_fuel: 150
+    min_length: 20
   other:
     fuel_fit_coefs: [0.25853080128793177, 3.1044720668977868]
     max_fuel: 12000
+    max_length: 75
     min_fuel: 100
+    min_length: 10
   smallpass:
     fuel_fit_coefs: [0.25853080128793177, 3.1044720668977868]
     max_fuel: 12000
+    max_length: 75
     min_fuel: 100
+    min_length: 10
   tanker:
     cargo_capacity: [7748600, 53000000, 126211000, 185447000]
     fuel_capacity: [740700, 1956000, 2984000, 4155000]
@@ -140,8 +152,10 @@ vessel_attributes:
     - [251, 301]
     max_cargo: 185447000
     max_fuel: 4155000
+    max_length: 300
     min_cargo: 7593628
     min_fuel: 740700
+    min_length: 150
     probability_cargo: 0.8
     probability_fuel: 0.2
     tanker_types: *id005
