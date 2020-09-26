@@ -115,7 +115,6 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
         ais_tracks = geopandas.read_file(shapefile, bbox=geotiff_bbox)
 	
         if len(ais_tracks.index) > 0.0:
-            print(f'Line 118 ais_tracks: {len(ais_tracks)}')
             (
                 vessel_len,
                 vessel_origin,
@@ -512,7 +511,7 @@ def get_oil_capacity(oil_attrs, vessel_length, vessel_type, random_generator):
 
     :param dict oil_attrs: Oil attribution information from the output of make_oil_attrs.py.
 
-    :param int vessel_length: Length of vessel from which spill occurs [m].
+    :param int or float vessel_length: Length of vessel from which spill occurs [m].
 
     :param str vessel_type: Vessel type from which spill occurs.
 
@@ -529,10 +528,23 @@ def get_oil_capacity(oil_attrs, vessel_length, vessel_type, random_generator):
             ]
         )
 
-    if vessel_length < 0:
+    if vessel_length < oil_attrs["vessel_attributes"][vessel_type]["min_length"]:
+        # set lower bound
         fuel_capacity = oil_attrs["vessel_attributes"][vessel_type]["min_fuel"]
-        cargo_capacity = oil_attrs["vessel_attributes"][vessel_type]["min_cargo"]
+        cargo_capacity = (
+            oil_attrs["vessel_attributes"][vessel_type]["min_cargo"]
+            if vessel_type in oil_attrs["categories"]["tank_vessels"]
+            else 0
+        )
 
+    elif vessel_length > oil_attrs["vessel_attributes"][vessel_type]["max_length"]:
+        # set upper bound
+        fuel_capacity = oil_attrs["vessel_attributes"][vessel_type]["max_fuel"]
+        cargo_capacity = (
+            oil_attrs["vessel_attributes"][vessel_type]["max_cargo"]
+            if vessel_type in oil_attrs["categories"]["tank_vessels"]
+            else 0
+        )
     else:
 
         # ~~~ tankers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
