@@ -150,6 +150,7 @@ class TestRandomOilSpills:
                 "spill_lat": [50.40640],
                 "geotiff_x_index": [134],
                 "geotiff_y_index": [393],
+                "vessel_type": "other",
                 "vessel_mmsi": ["367704540"],
                 "spill_volume": [13.95439],
             }
