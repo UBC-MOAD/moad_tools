@@ -137,21 +137,13 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
         fuel_capacity, cargo_capacity = get_oil_capacity(
             oil_attrs, vessel_len, vessel_type, random_generator
         )
-        try:
-            fuel_spill = random_generator.choice(
-                [False, True],
-                p=[
-                    oil_attrs["vessel_attributes"][vessel_type]["probability_cargo"],
-                    oil_attrs["vessel_attributes"][vessel_type]["probability_fuel"],
-                ],
-            )
-        except KeyError:
-            # No probability_cargo or probability_fuel key means that vessel type carries only fuel
-            fuel_spill = 1
+
+        fuel_spill = fuel_or_cargo_spill(oil_attrs, vessel_type, random_generator)
         max_spill_volume = fuel_capacity if fuel_spill else cargo_capacity
         spill_params["spill_volume"].append(
             max_spill_volume * choose_fraction_spilled(random_generator)
         )
+        spill_params["fuel_cargo"].append("fuel" if fuel_spill else "cargo")
 
     df = pandas.DataFrame(spill_params)
 
@@ -741,6 +733,34 @@ def _get_bin(value, bins):
         if bins[i][0] <= value < bins[i][1]:
             return i
     return -1
+
+
+def fuel_or_cargo_spill(oil_attrs, vessel_type, random_generator):
+    """Randomly choose whether the spill is from fuel or cargo volume for vessel types that
+    transport oil as cargo.
+
+    :param dict oil_attrs: Oil attribution information from the output of make_oil_attrs.py.
+
+    :param str vessel_type: Vessel type from which spill occurs.
+
+    :param random_generator: PCG-64 random number generator.
+    :type random_generator: :py:class:`numpy.random.Generator`
+
+    :return: Fuel or cargo spill flag.
+    :rtype: boolean
+    """
+    try:
+        fuel_spill = random_generator.choice(
+            [False, True],
+            p=[
+                oil_attrs["vessel_attributes"][vessel_type]["probability_cargo"],
+                oil_attrs["vessel_attributes"][vessel_type]["probability_fuel"],
+            ],
+        )
+    except KeyError:
+        # No probability_cargo or probability_fuel key means that vessel type carries only fuel
+        fuel_spill = True
+    return fuel_spill
 
 
 def choose_fraction_spilled(random_generator):

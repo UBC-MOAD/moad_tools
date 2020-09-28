@@ -153,6 +153,7 @@ class TestRandomOilSpills:
                 "vessel_type": "other",
                 "vessel_mmsi": ["367704540"],
                 "spill_volume": [13.95439],
+                "fuel_cargo": "fuel",
             }
         )
         pandas.testing.assert_frame_equal(df, expected)
@@ -491,6 +492,50 @@ class TestGetOilCapacity:
         assert (
             cargo_capacity == oil_attrs["vessel_attributes"][vessel_type]["max_cargo"]
         )
+
+
+class TestFuelOrCargoSpill:
+    """Unit tests for fuel_or_cargo_spill() function.
+    """
+
+    @pytest.mark.parametrize(
+        "vessel_type, random_seed, expected",
+        (
+            ("tanker", 43, False),
+            ("atb", 43, False),
+            ("barge", 43, False),
+            ("cargo", 43, True),
+            ("cruise", 43, True),
+            ("ferry", 43, True),
+            ("fishing", 43, True),
+            ("smallpass", 43, True),
+            ("other", 43, True),
+            # Different random seed results in change from fuel to cargo for tanker, atb & barge
+            ("tanker", 4341, True),
+            ("atb", 4341, True),
+            ("barge", 4341, True),
+            ("cargo", 4341, True),
+            ("cruise", 4341, True),
+            ("ferry", 4341, True),
+            ("fishing", 4341, True),
+            ("smallpass", 4341, True),
+            ("other", 4341, True),
+        ),
+    )
+    def test_fuel_or_cargo_spill(self, vessel_type, random_seed, expected, config_file):
+        with Path(config_file).open("r") as f:
+            config = yaml.safe_load(f)
+        # Specifying the random seed makes the random number stream deterministic
+        # so that calculated results are repeatable
+        random_generator = numpy.random.default_rng(seed=random_seed)
+
+        with Path(config["oil attribution"]).open("r") as f:
+            oil_attrs = yaml.safe_load(f)
+        fuel_spill = random_oil_spills.fuel_or_cargo_spill(
+            oil_attrs, vessel_type, random_generator
+        )
+
+        assert fuel_spill == expected
 
 
 class TestChooseFractionSpilled:
