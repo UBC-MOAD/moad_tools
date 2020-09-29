@@ -1,0 +1,27 @@
+atb:
+  bunker: 0.38
+  diesel: 0.62
+barge:
+  bunker: 0.38
+  diesel: 0.62
+cargo:
+  bunker: 0.97
+  diesel: 0.03
+cruise:
+  bunker: 0.8
+  diesel: 0.2
+ferry:
+  bunker: 0.0
+  diesel: 1.0
+fishing:
+  bunker: 0.14
+  diesel: 0.86
+other:
+  bunker: 0.32
+  diesel: 0.68
+smallpass:
+  bunker: 0.0
+  diesel: 1.0
+tanker:
+  bunker: 0.64
+  diesel: 0.36

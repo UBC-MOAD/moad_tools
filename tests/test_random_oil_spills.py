@@ -154,6 +154,7 @@ class TestRandomOilSpills:
                 "vessel_mmsi": ["367704540"],
                 "spill_volume": [13.95439],
                 "fuel_cargo": "fuel",
+                "Lagrangian_template": "Lagrangian_diesel.dat",
             }
         )
         pandas.testing.assert_frame_equal(df, expected)
@@ -618,6 +619,52 @@ class TestCumulativeSpillFraction:
             ]
         )
         numpy.testing.assert_allclose(cumulative, expected)
+
+
+class TestGetOilType:
+    """Unit tests for get_oil_type() function.
+    """
+
+    @pytest.mark.parametrize(
+        "vessel_type, expected",
+        (
+            ("tanker", "diesel"),
+            ("atb", "diesel"),
+            ("barge", "diesel"),
+            ("cargo", "bunker"),
+            ("cruise", "bunker"),
+            ("ferry", "diesel"),
+            ("fishing", "diesel"),
+            ("smallpass", "diesel"),
+            ("other", "diesel"),
+        ),
+    )
+    def test_get_oil_type_fuel_spill(self, vessel_type, expected, config_file):
+        with Path(config_file).open("r") as f:
+            config = yaml.safe_load(f)
+        # Specifying the random seed makes the random number stream deterministic
+        # so that calculated results are repeatable
+        random_generator = numpy.random.default_rng(seed=43)
+
+        with Path(config["oil attribution"]).open("rt") as f:
+            oil_attrs = yaml.safe_load(f)
+        marine_transport_data_dir = Path(config["oil attribution"]).parent
+        vessel_fuel_types_file = Path(oil_attrs["files"]["fuel"]).name
+        with (marine_transport_data_dir / vessel_fuel_types_file).open("rt") as f:
+            vessel_fuel_types = yaml.safe_load(f)
+        vessel_origin, vessel_dest, fuel_spill = None, None, True
+        oil_type = random_oil_spills.get_oil_type(
+            oil_attrs,
+            vessel_type,
+            vessel_origin,
+            vessel_dest,
+            fuel_spill,
+            vessel_fuel_types,
+            marine_transport_data_dir,
+            random_generator,
+        )
+
+        assert oil_type == expected
 
 
 class TestWriteCSVFile:

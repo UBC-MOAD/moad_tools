@@ -149,6 +149,21 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
         )
         spill_params["fuel_cargo"].append("fuel" if fuel_spill else "cargo")
 
+        vessel_fuel_types_file = Path(oil_attrs["files"]["fuel"]).name
+        with (marine_transport_data_dir / vessel_fuel_types_file).open("rt") as f:
+            vessel_fuel_types = yaml.safe_load(f)
+        oil_type = get_oil_type(
+            oil_attrs,
+            vessel_type,
+            vessel_origin,
+            vessel_dest,
+            fuel_spill,
+            vessel_fuel_types,
+            marine_transport_data_dir,
+            random_generator,
+        )
+        spill_params["Lagrangian_template"].append(f"Lagrangian_{oil_type}.dat")
+
     df = pandas.DataFrame(spill_params)
 
     return df
@@ -811,6 +826,52 @@ def _cumulative_spill_fraction(fraction):
         - typeonefrac * numpy.exp(-fraction / typeonedec)
         - typetwofrac * numpy.exp(-fraction / typetwodec)
     ) * multiplier
+
+
+def get_oil_type(
+    oil_attrs,
+    vessel_type,
+    vessel_origin,
+    vessel_dest,
+    fuel_spill,
+    vessel_fuel_types,
+    marine_transport_data_dir,
+    random_generator,
+):
+    """Randomly choose a type of oil spilled based on vessel type, AIS origin & destination,
+    and whether fuel or cargo is spilled.
+
+    :param dict oil_attrs: Oil attribution information from the output of make_oil_attrs.py.
+
+    :param str vessel_type: Vessel type from which spill occurs.
+
+    :param str or None vessel_origin: Origin of AIS track from which spill occurs.
+
+    :param str or None vessel_dest: Destination of AIS track from which spill occurs.
+
+    :param boolean fuel_spill: Fuel or cargo spill flag.
+
+    :param dict vessel_fuel_types: Mapping of fuel types and probabilities for vessel types.
+
+    :param marine_transport_data_dir: Directory path to marine_transport_data files repository
+                                      cloned from https://github.com/MIDOSS/marine_transport_data.
+    :type marine_transport_data_dir: :py:class:`pathlib.Path`
+
+    :param random_generator: PCG-64 random number generator
+    :type random_generator: :py:class:`numpy.random.Generator`
+
+    :return: Type of oil spilled.
+    :rtype: str
+    """
+    if fuel_spill:
+        oil_type = random_generator.choice(
+            ["bunker", "diesel"],
+            p=[
+                vessel_fuel_types[vessel_type]["bunker"],
+                vessel_fuel_types[vessel_type]["diesel"],
+            ],
+        )
+    return oil_type
 
 
 def write_csv_file(df, csv_file):
