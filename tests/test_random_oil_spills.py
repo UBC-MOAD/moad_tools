@@ -383,7 +383,7 @@ class TestGetOilCapacity:
         # so that calculated results are repeatable
         random_generator = numpy.random.default_rng(seed=43)
 
-        with Path(config["oil attribution"]).open("r") as f:
+        with Path(config["oil attribution"]).open("rt") as f:
             oil_attrs = yaml.safe_load(f)
         vessel_len = 74
         vessel_type = "cargo"
@@ -415,7 +415,7 @@ class TestGetOilCapacity:
         # so that calculated results are repeatable
         random_generator = numpy.random.default_rng(seed=43)
 
-        with Path(config["oil attribution"]).open("r") as f:
+        with Path(config["oil attribution"]).open("rt") as f:
             oil_attrs = yaml.safe_load(f)
         fuel_capacity, cargo_capacity = random_oil_spills.get_oil_capacity(
             oil_attrs, vessel_len, vessel_type, random_generator
@@ -444,7 +444,7 @@ class TestGetOilCapacity:
         # so that calculated results are repeatable
         random_generator = numpy.random.default_rng(seed=43)
 
-        with Path(config["oil attribution"]).open("r") as f:
+        with Path(config["oil attribution"]).open("rt") as f:
             oil_attrs = yaml.safe_load(f)
         fuel_capacity, cargo_capacity = random_oil_spills.get_oil_capacity(
             oil_attrs, vessel_len, vessel_type, random_generator
@@ -462,7 +462,7 @@ class TestGetOilCapacity:
         # so that calculated results are repeatable
         random_generator = numpy.random.default_rng(seed=43)
 
-        with Path(config["oil attribution"]).open("r") as f:
+        with Path(config["oil attribution"]).open("rt") as f:
             oil_attrs = yaml.safe_load(f)
         fuel_capacity, cargo_capacity = random_oil_spills.get_oil_capacity(
             oil_attrs, vessel_len, vessel_type, random_generator
@@ -483,7 +483,7 @@ class TestGetOilCapacity:
         # so that calculated results are repeatable
         random_generator = numpy.random.default_rng(seed=43)
 
-        with Path(config["oil attribution"]).open("r") as f:
+        with Path(config["oil attribution"]).open("rt") as f:
             oil_attrs = yaml.safe_load(f)
         fuel_capacity, cargo_capacity = random_oil_spills.get_oil_capacity(
             oil_attrs, vessel_len, vessel_type, random_generator
@@ -529,7 +529,7 @@ class TestFuelOrCargoSpill:
         # so that calculated results are repeatable
         random_generator = numpy.random.default_rng(seed=random_seed)
 
-        with Path(config["oil attribution"]).open("r") as f:
+        with Path(config["oil attribution"]).open("rt") as f:
             oil_attrs = yaml.safe_load(f)
         fuel_spill = random_oil_spills.fuel_or_cargo_spill(
             oil_attrs, vessel_type, random_generator

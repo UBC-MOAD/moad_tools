@@ -162,7 +162,7 @@ Here is an example YAML file:
       - other
 
     # File to read oil attribution data from
-    oil attribution: /media/doug/warehouse/MIDOSS/marine_transport_data/oil_attribution_example.yaml
+    oil attribution: /media/doug/warehouse/MIDOSS/marine_transport_data/oil_attribution.yaml
 
 
 .. _RandomOilSpillsFunctionsAndCommand-lineInterface:

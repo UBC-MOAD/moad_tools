@@ -76,6 +76,13 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
 
     shapefiles_dir = Path(config["shapefiles dir"])
 
+    oil_attribution_file = Path(config["oil attribution"])
+
+    marine_transport_data_dir = oil_attribution_file.parent
+
+    with oil_attribution_file.open("rt") as f:
+        oil_attrs = yaml.safe_load(f)
+
     spill_params = collections.defaultdict(list)
     for spill in range(n_spills):
         spill_date_hour = get_date(
@@ -131,9 +138,6 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
             vessel_type, vessel_len, random_generator
         )
 
-        oil_attribution_file = Path(config["oil attribution"])
-        with oil_attribution_file.open("rt") as f:
-            oil_attrs = yaml.safe_load(f)
         fuel_capacity, cargo_capacity = get_oil_capacity(
             oil_attrs, vessel_len, vessel_type, random_generator
         )
