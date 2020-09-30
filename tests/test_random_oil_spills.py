@@ -666,6 +666,152 @@ class TestGetOilType:
 
         assert oil_type == expected
 
+    @pytest.mark.parametrize(
+        "vessel_type, random_seed, expected",
+        (("atb", 43, "dilbit"), ("atb", 4344, "akns"),),
+    )
+    def test_get_oil_type_cargo_spill(
+        self, vessel_type, random_seed, expected, config_file, tmp_path, monkeypatch
+    ):
+        # Specifying the random seed makes the random number stream deterministic
+        # so that calculated results are repeatable
+        random_generator = numpy.random.default_rng(seed=random_seed)
+
+        with Path(config_file).open("r") as f:
+            config = yaml.safe_load(f)
+        oil_attribution_file = Path(config["oil attribution"])
+        marine_transport_data_dir = oil_attribution_file.parent
+        with oil_attribution_file.open("rt") as f:
+            oil_attrs = yaml.safe_load(f)
+        vessel_fuel_types_file = Path(oil_attrs["files"]["fuel"]).name
+        with (marine_transport_data_dir / vessel_fuel_types_file).open("rt") as f:
+            vessel_fuel_types = yaml.safe_load(f)
+        vessel_origin, vessel_dest, fuel_spill = (
+            "Westridge Marine Terminal",
+            "U.S. Oil & Refining",
+            False,
+        )
+
+        data_dir = tmp_path / "marine_transport_data"
+        data_dir.mkdir()
+        cargo_info_file = data_dir / "yaml_file"
+        cargo_info_file.write_text(
+            textwrap.dedent(
+                """\
+                Westridge Marine Terminal:
+                  atb:
+                    akns:
+                      fraction_of_total: 0.5
+                    bunker:
+                      fraction_of_total: 0
+                    diesel:
+                      fraction_of_total: 0
+                    dilbit:
+                      fraction_of_total: 0.5
+                    gas:
+                      fraction_of_total: 0
+                    jet:
+                      fraction_of_total: 0
+                    other:
+                      fraction_of_total: 0
+                """
+            )
+        )
+        monkeypatch.setitem(oil_attrs["files"], "CAD_origin", cargo_info_file)
+        empty_file = data_dir / "empty_file"
+        empty_file.write_text("")
+        for file_path in (
+            "WA_destination",
+            "WA_origin",
+            "US_origin",
+            "US_combined",
+            "Pacific_origin",
+        ):
+            monkeypatch.setitem(oil_attrs["files"], file_path, empty_file)
+
+        oil_type = random_oil_spills.get_oil_type(
+            oil_attrs,
+            vessel_type,
+            vessel_origin,
+            vessel_dest,
+            fuel_spill,
+            vessel_fuel_types,
+            data_dir,
+            random_generator,
+        )
+
+        assert oil_type == expected
+
+
+class TestGetOilTypeCargo:
+    """Unit tests for get_oil_type_cargo() function.
+    """
+
+    @pytest.mark.parametrize(
+        "vessel_type, random_seed, expected",
+        (("atb", 43, "dilbit"), ("atb", 4344, "akns"),),
+    )
+    def test_get_oil_type_cargo(self, vessel_type, random_seed, expected):
+        # Specifying the random seed makes the random number stream deterministic
+        # so that calculated results are repeatable
+        random_generator = numpy.random.default_rng(seed=random_seed)
+
+        cargo_info = {
+            "Westridge Marine Terminal": {
+                "atb": {
+                    "akns": {"fraction_of_total": 0.5},
+                    "bunker": {"fraction_of_total": 0},
+                    "diesel": {"fraction_of_total": 0},
+                    "dilbit": {"fraction_of_total": 0.5},
+                    "gas": {"fraction_of_total": 0},
+                    "jet": {"fraction_of_total": 0},
+                    "other": {"fraction_of_total": 0},
+                }
+            }
+        }
+        facility = "Westridge Marine Terminal"
+        oil_type = random_oil_spills.get_oil_type_cargo(
+            cargo_info, facility, vessel_type, random_generator
+        )
+
+        assert oil_type == expected
+
+
+class TestGetOilTypeCargoGenericUS:
+    """Unit tests for get_oil_type_cargo_generic_US() function.
+    """
+
+    @pytest.mark.parametrize(
+        "vessel_type, random_seed, expected",
+        (
+            ("atb", 3, "bunker"),
+            ("atb", 4344, "diesel"),
+            ("atb", 43, "gas"),
+            ("atb", 4, "jet"),
+        ),
+    )
+    def test_get_oil_type_cargo_generic_US(self, vessel_type, random_seed, expected):
+        # Specifying the random seed makes the random number stream deterministic
+        # so that calculated results are repeatable
+        random_generator = numpy.random.default_rng(seed=random_seed)
+
+        cargo_info = {
+            "atb": {
+                "akns": {"fraction_of_total": 0.0111},
+                "bunker": {"fraction_of_total": 0.0934},
+                "diesel": {"fraction_of_total": 0.2717},
+                "dilbit": {"fraction_of_total": 0.0},
+                "gas": {"fraction_of_total": 0.4325},
+                "jet": {"fraction_of_total": 0.1524},
+                "other": {"fraction_of_total": 0.0389},
+            }
+        }
+        oil_type = random_oil_spills.get_oil_type_cargo_generic_US(
+            cargo_info, vessel_type, random_generator
+        )
+
+        assert oil_type == expected
+
 
 class TestWriteCSVFile:
     """Unit test for write_csv_file() function.
