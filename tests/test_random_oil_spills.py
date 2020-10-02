@@ -675,7 +675,7 @@ class TestGetOilType:
             ("tanker", 4344, "akns"),
         ),
     )
-    def test_get_oil_type_cargo_spill(
+    def test_get_oil_type_atb_tanker_cargo_spill(
         self, vessel_type, random_seed, expected, config_file, tmp_path, monkeypatch
     ):
         # Specifying the random seed makes the random number stream deterministic
@@ -721,6 +721,90 @@ class TestGetOilType:
                       fraction_of_total: 0
                     
                   tanker:
+                    akns:
+                      fraction_of_total: 0.5
+                    bunker:
+                      fraction_of_total: 0
+                    diesel:
+                      fraction_of_total: 0
+                    dilbit:
+                      fraction_of_total: 0.5
+                    gas:
+                      fraction_of_total: 0
+                    jet:
+                      fraction_of_total: 0
+                    other:
+                      fraction_of_total: 0
+                """
+            )
+        )
+        monkeypatch.setitem(oil_attrs["files"], "CAD_origin", cargo_info_file)
+        empty_file = data_dir / "empty_file"
+        empty_file.write_text("")
+        for file_path in (
+            "WA_destination",
+            "WA_origin",
+            "US_origin",
+            "US_combined",
+            "Pacific_origin",
+        ):
+            monkeypatch.setitem(oil_attrs["files"], file_path, empty_file)
+
+        oil_type = random_oil_spills.get_oil_type(
+            oil_attrs,
+            vessel_type,
+            vessel_origin,
+            vessel_dest,
+            fuel_spill,
+            vessel_fuel_types,
+            data_dir,
+            random_generator,
+        )
+
+        assert oil_type == expected
+
+    @pytest.mark.parametrize(
+        "vessel_origin, vessel_dest, random_seed, expected",
+        (
+            ("Westridge Marine Terminal", "Suncor Nanaimo", 43, "jet"),
+            ("Westridge Marine Terminal", "U.S. Oil & Refining", 43, "dilbit"),
+            ("Westridge Marine Terminal", "U.S. Oil & Refining", 4344, "akns"),
+            ("Pacific", None, 43, "bunker"),
+        ),
+    )
+    def test_get_oil_type_barge_cargo_spill(
+        self,
+        vessel_origin,
+        vessel_dest,
+        random_seed,
+        expected,
+        config_file,
+        tmp_path,
+        monkeypatch,
+    ):
+        # Specifying the random seed makes the random number stream deterministic
+        # so that calculated results are repeatable
+        random_generator = numpy.random.default_rng(seed=random_seed)
+
+        with Path(config_file).open("r") as f:
+            config = yaml.safe_load(f)
+        oil_attribution_file = Path(config["oil attribution"])
+        marine_transport_data_dir = oil_attribution_file.parent
+        with oil_attribution_file.open("rt") as f:
+            oil_attrs = yaml.safe_load(f)
+        vessel_fuel_types_file = Path(oil_attrs["files"]["fuel"]).name
+        with (marine_transport_data_dir / vessel_fuel_types_file).open("rt") as f:
+            vessel_fuel_types = yaml.safe_load(f)
+        vessel_type, fuel_spill = "barge", False
+
+        data_dir = tmp_path / "marine_transport_data"
+        data_dir.mkdir()
+        cargo_info_file = data_dir / "yaml_file"
+        cargo_info_file.write_text(
+            textwrap.dedent(
+                """\
+                Westridge Marine Terminal:
+                  barge:
                     akns:
                       fraction_of_total: 0.5
                     bunker:
