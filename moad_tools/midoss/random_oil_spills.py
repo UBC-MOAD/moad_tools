@@ -1564,6 +1564,8 @@ def cli(n_spills, config_file, csv_file, verbosity):
         datefmt="%Y-%m-%d %H:%M:%S",
         stream=sys.stdout,
     )
+    logging.getLogger("fiona").setLevel(logging.WARNING)
+    logging.getLogger("rasterio").setLevel(logging.WARNING)
     df = random_oil_spills(n_spills, config_file)
     write_csv_file(df, csv_file)
 
