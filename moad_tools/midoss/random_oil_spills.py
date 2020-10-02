@@ -880,6 +880,14 @@ def get_oil_type(
                 marine_transport_data_dir,
                 random_generator,
             )
+        elif vessel_type == "tanker":
+            oil_type = get_oil_type_tanker(
+                oil_attrs,
+                vessel_origin,
+                vessel_dest,
+                marine_transport_data_dir,
+                random_generator,
+            )
     return oil_type
 
 
@@ -905,7 +913,7 @@ def get_oil_type_atb(
     :param str or None destination: Destination of AIS track from which spill occurs.
 
     :param transport_data_dir: Directory path to marine_transport_data files repository
-                                      cloned from https://github.com/MIDOSS/marine_transport_data.
+                               cloned from https://github.com/MIDOSS/marine_transport_data.
     :type transport_data_dir: :py:class:`pathlib.Path`
 
     :param random_generator: PCG-64 random number generator
@@ -1016,6 +1024,111 @@ def get_oil_type_atb(
     else:
         # For all other traffic, use a generic fuel attribution from the combined
         # US import and export
+        oil_type = get_oil_type_cargo_generic_US(
+            USall_yaml, vessel_type, random_generator
+        )
+
+    return oil_type
+
+
+def get_oil_type_tanker(
+    oil_attrs, origin, destination, transport_data_dir, random_generator
+):
+    """Randomly choose type of cargo oil spilled from a tanker based on AIS track
+    origin & destination, and oil cargo attribution analysis.
+
+    Decision tree for allocating oil type to tanker traffic see Google drawing
+    [Tanker_Oil_Attribution](https://docs.google.com/drawings/d/1-4gl2yNNWxqXK-IOr4KNZxO-awBC-bNrjRNrt86fykU/edit)
+    for a visual representation.
+
+    :param dict oil_attrs: Oil attribution information from the output of make_oil_attrs.py.
+
+    :param str or None origin: Origin of AIS track from which spill occurs.
+
+    :param str or None destination: Destination of AIS track from which spill occurs.
+
+    :param transport_data_dir: Directory path to marine_transport_data files repository
+                               cloned from https://github.com/MIDOSS/marine_transport_data.
+    :type transport_data_dir: :py:class:`pathlib.Path`
+
+    :param random_generator: PCG-64 random number generator
+    :type random_generator: :py:class:`numpy.random.Generator`
+
+    :return: Type of oil spilled.
+    :rtype: str
+    """
+    vessel_type = "tanker"
+
+    # Assign US and CAD origin/destinations from oil_attrs file
+    CAD_origin_destination = oil_attrs["categories"]["CAD_origin_destination"]
+    US_origin_destination = oil_attrs["categories"]["US_origin_destination"]
+
+    # Get cargo oil type attribution information from oil-type yaml files
+    yaml_file = transport_data_dir / Path(oil_attrs["files"]["CAD_origin"]).name
+    with yaml_file.open("rt") as f:
+        CAD_yaml = yaml.safe_load(f)
+    yaml_file = transport_data_dir / Path(oil_attrs["files"]["WA_destination"]).name
+    with yaml_file.open("rt") as f:
+        WA_in_yaml = yaml.safe_load(f)
+    yaml_file = transport_data_dir / Path(oil_attrs["files"]["WA_origin"]).name
+    with yaml_file.open("rt") as f:
+        WA_out_yaml = yaml.safe_load(f)
+    # # US_origin is for US as origin
+    yaml_file = transport_data_dir / Path(oil_attrs["files"]["US_origin"]).name
+    with yaml_file.open("rt") as f:
+        US_yaml = yaml.safe_load(f)
+    # # US_combined represents the combined import and export of oil
+    yaml_file = transport_data_dir / Path(oil_attrs["files"]["US_combined"]).name
+    with yaml_file.open("rt") as f:
+        USall_yaml = yaml.safe_load(f)
+    yaml_file = transport_data_dir / Path(oil_attrs["files"]["Pacific_origin"]).name
+    with yaml_file.open("rt") as f:
+        Pacific_yaml = yaml.safe_load(f)
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # NOTE: these pairs need to be used together for
+    # "get_oil_type_cargo" (but don't yet have error-checks in place):
+    # - "WA_in_yaml" and "destination"
+    # - "WA_out_yaml" and "origin"
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    if origin in CAD_origin_destination:
+        if origin == "Westridge Marine Terminal":
+            oil_type = get_oil_type_cargo(
+                CAD_yaml, origin, vessel_type, random_generator
+            )
+        else:
+            if destination in US_origin_destination:
+                # we have better information on WA fuel transfers,
+                # so I'm prioritizing this information source
+                oil_type = get_oil_type_cargo(
+                    WA_in_yaml, destination, vessel_type, random_generator
+                )
+            else:
+                oil_type = get_oil_type_cargo(
+                    CAD_yaml, origin, vessel_type, random_generator
+                )
+    elif origin in US_origin_destination:
+        oil_type = get_oil_type_cargo(
+            WA_out_yaml, origin, vessel_type, random_generator
+        )
+    elif destination in US_origin_destination:
+        oil_type = get_oil_type_cargo(
+            WA_in_yaml, destination, vessel_type, random_generator
+        )
+    elif destination in CAD_origin_destination:
+        oil_type = get_oil_type_cargo(
+            CAD_yaml, destination, vessel_type, random_generator
+        )
+    elif origin == "Pacific":
+        oil_type = get_oil_type_cargo_generic_US(
+            Pacific_yaml, vessel_type, random_generator
+        )
+    elif origin == "US":
+        oil_type = get_oil_type_cargo_generic_US(US_yaml, vessel_type, random_generator)
+    else:
+        # Currently, this is a catch for all ship tracks not allocated with origin or destination
+        # It's a generic fuel attribution from the combined US import and export
         oil_type = get_oil_type_cargo_generic_US(
             USall_yaml, vessel_type, random_generator
         )

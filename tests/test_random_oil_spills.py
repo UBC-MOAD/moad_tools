@@ -668,7 +668,12 @@ class TestGetOilType:
 
     @pytest.mark.parametrize(
         "vessel_type, random_seed, expected",
-        (("atb", 43, "dilbit"), ("atb", 4344, "akns"),),
+        (
+            ("atb", 43, "dilbit"),
+            ("atb", 4344, "akns"),
+            ("tanker", 43, "dilbit"),
+            ("tanker", 4344, "akns"),
+        ),
     )
     def test_get_oil_type_cargo_spill(
         self, vessel_type, random_seed, expected, config_file, tmp_path, monkeypatch
@@ -700,6 +705,22 @@ class TestGetOilType:
                 """\
                 Westridge Marine Terminal:
                   atb:
+                    akns:
+                      fraction_of_total: 0.5
+                    bunker:
+                      fraction_of_total: 0
+                    diesel:
+                      fraction_of_total: 0
+                    dilbit:
+                      fraction_of_total: 0.5
+                    gas:
+                      fraction_of_total: 0
+                    jet:
+                      fraction_of_total: 0
+                    other:
+                      fraction_of_total: 0
+                    
+                  tanker:
                     akns:
                       fraction_of_total: 0.5
                     bunker:
