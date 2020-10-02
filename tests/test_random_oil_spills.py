@@ -150,19 +150,15 @@ class TestRandomOilSpills:
                 "spill_lat": [50.40640],
                 "geotiff_x_index": [134],
                 "geotiff_y_index": [393],
-                "vessel_type": "other",
+                "vessel_type": ["other"],
                 "vessel_mmsi": ["367704540"],
                 "spill_volume": [13.95439],
-                "fuel_cargo": "fuel",
-                "Lagrangian_template": "Lagrangian_diesel.dat",
+                "fuel_cargo": ["fuel"],
+                "Lagrangian_template": ["Lagrangian_diesel.dat"],
             }
         )
         pandas.testing.assert_frame_equal(df, expected)
 
-    @pytest.mark.xfail(
-        reason="2nd dataframe row changes every time a random_generator.choice() call is added; "
-        "finalize when script is complete"
-    )
     def test_dataframe_two_rows(
         self,
         mock_calc_vte_probability,
@@ -174,19 +170,27 @@ class TestRandomOilSpills:
     ):
         # Specifying the random seed makes the random number stream deterministic
         # so that calculated results are repeatable
-        df = random_oil_spills.random_oil_spills(2, config_file, random_seed=43)
+        df = random_oil_spills.random_oil_spills(2, config_file, random_seed=45)
 
         expected = pandas.DataFrame(
             {
                 "spill_date_hour": [
-                    pandas.Timestamp(arrow.get("2016-08-19 18:00").datetime),
-                    pandas.Timestamp(arrow.get("2018-08-27 15:00").datetime),
+                    pandas.Timestamp(arrow.get("2017-08-29 17:00").datetime),
+                    pandas.Timestamp(arrow.get("2016-08-04 22:00").datetime),
                 ],
                 "run_days": [7, 7],
-                "spill_lon": [-124.6175, -123.0092],
-                "spill_lat": [50.4064, 48.5654],
-                "geotiff_x_index": [134, 256],
-                "geotiff_y_index": [393, 500],
+                "spill_lon": [-122.8388, -123.0017],
+                "spill_lat": [48.5604, 48.7390],
+                "geotiff_x_index": [257, 245],
+                "geotiff_y_index": [511, 500],
+                "vessel_type": ["ferry", "other"],
+                "vessel_mmsi": ["367704540", "367704540"],
+                "spill_volume": [9300.0, 348.85994097108437],
+                "fuel_cargo": ["fuel", "fuel"],
+                "Lagrangian_template": [
+                    "Lagrangian_diesel.dat",
+                    "Lagrangian_diesel.dat",
+                ],
             },
         )
         pandas.testing.assert_frame_equal(df, expected)
