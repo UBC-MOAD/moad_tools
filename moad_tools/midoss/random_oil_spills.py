@@ -459,9 +459,15 @@ def get_length_origin_destination(
         )
         vte[i] = frac_in_cell * track_duration.total_seconds()
 
-    chosen_track_index = random_generator.choice(
-        range(len(ais_tracks.index)), p=vte / vte.sum()
-    )
+    try:
+        chosen_track_index = random_generator.choice(
+            range(len(ais_tracks.index)), p=vte / vte.sum()
+        )
+    except ValueError:
+        raise ValueError(
+            f"No AIS tracks in GeoTIFF box: "
+            f"{shapefiles_dir=}, {vessel_type=}, {spill_month=}, {geotiff_bbox.exterior.coords.xy=}"
+        )
     vessel_len = ais_tracks.LENGTH[chosen_track_index]
     try:
         vessel_origin = ais_tracks.FROM_[chosen_track_index]
