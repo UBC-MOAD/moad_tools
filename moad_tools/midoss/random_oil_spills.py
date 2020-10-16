@@ -85,6 +85,7 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
 
     spill_params = collections.defaultdict(list)
     for spill in range(n_spills):
+        logging.debug(f"spill number: {spill=}")
         spill_date_hour = get_date(
             start_date, end_date, vte_probability, random_generator
         )
@@ -221,7 +222,7 @@ def get_date(start_date, end_date, vte_probability, random_generator):
     :return: Randomly selected spill date and hour
     :rtype: :py:class:`datetime.datetime`
     """
-    logging.info("Selecting random spill date and hour, weighted by VTE")
+    logging.info("Selecting random spill date and hour, weighted by overall VTE")
     # Randomly select month based on weighting by vessel traffic
     month_random = random_generator.choice(range(1, 13), p=vte_probability)
 
@@ -281,7 +282,7 @@ def get_lat_lon_indices(
     """
     logging.info(
         f"Selecting random spill location within SalishSeaCast domain, "
-        f"weighted by 2018-{spill_month:02d} VTE"
+        f"weighted by VTE in 2018-{spill_month:02d}"
     )
     with rasterio.open(geotiffs_dir / f"all_2018_{spill_month:02d}.tif") as dataset:
         data = dataset.read(1, boundless=True, fill_value=0)
@@ -393,6 +394,11 @@ def get_vessel_type(
     :return: Randomly selected vessel type from which spill occurs.
     :rtype: str
     """
+    logging.info(
+        f"Selecting random vessel type from which spill occurs, "
+        f"weighted by VTE in 2018-{spill_month:02d} GeoTIFF cell "
+        f"({geotiff_x_index}, {geotiff_y_index})"
+    )
     # Calculate vessel traffic exposure (VTE) [hours/km^2] for each vessel type
     # at the spill location for the month in which the spill occurs
     vte_by_vessel_type = numpy.empty(len(vessel_types))
@@ -441,6 +447,11 @@ def get_length_origin_destination(
 
     :rtype: tuple
     """
+    logging.info(
+        f"Selecting random AIS vessel track from which spill occurs, "
+        f"weighted by VTE for 2018-{spill_month:02d} {vessel_type} vessels in GeoTIFF cell "
+        f"at {geotiff_bbox.bounds}"
+    )
     # Load AIS track segments that pass through or are contained in GeoTIFF cell in which
     # spill occurs
     shapefile = shapefiles_dir / f"{vessel_type}_2018_{spill_month:02d}.shp"
@@ -484,7 +495,7 @@ def get_length_origin_destination(
     except AttributeError:
         vessel_dest = None
     # MMSI is a label that happens to be composed of digits
-    # Cast it to a str even though it is stored as a float the shapefile
+    # Cast it to a str even though it is stored as a float in the shapefile
     vessel_mmsi = f"{ais_tracks.MMSI_NUM[chosen_track_index]:.0f}"
 
     return vessel_len, vessel_origin, vessel_dest, vessel_mmsi
@@ -506,6 +517,10 @@ def adjust_tug_tank_barge_length(vessel_type, vessel_len, random_generator):
     :return: Randomly selected tug and tank barge length [m].
     :rtype: int
     """
+    logging.info(
+        f"Standardizing ATB and tug length to represent length of tug and tank barge "
+        f"for {vessel_len}m {vessel_type}"
+    )
     if vessel_type not in {"atb", "barge"}:
         # Adjustment only applies to ATB and barge vessel types
         return vessel_len
@@ -535,6 +550,9 @@ def get_oil_capacity(oil_attrs, vessel_length, vessel_type, random_generator):
     :param random_generator: PCG-64 random number generator.
     :type random_generator: :py:class:`numpy.random.Generator`
     """
+    logging.info(
+        f"Calculating fuel and oil cargo capacities for {vessel_length}m {vessel_type} vessel"
+    )
     if vessel_type not in oil_attrs["categories"]["all_vessels"]:
         raise ValueError(
             [
@@ -780,6 +798,10 @@ def fuel_or_cargo_spill(oil_attrs, vessel_type, random_generator):
     :return: Fuel or cargo spill flag.
     :rtype: boolean
     """
+    logging.info(
+        f"Selecting fuel or cargo spill from {vessel_type} vessel weighted by oil attribution "
+        f"analysis fuel/cargo spill probabilities"
+    )
     try:
         fuel_spill = random_generator.choice(
             [False, True],
@@ -803,6 +825,10 @@ def choose_fraction_spilled(random_generator):
     :return: Fraction of oil volume spilled.
     :rtype: float
     """
+    logging.info(
+        f"Selecting fraction of oil capacity spilled weighted by cumulative spill "
+        f"probability from fit based on real spills"
+    )
     nbins = 50
     # We need both sides of the bins, so array is nbins+1 long
     fraction = numpy.linspace(0, 1, num=nbins + 1)
@@ -875,6 +901,11 @@ def get_oil_type(
     :return: Type of oil spilled.
     :rtype: str
     """
+    logging.info(
+        f"Selecting random oil type spilled for {vessel_type} vessel "
+        f"{'fuel' if fuel_spill else 'cargo'} spill "
+        f"with origin {vessel_origin}, destination {vessel_dest}"
+    )
     raw_fuel_type_probs = numpy.array(
         [
             vessel_fuel_types[vessel_type]["bunker"],
