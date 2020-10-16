@@ -445,6 +445,18 @@ def get_length_origin_destination(
     # spill occurs
     shapefile = shapefiles_dir / f"{vessel_type}_2018_{spill_month:02d}.shp"
     ais_tracks = geopandas.read_file(shapefile, bbox=geotiff_bbox)
+    if ais_tracks.empty:
+        # Handle the edge case of no AIS tracks in the GeoTIFF cell that can occasionally
+        # happen because the GeoTIFF calculation algorithm that Cam uses can "smear"
+        # vessel traffic exposure into adjacent GoeTIFF cells:
+        # Expand the bounding box to capture AIS tracks associated with smeared VTE
+        bbox_increment = 0.5 * (
+            numpy.abs(geotiff_bbox.bounds[2] - geotiff_bbox.bounds[0])
+        )
+        geotiff_bbox = shapely.geometry.Polygon(
+            geotiff_bbox.buffer(bbox_increment).exterior
+        )
+        ais_tracks = geopandas.read_file(shapefile, bbox=geotiff_bbox)
 
     vte = numpy.empty(len(ais_tracks.index))
     for i, ais_track in ais_tracks.iterrows():
@@ -459,15 +471,9 @@ def get_length_origin_destination(
         )
         vte[i] = frac_in_cell * track_duration.total_seconds()
 
-    try:
-        chosen_track_index = random_generator.choice(
-            range(len(ais_tracks.index)), p=vte / vte.sum()
-        )
-    except ValueError:
-        raise ValueError(
-            f"No AIS tracks in GeoTIFF box: "
-            f"{shapefiles_dir=}, {vessel_type=}, {spill_month=}, {geotiff_bbox.exterior.coords.xy=}"
-        )
+    chosen_track_index = random_generator.choice(
+        range(len(ais_tracks.index)), p=vte / vte.sum()
+    )
     vessel_len = ais_tracks.LENGTH[chosen_track_index]
     try:
         vessel_origin = ais_tracks.FROM_[chosen_track_index]
