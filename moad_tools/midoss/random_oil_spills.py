@@ -461,7 +461,7 @@ def get_length_origin_destination(
         # happen because the GeoTIFF calculation algorithm that Cam uses can "smear"
         # vessel traffic exposure into adjacent GoeTIFF cells:
         # Expand the bounding box to capture AIS tracks associated with smeared VTE
-        bbox_increment = 0.5 * (
+        bbox_increment = 0.55 * (
             numpy.abs(geotiff_bbox.bounds[2] - geotiff_bbox.bounds[0])
         )
         geotiff_bbox = shapely.geometry.Polygon(
