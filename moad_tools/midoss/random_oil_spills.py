@@ -85,7 +85,7 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
 
     spill_params = collections.defaultdict(list)
     for spill in range(n_spills):
-        logging.debug(f"spill number: {spill=}")
+        logging.info(f"spill number: {spill=}")
         spill_date_hour = get_date(
             start_date, end_date, vte_probability, random_generator
         )
@@ -519,7 +519,7 @@ def adjust_tug_tank_barge_length(vessel_type, vessel_len, random_generator):
     """
     logging.info(
         f"Standardizing ATB and tug length to represent length of tug and tank barge "
-        f"for {vessel_len}m {vessel_type}"
+        f"for {vessel_len}m {vessel_type} vessel"
     )
     if vessel_type not in {"atb", "barge"}:
         # Adjustment only applies to ATB and barge vessel types
