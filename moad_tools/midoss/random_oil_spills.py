@@ -964,7 +964,7 @@ def get_oil_type_atb(
     Unlike traditional tank barges, the vessels with 'atb' designation are known oil-cargo vessels.
     We used three different data sources to verify: AIS, Dept of Ecology's fuel transfer records
     and Charlie Costanzo's ATB list. Details of traffic can be seen in this google spreadsheet:
-    https://docs.google.com/spreadsheets/d/1dlT0JydkFG43LorqgtHle5IN6caRYjf_3qLrUYqANDY/edit#gid=1593104354
+    https://docs.google.com/spreadsheets/d/1dlT0JydkFG43LorqgtHle5IN6caRYjf_3qLrUYqANDY/edit
 
     Because of this pre-identification and selection method, we can assume that all ATBs are
     oil-cargo atbs and that the absence of origin-destination information is due to issues in

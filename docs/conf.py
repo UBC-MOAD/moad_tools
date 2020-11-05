@@ -89,6 +89,12 @@ autodoc_mock_imports = [
     "xarray",
     "yaml",
 ]
+
+# Private GitHub repositories that linkcheck will ignore
+linkcheck_ignore = [
+    "https://github.com/MIDOSS/marine_transport_data",
+]
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
