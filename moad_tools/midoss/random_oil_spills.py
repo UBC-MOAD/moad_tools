@@ -1088,9 +1088,7 @@ def get_oil_type_atb(
     else:
         # For all other traffic, use a generic fuel attribution from the combined
         # US import and export
-        oil_type = get_oil_type_cargo_generic_US(
-            USall_yaml, vessel_type, random_generator
-        )
+        oil_type = get_oil_type_cargo(USall_yaml, None, vessel_type, random_generator)
 
     return oil_type
 
@@ -1324,8 +1322,8 @@ def get_oil_type_barge(
         if fuel_spill:
             oil_type = None
         else:
-            oil_type = get_oil_type_cargo_generic_US(
-                Pacific_yaml, vessel_type, random_generator
+            oil_type = get_oil_type_cargo(
+                Pacific_yaml, None, vessel_type, random_generator
             )
     elif origin == "US":
         fuel_spill = random_generator.choice(
@@ -1334,9 +1332,7 @@ def get_oil_type_barge(
         if fuel_spill:
             oil_type = None
         else:
-            oil_type = get_oil_type_cargo_generic_US(
-                US_yaml, vessel_type, random_generator
-            )
+            oil_type = get_oil_type_cargo(US_yaml, None, vessel_type, random_generator)
     elif origin == "Canada":
         fuel_spill = random_generator.choice(
             [False, True], p=[probability_oilcargo, probability_fuelonly]
@@ -1345,9 +1341,7 @@ def get_oil_type_barge(
             oil_type = None
 
         else:
-            oil_type = get_oil_type_cargo_generic_US(
-                US_yaml, vessel_type, random_generator
-            )
+            oil_type = get_oil_type_cargo(US_yaml, None, vessel_type, random_generator)
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Remaining cases have null values for origin destination.
@@ -1365,9 +1359,7 @@ def get_oil_type_barge(
         if fuel_spill:
             oil_type = None
         else:
-            oil_type = get_oil_type_cargo_generic_US(
-                US_yaml, vessel_type, random_generator
-            )
+            oil_type = get_oil_type_cargo(US_yaml, None, vessel_type, random_generator)
 
     return oil_type, fuel_spill
 
@@ -1462,17 +1454,13 @@ def get_oil_type_tanker(
             CAD_yaml, destination, vessel_type, random_generator
         )
     elif origin == "Pacific":
-        oil_type = get_oil_type_cargo_generic_US(
-            Pacific_yaml, vessel_type, random_generator
-        )
+        oil_type = get_oil_type_cargo(Pacific_yaml, None, vessel_type, random_generator)
     elif origin == "US":
-        oil_type = get_oil_type_cargo_generic_US(US_yaml, vessel_type, random_generator)
+        oil_type = get_oil_type_cargo(US_yaml, None, vessel_type, random_generator)
     else:
         # Currently, this is a catch for all ship tracks not allocated with origin or destination
         # It's a generic fuel attribution from the combined US import and export
-        oil_type = get_oil_type_cargo_generic_US(
-            USall_yaml, vessel_type, random_generator
-        )
+        oil_type = get_oil_type_cargo(USall_yaml, None, vessel_type, random_generator)
 
     return oil_type
 
@@ -1484,7 +1472,7 @@ def get_oil_type_cargo(cargo_info, facility, vessel_type, random_generator):
     :param dict cargo_info: Cargo oil type attribution information from the output of a
                             make_cargo_*.ipynb notebooks.
 
-    :param str facility: Vessel origin from AIS.
+    :param str or None facility: Vessel origin from AIS.
 
     :param str vessel_type: Vessel type from which spill occurs.
 
@@ -1494,42 +1482,18 @@ def get_oil_type_cargo(cargo_info, facility, vessel_type, random_generator):
     :return: Cargo oil type.
     :rtype: str
     """
-    ship = cargo_info[facility][vessel_type]
+    try:
+        ship = cargo_info[facility][vessel_type]
+    except KeyError:
+        ship = cargo_info[vessel_type]
     raw_probs = numpy.array([ship[oil_type]["fraction_of_total"] for oil_type in ship])
     if abs(raw_probs.sum() - 1) > 1e-4:
-        raise ValueError(
+        msg = (
             f"Probable data entry error - sum of raw probabilities is not close to 1: "
-            f"{raw_probs.sum()} for {cargo_info=}, {facility=}, {vessel_type=}"
+            f"{raw_probs.sum()} for {facility=}, {vessel_type=}"
         )
-    oil_type = random_generator.choice(list(ship.keys()), p=raw_probs / raw_probs.sum())
-    return oil_type
-
-
-def get_oil_type_cargo_generic_US(cargo_info, vessel_type, random_generator):
-    """Returns oil for cargo attribution based on facility and vessel by querying information
-    in input yaml_file.
-
-    This is essentially the same as 'get_oil_type_cargo' but is designed for yaml files
-    that lack facility names.
-
-    :param dict cargo_info: Cargo oil type attribution information from the output of the
-                            make_cargo_AllUS.ipynb notebook.
-
-    :param str vessel_type: Vessel type from which spill occurs.
-
-    :param random_generator: PCG-64 random number generator
-    :type random_generator: :py:class:`numpy.random.Generator`
-
-    :return: Cargo oil type.
-    :rtype: str
-    """
-    ship = cargo_info[vessel_type]
-    raw_probs = numpy.array([ship[fuel]["fraction_of_total"] for fuel in ship])
-    if abs(raw_probs.sum() - 1) > 1e-4:
-        raise ValueError(
-            f"Probably data entry error - sum of raw probabilities is not close to 1: "
-            f"{raw_probs.sum()} for {vessel_type=}, {cargo_info=}"
-        )
+        logging.warning(msg)
+        raise ValueError(msg)
     oil_type = random_generator.choice(list(ship.keys()), p=raw_probs / raw_probs.sum())
     return oil_type
 

@@ -853,14 +853,16 @@ class TestGetOilType:
 
 
 class TestGetOilTypeCargo:
-    """Unit tests for get_oil_type_cargo() function.
-    """
+    """Unit tests for get_oil_type_cargo() function."""
 
     @pytest.mark.parametrize(
         "vessel_type, random_seed, expected",
-        (("atb", 43, "dilbit"), ("atb", 4344, "akns"),),
+        (
+            ("atb", 43, "dilbit"),
+            ("atb", 4344, "akns"),
+        ),
     )
-    def test_get_oil_type_cargo(self, vessel_type, random_seed, expected):
+    def test_get_oil_type_cargo_for_facility(self, vessel_type, random_seed, expected):
         # Specifying the random seed makes the random number stream deterministic
         # so that calculated results are repeatable
         random_generator = numpy.random.default_rng(seed=random_seed)
@@ -885,11 +887,6 @@ class TestGetOilTypeCargo:
 
         assert oil_type == expected
 
-
-class TestGetOilTypeCargoGenericUS:
-    """Unit tests for get_oil_type_cargo_generic_US() function.
-    """
-
     @pytest.mark.parametrize(
         "vessel_type, random_seed, expected",
         (
@@ -899,7 +896,7 @@ class TestGetOilTypeCargoGenericUS:
             ("atb", 4, "jet"),
         ),
     )
-    def test_get_oil_type_cargo_generic_US(self, vessel_type, random_seed, expected):
+    def test_get_oil_type_cargo_no_facility(self, vessel_type, random_seed, expected):
         # Specifying the random seed makes the random number stream deterministic
         # so that calculated results are repeatable
         random_generator = numpy.random.default_rng(seed=random_seed)
@@ -915,8 +912,8 @@ class TestGetOilTypeCargoGenericUS:
                 "other": {"fraction_of_total": 0.0389},
             }
         }
-        oil_type = random_oil_spills.get_oil_type_cargo_generic_US(
-            cargo_info, vessel_type, random_generator
+        oil_type = random_oil_spills.get_oil_type_cargo(
+            cargo_info, None, vessel_type, random_generator
         )
 
         assert oil_type == expected
