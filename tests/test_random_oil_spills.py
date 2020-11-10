@@ -94,7 +94,11 @@ def mock_calc_vte_probability(monkeypatch):
 @pytest.fixture
 def mock_get_length_origin_destination(monkeypatch):
     def get_length_origin_destination(
-        shapefiles_dir, vessel_type, spill_month, geotiff_bbox, random_generator,
+        shapefiles_dir,
+        vessel_type,
+        spill_month,
+        geotiff_bbox,
+        random_generator,
     ):
         return 16, None, None, "367704540"
 
@@ -106,8 +110,7 @@ def mock_get_length_origin_destination(monkeypatch):
 
 
 class TestRandomOilSpills:
-    """Unit tests for random_oil_spills() function.
-    """
+    """Unit tests for random_oil_spills() function."""
 
     def test_read_config(
         self,
@@ -197,8 +200,7 @@ class TestRandomOilSpills:
 
 
 class TestGetDate:
-    """Unit test for get_date() function.
-    """
+    """Unit test for get_date() function."""
 
     def test_get_date(self, mock_calc_vte_probability):
         start_date = arrow.get("2015-01-01").datetime
@@ -215,8 +217,7 @@ class TestGetDate:
 
 
 class TestGetLatLonIndices:
-    """Unit test for get_lat_lon_indices() function.
-    """
+    """Unit test for get_lat_lon_indices() function."""
 
     def test_get_lat_lon_indices(self, config_file):
         with Path(config_file).open("r") as f:
@@ -269,8 +270,7 @@ class TestGetLatLonIndices:
 
 
 class TestGetVesselType:
-    """Unit tests for get_vessel_type() function.
-    """
+    """Unit tests for get_vessel_type() function."""
 
     def test_get_vessel_type(self, config_file):
         with Path(config_file).open("r") as f:
@@ -296,8 +296,7 @@ class TestGetVesselType:
 
 
 class TestGetLengthOriginDestination:
-    """Unit test for get_length_origin_destination() function.
-    """
+    """Unit test for get_length_origin_destination() function."""
 
     @pytest.mark.skipif(
         not Path(__file__)
@@ -340,8 +339,7 @@ class TestGetLengthOriginDestination:
 
 
 class TestAdjustTugTankBargeLength:
-    """Unit tests for adjust_tug_tank_barge_length() function.
-    """
+    """Unit tests for adjust_tug_tank_barge_length() function."""
 
     @pytest.mark.parametrize(
         "vessel_type, vessel_len",
@@ -361,25 +359,34 @@ class TestAdjustTugTankBargeLength:
         random_generator = numpy.random.default_rng()
 
         vessel_len = random_oil_spills.adjust_tug_tank_barge_length(
-            vessel_type, vessel_len, random_generator,
+            vessel_type,
+            vessel_len,
+            random_generator,
         )
 
         assert vessel_len == vessel_len
 
-    @pytest.mark.parametrize("vessel_type, vessel_len", (("atb", 43), ("barge", 34),))
+    @pytest.mark.parametrize(
+        "vessel_type, vessel_len",
+        (
+            ("atb", 43),
+            ("barge", 34),
+        ),
+    )
     def test_adjustment(self, vessel_type, vessel_len):
         random_generator = numpy.random.default_rng()
 
         vessel_len = random_oil_spills.adjust_tug_tank_barge_length(
-            vessel_type, vessel_len, random_generator,
+            vessel_type,
+            vessel_len,
+            random_generator,
         )
 
         assert vessel_len in [147, 172, 178, 206, 207]
 
 
 class TestGetOilCapacity:
-    """Unit test for get_oil_capacity() function.
-    """
+    """Unit test for get_oil_capacity() function."""
 
     def test_get_oil_capacity(self, config_file):
         with Path(config_file).open("r") as f:
@@ -458,7 +465,12 @@ class TestGetOilCapacity:
         assert fuel_capacity == oil_attrs["vessel_attributes"][vessel_type]["max_fuel"]
 
     @pytest.mark.parametrize(
-        "vessel_type, vessel_len", (("tanker", 0.10), ("atb", 0.10), ("barge", 0.10),)
+        "vessel_type, vessel_len",
+        (
+            ("tanker", 0.10),
+            ("atb", 0.10),
+            ("barge", 0.10),
+        ),
     )
     def test_min_cargo_capacity(self, vessel_type, vessel_len, config_file):
         with Path(config_file).open("r") as f:
@@ -479,7 +491,11 @@ class TestGetOilCapacity:
 
     @pytest.mark.parametrize(
         "vessel_type, vessel_len",
-        (("tanker", 1_000_000), ("atb", 1_000_000), ("barge", 1_000_000),),
+        (
+            ("tanker", 1_000_000),
+            ("atb", 1_000_000),
+            ("barge", 1_000_000),
+        ),
     )
     def test_max_cargo_capacity(self, vessel_type, vessel_len, config_file):
         with Path(config_file).open("r") as f:
@@ -500,8 +516,7 @@ class TestGetOilCapacity:
 
 
 class TestFuelOrCargoSpill:
-    """Unit tests for fuel_or_cargo_spill() function.
-    """
+    """Unit tests for fuel_or_cargo_spill() function."""
 
     @pytest.mark.parametrize(
         "vessel_type, random_seed, expected",
@@ -544,8 +559,7 @@ class TestFuelOrCargoSpill:
 
 
 class TestChooseFractionSpilled:
-    """Unit test for choose_fraction_spilled() function.
-    """
+    """Unit test for choose_fraction_spilled() function."""
 
     def test_choose_fraction_spilled(self):
         # Specifying the random seed makes the random number stream deterministic
@@ -558,8 +572,7 @@ class TestChooseFractionSpilled:
 
 
 class TestCumulativeSpillFraction:
-    """Unit test for _cumulative_spill_fraction() function.
-    """
+    """Unit test for _cumulative_spill_fraction() function."""
 
     def test_cumulative_spill_fraction(self):
         nbins = 50
@@ -626,8 +639,7 @@ class TestCumulativeSpillFraction:
 
 
 class TestGetOilType:
-    """Unit tests for get_oil_type() function.
-    """
+    """Unit tests for get_oil_type() function."""
 
     @pytest.mark.parametrize(
         "vessel_type, expected",
@@ -920,8 +932,7 @@ class TestGetOilTypeCargo:
 
 
 class TestWriteCSVFile:
-    """Unit test for write_csv_file() function.
-    """
+    """Unit test for write_csv_file() function."""
 
     def test_write_csv_file(self, tmp_path):
         df = pandas.DataFrame(

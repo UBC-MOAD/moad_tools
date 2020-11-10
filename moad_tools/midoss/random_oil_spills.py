@@ -244,7 +244,11 @@ def get_date(start_date, end_date, vte_probability, random_generator):
 
 
 def get_lat_lon_indices(
-    geotiffs_dir, spill_month, geotiff_watermask, ssc_mesh, random_generator,
+    geotiffs_dir,
+    spill_month,
+    geotiff_watermask,
+    ssc_mesh,
+    random_generator,
 ):
     """Randomly select a spill lat/lon based on vessel traffic exposure (VTE)
     in a particular month's AIS GeoTIFF file. The VTE data are masked to include
@@ -324,7 +328,8 @@ def get_lat_lon_indices(
         # SalishSeaCast T-grid points to those that were found above to be within the chosen
         # GeoTIFF cell.
         ssp = random_generator.choice(
-            ssc_tmask.size, p=inner_points.flatten() / inner_points.sum(),
+            ssc_tmask.size,
+            p=inner_points.flatten() / inner_points.sum(),
         )
         sslon = ssc_lons.values.flat[ssp]
         sslat = ssc_lats.values.flat[ssp]
@@ -418,7 +423,11 @@ def get_vessel_type(
 
 
 def get_length_origin_destination(
-    shapefiles_dir, vessel_type, spill_month, geotiff_bbox, random_generator,
+    shapefiles_dir,
+    vessel_type,
+    spill_month,
+    geotiff_bbox,
+    random_generator,
 ):
     """Randomly choose an AIS vessel track from which the spill occurs, with the choice
     weighted by the vessel traffic exposure (VTE) for the specified vessel type, month,
@@ -920,7 +929,8 @@ def get_oil_type(
 
     if fuel_spill:
         oil_type = random_generator.choice(
-            ["bunker", "diesel"], p=raw_fuel_type_probs / raw_fuel_type_probs.sum(),
+            ["bunker", "diesel"],
+            p=raw_fuel_type_probs / raw_fuel_type_probs.sum(),
         )
     else:
         if vessel_type == "atb":
