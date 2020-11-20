@@ -766,6 +766,13 @@ class TestGetOilType:
         ):
             monkeypatch.setitem(oil_attrs["files"], file_path, empty_file)
 
+        def mock_calc_no_info_facilities(oil_xfer_info):
+            return {}
+
+        monkeypatch.setattr(
+            random_oil_spills, "_calc_no_info_facilities", mock_calc_no_info_facilities
+        )
+
         oil_type = random_oil_spills.get_oil_type(
             oil_attrs,
             vessel_type,
@@ -849,6 +856,13 @@ class TestGetOilType:
             "Pacific_origin",
         ):
             monkeypatch.setitem(oil_attrs["files"], file_path, empty_file)
+
+        def mock_calc_no_info_facilities(oil_xfer_info):
+            return {}
+
+        monkeypatch.setattr(
+            random_oil_spills, "_calc_no_info_facilities", mock_calc_no_info_facilities
+        )
 
         oil_type = random_oil_spills.get_oil_type(
             oil_attrs,

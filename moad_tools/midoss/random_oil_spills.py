@@ -1009,14 +1009,16 @@ def get_oil_type_atb(
     yaml_file = transport_data_dir / Path(oil_attrs["files"]["WA_destination"]).name
     with yaml_file.open("rt") as f:
         WA_in_yaml = yaml.safe_load(f)
+        WA_in_noinfo = _calc_no_info_facilities(WA_in_yaml)
     yaml_file = transport_data_dir / Path(oil_attrs["files"]["WA_origin"]).name
     with yaml_file.open("rt") as f:
         WA_out_yaml = yaml.safe_load(f)
-    # # US_origin is for US as origin
+        WA_out_noinfo = _calc_no_info_facilities(WA_out_yaml)
+    # US_origin is for US as origin
     yaml_file = transport_data_dir / Path(oil_attrs["files"]["US_origin"]).name
     with yaml_file.open("rt") as f:
         US_yaml = yaml.safe_load(f)
-    # # US_combined represents the combined import and export of oil
+    # US_combined represents the combined import and export of oil
     yaml_file = transport_data_dir / Path(oil_attrs["files"]["US_combined"]).name
     with yaml_file.open("rt") as f:
         USall_yaml = yaml.safe_load(f)
@@ -1069,7 +1071,7 @@ def get_oil_type_atb(
                 oil_type = get_oil_type_cargo(
                     CAD_yaml, origin, vessel_type, random_generator
                 )
-    elif origin in US_origin_destination:
+    elif origin in US_origin_destination and origin not in WA_out_noinfo[vessel_type]:
         if destination == "Westridge Marine Terminal":
             # Westridge stores jet fuel from US for re-distribution
             oil_type = "jet"
@@ -1077,7 +1079,10 @@ def get_oil_type_atb(
             oil_type = get_oil_type_cargo(
                 WA_out_yaml, origin, vessel_type, random_generator
             )
-    elif destination in US_origin_destination:
+    elif (
+        destination in US_origin_destination
+        and destination not in WA_in_noinfo[vessel_type]
+    ):
         oil_type = get_oil_type_cargo(
             WA_in_yaml, destination, vessel_type, random_generator
         )
@@ -1164,14 +1169,16 @@ def get_oil_type_barge(
     yaml_file = transport_data_dir / Path(oil_attrs["files"]["WA_destination"]).name
     with yaml_file.open("rt") as f:
         WA_in_yaml = yaml.safe_load(f)
+        WA_in_noinfo = _calc_no_info_facilities(WA_in_yaml)
     yaml_file = transport_data_dir / Path(oil_attrs["files"]["WA_origin"]).name
     with yaml_file.open("rt") as f:
         WA_out_yaml = yaml.safe_load(f)
-    # # US_origin is for US as origin
+        WA_out_noinfo = _calc_no_info_facilities(WA_out_yaml)
+    # US_origin is for US as origin
     yaml_file = transport_data_dir / Path(oil_attrs["files"]["US_origin"]).name
     with yaml_file.open("rt") as f:
         US_yaml = yaml.safe_load(f)
-    # # US_combined represents the combined import and export of oil
+    # US_combined represents the combined import and export of oil
     yaml_file = transport_data_dir / Path(oil_attrs["files"]["US_combined"]).name
     with yaml_file.open("rt") as f:
         USall_yaml = yaml.safe_load(f)
@@ -1255,7 +1262,7 @@ def get_oil_type_barge(
                 # destination and no destination to a better known
                 # CAD terminal then just use the CAD origin allocation
                 # An option here is to flag a destination of 'Pacific'
-                # or 'US' and use US fuel alloction. I didn't see a
+                # or 'US' and use US fuel allocation. I didn't see a
                 # compelling case for adding this complexity, so I kept
                 # it simple.  Similar to ESSO, above, no error catch
                 # needed.
@@ -1264,7 +1271,7 @@ def get_oil_type_barge(
                     CAD_yaml, origin, vessel_type, random_generator
                 )
 
-    elif origin in US_origin_destination:
+    elif origin in US_origin_destination and origin not in WA_out_noinfo[vessel_type]:
         oil_type = get_oil_type_cargo(
             WA_out_yaml, origin, vessel_type, random_generator
         )
@@ -1282,7 +1289,10 @@ def get_oil_type_barge(
             oil_type = None
         # *** END ERROR CATCH ***
 
-    elif destination in US_origin_destination:
+    elif (
+        destination in US_origin_destination
+        and destination not in WA_in_noinfo[vessel_type]
+    ):
         oil_type = get_oil_type_cargo(
             WA_in_yaml, destination, vessel_type, random_generator
         )
@@ -1349,14 +1359,13 @@ def get_oil_type_barge(
         )
         if fuel_spill:
             oil_type = None
-
         else:
             oil_type = get_oil_type_cargo(US_yaml, None, vessel_type, random_generator)
 
     # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     # Remaining cases have null values for origin destination.
     # I first use probability of oil-cargo for tank barge traffic to
-    # weight whether the ship track is an oil-carge & fuel spill risk
+    # weight whether the ship track is an oil-cargo & fuel spill risk
     # (fuel_spill = False) or a fuel-spill risk only (fuel_spill = True)
     # For the cases in which fuel_spill is False, I use the US_generic fuel allocation
     # to attribute fuel type.
@@ -1413,14 +1422,16 @@ def get_oil_type_tanker(
     yaml_file = transport_data_dir / Path(oil_attrs["files"]["WA_destination"]).name
     with yaml_file.open("rt") as f:
         WA_in_yaml = yaml.safe_load(f)
+        WA_in_noinfo = _calc_no_info_facilities(WA_in_yaml)
     yaml_file = transport_data_dir / Path(oil_attrs["files"]["WA_origin"]).name
     with yaml_file.open("rt") as f:
         WA_out_yaml = yaml.safe_load(f)
-    # # US_origin is for US as origin
+        WA_out_noinfo = _calc_no_info_facilities(WA_out_yaml)
+    # US_origin is for US as origin
     yaml_file = transport_data_dir / Path(oil_attrs["files"]["US_origin"]).name
     with yaml_file.open("rt") as f:
         US_yaml = yaml.safe_load(f)
-    # # US_combined represents the combined import and export of oil
+    # US_combined represents the combined import and export of oil
     yaml_file = transport_data_dir / Path(oil_attrs["files"]["US_combined"]).name
     with yaml_file.open("rt") as f:
         USall_yaml = yaml.safe_load(f)
@@ -1451,11 +1462,14 @@ def get_oil_type_tanker(
                 oil_type = get_oil_type_cargo(
                     CAD_yaml, origin, vessel_type, random_generator
                 )
-    elif origin in US_origin_destination:
+    elif origin in US_origin_destination and origin not in WA_out_noinfo[vessel_type]:
         oil_type = get_oil_type_cargo(
             WA_out_yaml, origin, vessel_type, random_generator
         )
-    elif destination in US_origin_destination:
+    elif (
+        destination in US_origin_destination
+        and destination not in WA_in_noinfo[vessel_type]
+    ):
         oil_type = get_oil_type_cargo(
             WA_in_yaml, destination, vessel_type, random_generator
         )
@@ -1469,10 +1483,40 @@ def get_oil_type_tanker(
         oil_type = get_oil_type_cargo(US_yaml, None, vessel_type, random_generator)
     else:
         # Currently, this is a catch for all ship tracks not allocated with origin or destination
-        # It's a generic fuel attribution from the combined US import and export
+        # It's a generic oil type attribution from the combined US import and export
         oil_type = get_oil_type_cargo(USall_yaml, None, vessel_type, random_generator)
 
     return oil_type
+
+
+def _calc_no_info_facilities(oil_xfer_info):
+    """Calculate vessel type keyed dict of lists of facilities for which there is
+    no oil transfer data.
+
+    :param dict oil_xfer_info: Oil transfer information from regional oil attribution YAML file.
+
+    :return: Dictionary of lists of facilities for which there is no oil transfer data,
+             keyed by vessel type
+    :rtype: dict
+    """
+    no_info_facilities = collections.defaultdict(list)
+    for facility in oil_xfer_info:
+        for vessel_type in oil_xfer_info[facility]:
+            try:
+                transfers = sum(
+                    [
+                        oil_xfer_info[facility][vessel_type][oil_type][
+                            "number_of_transfers"
+                        ]
+                        for oil_type in oil_xfer_info[facility][vessel_type]
+                    ]
+                )
+            except TypeError:
+                # Handle "names" stanza in YAML
+                continue
+            if transfers == 0:
+                no_info_facilities[vessel_type].append(facility)
+    return no_info_facilities
 
 
 def get_oil_type_cargo(cargo_info, facility, vessel_type, random_generator):
