@@ -644,15 +644,15 @@ class TestGetOilType:
     @pytest.mark.parametrize(
         "vessel_type, expected",
         (
-            ("tanker", "diesel"),
-            ("atb", "diesel"),
-            ("barge", "diesel"),
-            ("cargo", "bunker"),
-            ("cruise", "bunker"),
-            ("ferry", "diesel"),
-            ("fishing", "diesel"),
-            ("smallpass", "diesel"),
-            ("other", "diesel"),
+            ("tanker", ("diesel", False)),
+            ("atb", ("diesel", False)),
+            ("barge", ("diesel", False)),
+            ("cargo", ("bunker", False)),
+            ("cruise", ("bunker", False)),
+            ("ferry", ("diesel", False)),
+            ("fishing", ("diesel", False)),
+            ("smallpass", ("diesel", False)),
+            ("other", ("diesel", False)),
         ),
     )
     def test_get_oil_type_fuel_spill(self, vessel_type, expected, config_file):
@@ -685,10 +685,10 @@ class TestGetOilType:
     @pytest.mark.parametrize(
         "vessel_type, random_seed, expected",
         (
-            ("atb", 43, "dilbit"),
-            ("atb", 4344, "akns"),
-            ("tanker", 43, "dilbit"),
-            ("tanker", 4344, "akns"),
+            ("atb", 43, ("dilbit", False)),
+            ("atb", 4344, ("akns", False)),
+            ("tanker", 43, ("dilbit", False)),
+            ("tanker", 4344, ("akns", False)),
         ),
     )
     def test_get_oil_type_atb_tanker_cargo_spill(
