@@ -789,10 +789,10 @@ class TestGetOilType:
     @pytest.mark.parametrize(
         "vessel_origin, vessel_dest, random_seed, expected",
         (
-            ("Westridge Marine Terminal", "Suncor Nanaimo", 43, "jet"),
-            ("Westridge Marine Terminal", "U.S. Oil & Refining", 43, "dilbit"),
-            ("Westridge Marine Terminal", "U.S. Oil & Refining", 4344, "akns"),
-            ("Pacific", None, 43, "bunker"),
+            ("Westridge Marine Terminal", "Suncor Nanaimo", 43, ("jet", False)),
+            ("Westridge Marine Terminal", "U.S. Oil & Refining", 43, ("dilbit", False)),
+            ("Westridge Marine Terminal", "U.S. Oil & Refining", 4344, ("akns", False)),
+            ("Pacific", None, 43, ("bunker", True)),
         ),
     )
     def test_get_oil_type_barge_cargo_spill(

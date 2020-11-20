@@ -153,7 +153,7 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
         vessel_fuel_types_file = Path(oil_attrs["files"]["fuel"]).name
         with (marine_transport_data_dir / vessel_fuel_types_file).open("rt") as f:
             vessel_fuel_types = yaml.safe_load(f)
-        oil_type = get_oil_type(
+        oil_type, barge_not_oil_cargo = get_oil_type(
             oil_attrs,
             vessel_type,
             vessel_origin,
@@ -164,6 +164,11 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
             random_generator,
         )
         spill_params["Lagrangian_template"].append(f"Lagrangian_{oil_type}.dat")
+        if barge_not_oil_cargo:
+            spill_params["spill_volume"][-1] = fuel_capacity * choose_fraction_spilled(
+                random_generator
+            )
+            spill_params["fuel_cargo"][-1] = "fuel"
 
     df = pandas.DataFrame(spill_params)
 
@@ -907,8 +912,12 @@ def get_oil_type(
     :param random_generator: PCG-64 random number generator
     :type random_generator: :py:class:`numpy.random.Generator`
 
-    :return: Type of oil spilled.
-    :rtype: str
+    :return: 2-tuple composed of:
+
+             * Type of oil spilled (str).
+             * Flag to indicate that the spill is a fuel spill from a barge that is
+               carrying something other than oil as cargo (boolean).
+    :rtype: tuple
     """
     logging.info(
         f"Selecting random oil type spilled for {vessel_type} vessel "
@@ -927,6 +936,7 @@ def get_oil_type(
             f"{raw_fuel_type_probs.sum()} for {vessel_type=}"
         )
 
+    barge_not_oil_cargo = False
     if fuel_spill:
         oil_type = random_generator.choice(
             ["bunker", "diesel"],
@@ -942,14 +952,14 @@ def get_oil_type(
                 random_generator,
             )
         elif vessel_type == "barge":
-            oil_type, barge_fuel_spill = get_oil_type_barge(
+            oil_type, barge_not_oil_cargo = get_oil_type_barge(
                 oil_attrs,
                 vessel_origin,
                 vessel_dest,
                 marine_transport_data_dir,
                 random_generator,
             )
-            if barge_fuel_spill:
+            if barge_not_oil_cargo:
                 oil_type = random_generator.choice(
                     ["bunker", "diesel"],
                     p=raw_fuel_type_probs / raw_fuel_type_probs.sum(),
@@ -962,7 +972,7 @@ def get_oil_type(
                 marine_transport_data_dir,
                 random_generator,
             )
-    return oil_type
+    return oil_type, barge_not_oil_cargo
 
 
 def get_oil_type_atb(
