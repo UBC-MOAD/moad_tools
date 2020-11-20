@@ -502,9 +502,14 @@ def get_length_origin_destination(
         )
         vte[i] = frac_in_cell * track_duration.total_seconds()
 
-    chosen_track_index = random_generator.choice(
-        range(len(ais_tracks.index)), p=vte / vte.sum()
-    )
+    try:
+        chosen_track_index = random_generator.choice(
+            range(len(ais_tracks.index)), p=vte / vte.sum()
+        )
+    except ValueError:
+        # Handle the corner case of AIS track(s) that graze(s) the bounding box but have zero VTE
+        # in it by using a uniform probability distribution
+        chosen_track_index = random_generator.choice(range(len(ais_tracks.index)))
     vessel_len = ais_tracks.LENGTH[chosen_track_index]
     try:
         vessel_origin = ais_tracks.FROM_[chosen_track_index]
