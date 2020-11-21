@@ -209,13 +209,8 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
                                     fuel[vessel_type]['bunker'], 
                                     fuel[vessel_type]['diesel']
                                 ]
-                )
-            try:
-                fuel_oil_type
-            except NameError:
-                spill_params["spill_type"].append(-99999)
-            else:
-                spill_params["spill_type"].append(fuel_oil_type)
+                    )
+            spill_params["spill_type"].append(fuel_oil_type)
         else:
             print(f'No vte for {len(ais_tracks.index)} tracks located in {shapefile}') 
             spill_params["vessel_mmsi"].append(-99999)
@@ -1353,9 +1348,6 @@ def get_oil_type_cargo(yaml_file, facility, ship_type, random_generator):
             
             # load fraction_of_total values for weighting 
             # random generator
-            if 'Pacific' in facility:
-               print(f'facility: {facility}, ship_type: {ship_type}')
-
             cargo = yaml.safe_load(file)
             ship = cargo[facility][ship_type]
             probability = [ship[fuel]['fraction_of_total'] 
