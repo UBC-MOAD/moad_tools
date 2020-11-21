@@ -1350,46 +1350,37 @@ def get_oil_type_cargo(yaml_file, facility, ship_type, random_generator):
         by querying information in input yaml_file
     """
     with open(yaml_file,"r") as file:
-        cargo = yaml.safe_load(file)
+            
+            # load fraction_of_total values for weighting 
+            # random generator
+            if 'Pacific' in facility:
+               print(f'facility: {facility}, ship_type: {ship_type}')
+
+            cargo = yaml.safe_load(file)
+            ship = cargo[facility][ship_type]
+            probability = [ship[fuel]['fraction_of_total'] 
+                           for fuel in ship] 
+            
+            # First case indicates no cargo transfer to/from terminal 
+            # (and a mistake in origin/destination analysis).
+            # 
+            # Second case ensures neccessary conditions for 
+            # random_generator
         
-    
-        # load fraction_of_total values for weighting 
-        # random generator
-        
-        # Pacific and US currently giving KeyError. Adding these if statements to 
-        # address differences in file structures
-        if 'Pacific' in facility:
-            print(f'facility: {facility}, ship_type: {ship_type}, yaml: {yaml_file}')
-            oil_names = cargo[ship_type].keys()
-            probability = [cargo[ship_type][oil]['fraction_of_total'] for oil in oil_names] 
-        elif 'US' in facility:
-            print(f'facility: {facility}, ship_type: {ship_type}, yaml: {yaml_file}')
-            oil_names = cargo[ship_type].keys()
-            probability = [cargo[ship_type][oil]['fraction_of_total'] for oil in oil_names] 
-        else:
-            print(f'facility: {facility}, ship_type: {ship_type}, yaml: {yaml_file}')
-            oil_names = cargo[facility][ship_type].keys()
-            probability = [cargo[facility][ship_type][oil]['fraction_of_total'] for oil in oil_names] 
-        
-        # First case indicates no cargo transfer to/from terminal 
-        # (and a mistake in origin/destination analysis).
-        # 
-        # Second case ensures neccessary conditions for 
-        # random_generator
-        
-        if sum(probability) == 0:
-            oil_type = []
-        else:
-            try:
-                oil_type = random_generator.choice(
-                          list(oil_names), p = probability)
-            except ValueError:
-                # I was getting an error when including a '\' at the
-                # end of first line, so I removed it....
-                raise Exception(['Error: fraction of fuel transfers ' 
-                                + f'for {ship_type} servicing {facility} '\
-                                + f'does not sum to 1 in {yaml_file}'])
-    return oil_type
+            if sum(probability) == 0:
+                fuel_type = []
+            else:
+                try:
+                    fuel_type = random_generator.choice(
+                              list(ship.keys()), p = probability)
+                except ValueError:
+                    # I was getting an error when including a '\' at the
+                    # end of first line, so I removed it....
+                    raise Exception(['Error: fraction of fuel transfers ' 
+                                    + f'for {ship_type} servicing {facility} '\
+                                    + f'does not sum to 1 in {yaml_file}'])
+                
+            return fuel_type
 
 
 def get_oil_type_cargo_generic_US(yaml_file, ship_type, random_generator):
@@ -1401,12 +1392,10 @@ def get_oil_type_cargo_generic_US(yaml_file, ship_type, random_generator):
     
     with open(yaml_file,"r") as file:
             
-            cargo = yaml.safe_load(file)
-            
-            oil_names = cargo[ship_type].keys()
-            
             # load fraction_of_total values for weighting random generator
-            probability = [cargo[ship_type][oil]['fraction_of_total'] for oil in oil_names] 
+            cargo = yaml.safe_load(file)
+            ship = cargo[ship_type]
+            probability = [ship[fuel]['fraction_of_total'] for fuel in ship] 
             
             # First case indicates no cargo transfer to/from terminal 
             # (and a mistake in origin/destination analysis).
@@ -1414,11 +1403,11 @@ def get_oil_type_cargo_generic_US(yaml_file, ship_type, random_generator):
             # Second case ensures neccessary conditions for random_generator
         
             if sum(probability) == 0:
-                oil_type = []
+                fuel_type = []
             else:
                 try:
-                    oil_type = random_generator.choice(
-                        list(oil_names), p = probability)
+                    fuel_type = random_generator.choice(
+                        list(ship.keys()), p = probability)
                 except ValueError:
                     # I was getting an error when including a '\' at the
                     # end of first line, so I removed it....
@@ -1426,7 +1415,7 @@ def get_oil_type_cargo_generic_US(yaml_file, ship_type, random_generator):
                                     f'for {ship_type} servicing {facility} '\
                                     f'does not sum to 1 in {yaml_file}')
                 
-            return oil_type
+            return fuel_type
 
 def write_csv_file(df, csv_file):
     """
