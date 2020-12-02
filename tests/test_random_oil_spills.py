@@ -366,13 +366,7 @@ class TestAdjustTugTankBargeLength:
 
         assert vessel_len == vessel_len
 
-    @pytest.mark.parametrize(
-        "vessel_type, vessel_len",
-        (
-            ("atb", 43),
-            ("barge", 34),
-        ),
-    )
+    @pytest.mark.parametrize("vessel_type, vessel_len", (("atb", 43), ("barge", 34)))
     def test_adjustment(self, vessel_type, vessel_len):
         random_generator = numpy.random.default_rng()
 
@@ -465,12 +459,7 @@ class TestGetOilCapacity:
         assert fuel_capacity == oil_attrs["vessel_attributes"][vessel_type]["max_fuel"]
 
     @pytest.mark.parametrize(
-        "vessel_type, vessel_len",
-        (
-            ("tanker", 0.10),
-            ("atb", 0.10),
-            ("barge", 0.10),
-        ),
+        "vessel_type, vessel_len", (("tanker", 0.10), ("atb", 0.10), ("barge", 0.10))
     )
     def test_min_cargo_capacity(self, vessel_type, vessel_len, config_file):
         with Path(config_file).open("r") as f:
@@ -491,11 +480,7 @@ class TestGetOilCapacity:
 
     @pytest.mark.parametrize(
         "vessel_type, vessel_len",
-        (
-            ("tanker", 1_000_000),
-            ("atb", 1_000_000),
-            ("barge", 1_000_000),
-        ),
+        (("tanker", 1_000_000), ("atb", 1_000_000), ("barge", 1_000_000)),
     )
     def test_max_cargo_capacity(self, vessel_type, vessel_len, config_file):
         with Path(config_file).open("r") as f:
@@ -883,10 +868,7 @@ class TestGetOilTypeCargo:
 
     @pytest.mark.parametrize(
         "vessel_type, random_seed, expected",
-        (
-            ("atb", 43, "dilbit"),
-            ("atb", 4344, "akns"),
-        ),
+        (("atb", 43, "dilbit"), ("atb", 4344, "akns")),
     )
     def test_get_oil_type_cargo_for_facility(self, vessel_type, random_seed, expected):
         # Specifying the random seed makes the random number stream deterministic

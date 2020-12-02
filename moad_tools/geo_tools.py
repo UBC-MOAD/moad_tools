@@ -15,6 +15,7 @@
 """UBC MOAD group tools regarding gridding and geography."""
 
 import datetime
+
 import numpy as np
 import scipy.interpolate as interpolate
 import xarray as xr
@@ -28,24 +29,24 @@ def make_mapping_file(
     lat_var="nav_lat",
 ):
     """Make two arrays that index from longitude and latitude to grid index
-       The indices and information to use them are written to a netCDF file
-       and the same values are returned by the function
+    The indices and information to use them are written to a netCDF file
+    and the same values are returned by the function.
 
-       :param str coordinate_file: netCDF file to read the coordinates from
+    :param str coordinate_file: netCDF file to read the coordinates from
 
-       :param str mapping_file: netCDF file written with the index arrays
+    :param str mapping_file: netCDF file written with the index arrays
 
-       :param str grid_description: name of the grid that is being mapped, to be
-                  written as a comment into the netcdf file
+    :param str grid_description: name of the grid that is being mapped, to be
+               written as a comment into the netcdf file
 
-       :param str lon_var: name of longitude variable in the coordinate file
+    :param str lon_var: name of longitude variable in the coordinate file
 
-       :param str lat_var: name of latitude variable in the coordinate file
+    :param str lat_var: name of latitude variable in the coordinate file
 
-       :return: lonmin, latmin: start of the indexes
-                dlon, dlat: step size for the indexes
-                indexi, indexj: index arrays
-       """
+    :return: lonmin, latmin: start of the indexes
+             dlon, dlat: step size for the indexes
+             indexi, indexj: index arrays
+    """
     # get the coordinates
     coords = xr.open_dataset(coordinate_file)
     nav_lons = np.array(coords[lon_var][:])

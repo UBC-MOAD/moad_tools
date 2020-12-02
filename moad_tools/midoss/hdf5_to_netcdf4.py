@@ -237,9 +237,9 @@ def _calc_oil_times_file(grid_indices, h5file, netcdf4_file, tmp_dir):
     time_coord = _calc_time_coord(h5file, 1)
     data_vars = {}
     var_timebases = {
-        'Beaching Time': time_coord.values[0],
-        'Oil Arrival Time': time_coord.values[0],
-        'Beaching Volume': None
+        "Beaching Time": time_coord.values[0],
+        "Oil Arrival Time": time_coord.values[0],
+        "Beaching Volume": None,
     }
     for group in h5file.root.Results.OilSpill.Data_2D:
         if group._v_name not in var_timebases:

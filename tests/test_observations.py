@@ -23,8 +23,7 @@ from moad_tools import observations
 
 
 class TestGetNDBC_Buoy:
-    """Unit tests for get_ndbc_buoy().
-    """
+    """Unit tests for get_ndbc_buoy()."""
 
     @pytest.mark.parametrize("buoy_id", ["foobar"])
     @patch("moad_tools.observations.logging", autospec=True)
