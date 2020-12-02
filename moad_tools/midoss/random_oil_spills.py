@@ -76,8 +76,16 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
 
     shapefiles_dir = Path(config["shapefiles dir"])
 
+    oil_attribution_file = Path(config["oil attribution"])
+
+    marine_transport_data_dir = oil_attribution_file.parent
+
+    with oil_attribution_file.open("rt") as f:
+        oil_attrs = yaml.safe_load(f)
+
     spill_params = collections.defaultdict(list)
     for spill in range(n_spills):
+        logging.info(f"spill number: {spill=}")
         spill_date_hour = get_date(
             start_date, end_date, vte_probability, random_generator
         )
@@ -111,6 +119,7 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
             geotiff_y_index,
             random_generator,
         )
+        spill_params["vessel_type"].append(vessel_type)
 
         (
             vessel_len,
@@ -125,31 +134,41 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
             random_generator,
         )
         spill_params["vessel_mmsi"].append(vessel_mmsi)
+
         vessel_len = adjust_tug_tank_barge_length(
             vessel_type, vessel_len, random_generator
         )
 
-        oil_attribution_file = Path(config["oil attribution"])
-        with oil_attribution_file.open("rt") as f:
-            oil_attrs = yaml.safe_load(f)
         fuel_capacity, cargo_capacity = get_oil_capacity(
             oil_attrs, vessel_len, vessel_type, random_generator
         )
-        try:
-            fuel_spill = random_generator.choice(
-                [False, True],
-                p=[
-                    oil_attrs["vessel_attributes"][vessel_type]["probability_cargo"],
-                    oil_attrs["vessel_attributes"][vessel_type]["probability_fuel"],
-                ],
-            )
-        except KeyError:
-            # No probability_cargo or probability_fuel key means that vessel type carries only fuel
-            fuel_spill = 1
+
+        fuel_spill = fuel_or_cargo_spill(oil_attrs, vessel_type, random_generator)
         max_spill_volume = fuel_capacity if fuel_spill else cargo_capacity
         spill_params["spill_volume"].append(
             max_spill_volume * choose_fraction_spilled(random_generator)
         )
+        spill_params["fuel_cargo"].append("fuel" if fuel_spill else "cargo")
+
+        vessel_fuel_types_file = Path(oil_attrs["files"]["fuel"]).name
+        with (marine_transport_data_dir / vessel_fuel_types_file).open("rt") as f:
+            vessel_fuel_types = yaml.safe_load(f)
+        oil_type, barge_not_oil_cargo = get_oil_type(
+            oil_attrs,
+            vessel_type,
+            vessel_origin,
+            vessel_dest,
+            fuel_spill,
+            vessel_fuel_types,
+            marine_transport_data_dir,
+            random_generator,
+        )
+        spill_params["Lagrangian_template"].append(f"Lagrangian_{oil_type}.dat")
+        if barge_not_oil_cargo:
+            spill_params["spill_volume"][-1] = fuel_capacity * choose_fraction_spilled(
+                random_generator
+            )
+            spill_params["fuel_cargo"][-1] = "fuel"
 
     df = pandas.DataFrame(spill_params)
 
@@ -208,7 +227,7 @@ def get_date(start_date, end_date, vte_probability, random_generator):
     :return: Randomly selected spill date and hour
     :rtype: :py:class:`datetime.datetime`
     """
-    logging.info("Selecting random spill date and hour, weighted by VTE")
+    logging.info("Selecting random spill date and hour, weighted by overall VTE")
     # Randomly select month based on weighting by vessel traffic
     month_random = random_generator.choice(range(1, 13), p=vte_probability)
 
@@ -230,7 +249,11 @@ def get_date(start_date, end_date, vte_probability, random_generator):
 
 
 def get_lat_lon_indices(
-    geotiffs_dir, spill_month, geotiff_watermask, ssc_mesh, random_generator,
+    geotiffs_dir,
+    spill_month,
+    geotiff_watermask,
+    ssc_mesh,
+    random_generator,
 ):
     """Randomly select a spill lat/lon based on vessel traffic exposure (VTE)
     in a particular month's AIS GeoTIFF file. The VTE data are masked to include
@@ -268,7 +291,7 @@ def get_lat_lon_indices(
     """
     logging.info(
         f"Selecting random spill location within SalishSeaCast domain, "
-        f"weighted by 2018-{spill_month:02d} VTE"
+        f"weighted by VTE in 2018-{spill_month:02d}"
     )
     with rasterio.open(geotiffs_dir / f"all_2018_{spill_month:02d}.tif") as dataset:
         data = dataset.read(1, boundless=True, fill_value=0)
@@ -310,7 +333,8 @@ def get_lat_lon_indices(
         # SalishSeaCast T-grid points to those that were found above to be within the chosen
         # GeoTIFF cell.
         ssp = random_generator.choice(
-            ssc_tmask.size, p=inner_points.flatten() / inner_points.sum(),
+            ssc_tmask.size,
+            p=inner_points.flatten() / inner_points.sum(),
         )
         sslon = ssc_lons.values.flat[ssp]
         sslat = ssc_lats.values.flat[ssp]
@@ -380,6 +404,11 @@ def get_vessel_type(
     :return: Randomly selected vessel type from which spill occurs.
     :rtype: str
     """
+    logging.info(
+        f"Selecting random vessel type from which spill occurs, "
+        f"weighted by VTE in 2018-{spill_month:02d} GeoTIFF cell "
+        f"({geotiff_x_index}, {geotiff_y_index})"
+    )
     # Calculate vessel traffic exposure (VTE) [hours/km^2] for each vessel type
     # at the spill location for the month in which the spill occurs
     vte_by_vessel_type = numpy.empty(len(vessel_types))
@@ -399,7 +428,11 @@ def get_vessel_type(
 
 
 def get_length_origin_destination(
-    shapefiles_dir, vessel_type, spill_month, geotiff_bbox, random_generator,
+    shapefiles_dir,
+    vessel_type,
+    spill_month,
+    geotiff_bbox,
+    random_generator,
 ):
     """Randomly choose an AIS vessel track from which the spill occurs, with the choice
     weighted by the vessel traffic exposure (VTE) for the specified vessel type, month,
@@ -422,16 +455,39 @@ def get_length_origin_destination(
     :return: 4-tuple composed of:
 
              * length of vessel from which spill occurs [m] (int)
-             * origin of AIS track from which spill occurs (str)
-             * destination of AIS track from which spill occurs (str)
+             * origin of AIS track from which spill occurs (str or None)
+             * destination of AIS track from which spill occurs (str or None)
              * vessel MMSI (str)
 
     :rtype: tuple
     """
+    logging.info(
+        f"Selecting random AIS vessel track from which spill occurs, "
+        f"weighted by VTE for 2018-{spill_month:02d} {vessel_type} vessels in GeoTIFF cell "
+        f"{geotiff_bbox.bounds}"
+    )
     # Load AIS track segments that pass through or are contained in GeoTIFF cell in which
     # spill occurs
     shapefile = shapefiles_dir / f"{vessel_type}_2018_{spill_month:02d}.shp"
     ais_tracks = geopandas.read_file(shapefile, bbox=geotiff_bbox)
+    if ais_tracks.empty:
+        # Handle the edge case of no AIS tracks in the GeoTIFF cell that can occasionally
+        # happen because the GeoTIFF calculation algorithm that Cam uses can "smear"
+        # vessel traffic exposure into adjacent GoeTIFF cells:
+        # Expand the bounding box in steps to capture AIS tracks associated with smeared VTE
+        expansions = [0.3, 0.3]
+        while ais_tracks.empty:
+            expansion = expansions.pop(0)
+            bbox_increment = expansion * (
+                numpy.abs(geotiff_bbox.bounds[2] - geotiff_bbox.bounds[0])
+            )
+            geotiff_bbox = shapely.geometry.Polygon(
+                geotiff_bbox.buffer(bbox_increment).exterior
+            )
+            logging.debug(
+                f"No AIS tracks found in bbox; expanded bbox by {expansion} to {geotiff_bbox.bounds}"
+            )
+            ais_tracks = geopandas.read_file(shapefile, bbox=geotiff_bbox)
 
     vte = numpy.empty(len(ais_tracks.index))
     for i, ais_track in ais_tracks.iterrows():
@@ -446,9 +502,14 @@ def get_length_origin_destination(
         )
         vte[i] = frac_in_cell * track_duration.total_seconds()
 
-    chosen_track_index = random_generator.choice(
-        range(len(ais_tracks.index)), p=vte / vte.sum()
-    )
+    try:
+        chosen_track_index = random_generator.choice(
+            range(len(ais_tracks.index)), p=vte / vte.sum()
+        )
+    except ValueError:
+        # Handle the corner case of AIS track(s) that graze(s) the bounding box but have zero VTE
+        # in it by using a uniform probability distribution
+        chosen_track_index = random_generator.choice(range(len(ais_tracks.index)))
     vessel_len = ais_tracks.LENGTH[chosen_track_index]
     try:
         vessel_origin = ais_tracks.FROM_[chosen_track_index]
@@ -459,7 +520,7 @@ def get_length_origin_destination(
     except AttributeError:
         vessel_dest = None
     # MMSI is a label that happens to be composed of digits
-    # Cast it to a str even though it is stored as a float the shapefile
+    # Cast it to a str even though it is stored as a float in the shapefile
     vessel_mmsi = f"{ais_tracks.MMSI_NUM[chosen_track_index]:.0f}"
 
     return vessel_len, vessel_origin, vessel_dest, vessel_mmsi
@@ -481,6 +542,10 @@ def adjust_tug_tank_barge_length(vessel_type, vessel_len, random_generator):
     :return: Randomly selected tug and tank barge length [m].
     :rtype: int
     """
+    logging.info(
+        f"Standardizing ATB and tug length to represent length of tug and tank barge "
+        f"for {vessel_len}m {vessel_type} vessel"
+    )
     if vessel_type not in {"atb", "barge"}:
         # Adjustment only applies to ATB and barge vessel types
         return vessel_len
@@ -510,6 +575,9 @@ def get_oil_capacity(oil_attrs, vessel_length, vessel_type, random_generator):
     :param random_generator: PCG-64 random number generator.
     :type random_generator: :py:class:`numpy.random.Generator`
     """
+    logging.info(
+        f"Calculating fuel and oil cargo capacities for {vessel_length}m {vessel_type} vessel"
+    )
     if vessel_type not in oil_attrs["categories"]["all_vessels"]:
         raise ValueError(
             [
@@ -741,6 +809,38 @@ def _get_bin(value, bins):
     return -1
 
 
+def fuel_or_cargo_spill(oil_attrs, vessel_type, random_generator):
+    """Randomly choose whether the spill is from fuel or cargo volume for vessel types that
+    transport oil as cargo.
+
+    :param dict oil_attrs: Oil attribution information from the output of make_oil_attrs.py.
+
+    :param str vessel_type: Vessel type from which spill occurs.
+
+    :param random_generator: PCG-64 random number generator.
+    :type random_generator: :py:class:`numpy.random.Generator`
+
+    :return: Fuel or cargo spill flag.
+    :rtype: boolean
+    """
+    logging.info(
+        f"Selecting fuel or cargo spill from {vessel_type} vessel weighted by oil attribution "
+        f"analysis fuel/cargo spill probabilities"
+    )
+    try:
+        fuel_spill = random_generator.choice(
+            [False, True],
+            p=[
+                oil_attrs["vessel_attributes"][vessel_type]["probability_cargo"],
+                oil_attrs["vessel_attributes"][vessel_type]["probability_fuel"],
+            ],
+        )
+    except KeyError:
+        # No probability_cargo or probability_fuel key means that vessel type carries only fuel
+        fuel_spill = True
+    return fuel_spill
+
+
 def choose_fraction_spilled(random_generator):
     """Randomly choose a fraction spilled based on the _cumulative_spill_fraction() fit.
 
@@ -750,6 +850,10 @@ def choose_fraction_spilled(random_generator):
     :return: Fraction of oil volume spilled.
     :rtype: float
     """
+    logging.info(
+        f"Selecting fraction of oil capacity spilled weighted by cumulative spill "
+        f"probability from fit based on real spills"
+    )
     nbins = 50
     # We need both sides of the bins, so array is nbins+1 long
     fraction = numpy.linspace(0, 1, num=nbins + 1)
@@ -785,6 +889,688 @@ def _cumulative_spill_fraction(fraction):
         - typeonefrac * numpy.exp(-fraction / typeonedec)
         - typetwofrac * numpy.exp(-fraction / typetwodec)
     ) * multiplier
+
+
+def get_oil_type(
+    oil_attrs,
+    vessel_type,
+    vessel_origin,
+    vessel_dest,
+    fuel_spill,
+    vessel_fuel_types,
+    marine_transport_data_dir,
+    random_generator,
+):
+    """Randomly choose a type of oil spilled based on vessel type, AIS origin & destination,
+    and whether fuel or cargo is spilled.
+
+    :param dict oil_attrs: Oil attribution information from the output of make_oil_attrs.py.
+
+    :param str vessel_type: Vessel type from which spill occurs.
+
+    :param str or None vessel_origin: Origin of AIS track from which spill occurs.
+
+    :param str or None vessel_dest: Destination of AIS track from which spill occurs.
+
+    :param boolean fuel_spill: Fuel or cargo spill flag.
+
+    :param dict vessel_fuel_types: Mapping of fuel types and probabilities for vessel types.
+
+    :param marine_transport_data_dir: Directory path to marine_transport_data files repository
+                                      cloned from https://github.com/MIDOSS/marine_transport_data.
+    :type marine_transport_data_dir: :py:class:`pathlib.Path`
+
+    :param random_generator: PCG-64 random number generator
+    :type random_generator: :py:class:`numpy.random.Generator`
+
+    :return: 2-tuple composed of:
+
+             * Type of oil spilled (str).
+             * Flag to indicate that the spill is a fuel spill from a barge that is
+               carrying something other than oil as cargo (boolean).
+    :rtype: tuple
+    """
+    logging.info(
+        f"Selecting random oil type spilled for {vessel_type} vessel "
+        f"{'fuel' if fuel_spill else 'cargo'} spill "
+        f"with origin {vessel_origin}, destination {vessel_dest}"
+    )
+    raw_fuel_type_probs = numpy.array(
+        [
+            vessel_fuel_types[vessel_type]["bunker"],
+            vessel_fuel_types[vessel_type]["diesel"],
+        ]
+    )
+    if abs(raw_fuel_type_probs.sum() - 1) > 1e-4:
+        raise ValueError(
+            f"Probable data entry error - sum of raw probabilities is not close to 1: "
+            f"{raw_fuel_type_probs.sum()} for {vessel_type=}"
+        )
+
+    barge_not_oil_cargo = False
+    if fuel_spill:
+        oil_type = random_generator.choice(
+            ["bunker", "diesel"],
+            p=raw_fuel_type_probs / raw_fuel_type_probs.sum(),
+        )
+    else:
+        if vessel_type == "atb":
+            oil_type = get_oil_type_atb(
+                oil_attrs,
+                vessel_origin,
+                vessel_dest,
+                marine_transport_data_dir,
+                random_generator,
+            )
+        elif vessel_type == "barge":
+            oil_type, barge_not_oil_cargo = get_oil_type_barge(
+                oil_attrs,
+                vessel_origin,
+                vessel_dest,
+                marine_transport_data_dir,
+                random_generator,
+            )
+            if barge_not_oil_cargo:
+                oil_type = random_generator.choice(
+                    ["bunker", "diesel"],
+                    p=raw_fuel_type_probs / raw_fuel_type_probs.sum(),
+                )
+        elif vessel_type == "tanker":
+            oil_type = get_oil_type_tanker(
+                oil_attrs,
+                vessel_origin,
+                vessel_dest,
+                marine_transport_data_dir,
+                random_generator,
+            )
+    return oil_type, barge_not_oil_cargo
+
+
+def get_oil_type_atb(
+    oil_attrs, origin, destination, transport_data_dir, random_generator
+):
+    """Randomly choose type of cargo oil spilled from an ATB (articulated tug and barge) based on
+    AIS track origin & destination, and oil cargo attribution analysis.
+
+    Unlike traditional tank barges, the vessels with 'atb' designation are known oil-cargo vessels.
+    We used three different data sources to verify: AIS, Dept of Ecology's fuel transfer records
+    and Charlie Costanzo's ATB list. Details of traffic can be seen in this google spreadsheet:
+    https://docs.google.com/spreadsheets/d/1dlT0JydkFG43LorqgtHle5IN6caRYjf_3qLrUYqANDY/edit
+
+    Because of this pre-identification and selection method, we can assume that all ATBs are
+    oil-cargo atbs and that the absence of origin-destination information is due to issues in
+    linking ship tracks and not ambiguity about whether traffic is oil-cargo traffic.
+
+    :param dict oil_attrs: Oil attribution information from the output of make_oil_attrs.py.
+
+    :param str or None origin: Origin of AIS track from which spill occurs.
+
+    :param str or None destination: Destination of AIS track from which spill occurs.
+
+    :param transport_data_dir: Directory path to marine_transport_data files repository
+                               cloned from https://github.com/MIDOSS/marine_transport_data.
+    :type transport_data_dir: :py:class:`pathlib.Path`
+
+    :param random_generator: PCG-64 random number generator
+    :type random_generator: :py:class:`numpy.random.Generator`
+
+    :return: Type of oil spilled.
+    :rtype: str
+    """
+    vessel_type = "atb"
+
+    # Assign US and CAD origin/destinations from oil_attrs file
+    CAD_origin_destination = oil_attrs["categories"]["CAD_origin_destination"]
+    US_origin_destination = oil_attrs["categories"]["US_origin_destination"]
+
+    # Get cargo oil type attribution information from oil-type yaml files
+    yaml_file = transport_data_dir / Path(oil_attrs["files"]["CAD_origin"]).name
+    with yaml_file.open("rt") as f:
+        CAD_yaml = yaml.safe_load(f)
+    yaml_file = transport_data_dir / Path(oil_attrs["files"]["WA_destination"]).name
+    with yaml_file.open("rt") as f:
+        WA_in_yaml = yaml.safe_load(f)
+        WA_in_noinfo = _calc_no_info_facilities(WA_in_yaml)
+    yaml_file = transport_data_dir / Path(oil_attrs["files"]["WA_origin"]).name
+    with yaml_file.open("rt") as f:
+        WA_out_yaml = yaml.safe_load(f)
+        WA_out_noinfo = _calc_no_info_facilities(WA_out_yaml)
+    # US_origin is for US as origin
+    yaml_file = transport_data_dir / Path(oil_attrs["files"]["US_origin"]).name
+    with yaml_file.open("rt") as f:
+        US_yaml = yaml.safe_load(f)
+    # US_combined represents the combined import and export of oil
+    yaml_file = transport_data_dir / Path(oil_attrs["files"]["US_combined"]).name
+    with yaml_file.open("rt") as f:
+        USall_yaml = yaml.safe_load(f)
+    yaml_file = transport_data_dir / Path(oil_attrs["files"]["Pacific_origin"]).name
+    with yaml_file.open("rt") as f:
+        Pacific_yaml = yaml.safe_load(f)
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # NOTE: these pairs need to be used together for "get_oil_type_cargo"
+    #   (but don't yet have error-checks in place):
+    # - "WA_in_yaml" and "destination"
+    # - "WA_out_yaml" and "origin"
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    if origin in CAD_origin_destination:
+        if origin == "Westridge Marine Terminal":
+            if destination == "U.S. Oil & Refining":
+                oil_type = get_oil_type_cargo(
+                    CAD_yaml, origin, vessel_type, random_generator
+                )
+            elif destination in US_origin_destination:
+                oil_type = get_oil_type_cargo(
+                    CAD_yaml, origin, vessel_type, random_generator
+                )
+            elif destination in CAD_origin_destination:
+                # assume export within CAD is from Jet fuel storage tanks
+                # as there is a pipeline to Parkland for crude oil
+                oil_type = "jet"
+            else:
+                oil_type = get_oil_type_cargo(
+                    CAD_yaml, origin, vessel_type, random_generator
+                )
+        else:
+            if destination in US_origin_destination:
+                # we have better information on WA fuel transfers,
+                # so I prioritize this information source
+                oil_type = get_oil_type_cargo(
+                    WA_in_yaml, destination, vessel_type, random_generator
+                )
+            elif destination == "ESSO Nanaimo Departure Bay":
+                oil_type = get_oil_type_cargo(
+                    CAD_yaml, destination, vessel_type, random_generator
+                )
+
+            elif destination == "Suncor Nanaimo":
+                oil_type = get_oil_type_cargo(
+                    CAD_yaml, destination, vessel_type, random_generator
+                )
+            else:
+                oil_type = get_oil_type_cargo(
+                    CAD_yaml, origin, vessel_type, random_generator
+                )
+    elif origin in US_origin_destination and origin not in WA_out_noinfo[vessel_type]:
+        if destination == "Westridge Marine Terminal":
+            # Westridge stores jet fuel from US for re-distribution
+            oil_type = "jet"
+        else:
+            oil_type = get_oil_type_cargo(
+                WA_out_yaml, origin, vessel_type, random_generator
+            )
+    elif (
+        destination in US_origin_destination
+        and destination not in WA_in_noinfo[vessel_type]
+    ):
+        oil_type = get_oil_type_cargo(
+            WA_in_yaml, destination, vessel_type, random_generator
+        )
+    elif destination in CAD_origin_destination:
+        if destination == "Westridge Marine Terminal":
+            # Westridge doesn't receive crude for storage
+            oil_type = "jet"
+        else:
+            oil_type = get_oil_type_cargo(
+                CAD_yaml, destination, vessel_type, random_generator
+            )
+    elif origin == "Pacific":
+        oil_type = get_oil_type_cargo(
+            Pacific_yaml, origin, vessel_type, random_generator
+        )
+    elif origin == "US":
+        oil_type = get_oil_type_cargo(US_yaml, origin, vessel_type, random_generator)
+    else:
+        # For all other traffic, use a generic fuel attribution from the combined
+        # US import and export
+        oil_type = get_oil_type_cargo(USall_yaml, None, vessel_type, random_generator)
+
+    return oil_type
+
+
+def get_oil_type_barge(
+    oil_attrs, origin, destination, transport_data_dir, random_generator
+):
+    """Randomly choose type of cargo oil spilled from abarge based on AIS track
+    origin & destination, and oil cargo attribution analysis.
+
+    Decision tree for allocating oil type to barge traffic see Google drawing
+    [Barge_Oil_Attribution](https://docs.google.com/drawings/d/10PM53-UnnILYCAPKU9MxiR-Y4OW0tIMhVzSjaHr-iSc/edit)
+    for a visual representation.
+
+    :param dict oil_attrs: Oil attribution information from the output of make_oil_attrs.py.
+
+    :param str or None origin: Origin of AIS track from which spill occurs.
+
+    :param str or None destination: Destination of AIS track from which spill occurs.
+
+    :param transport_data_dir: Directory path to marine_transport_data files repository
+                               cloned from https://github.com/MIDOSS/marine_transport_data.
+    :type transport_data_dir: :py:class:`pathlib.Path`
+
+    :param random_generator: PCG-64 random number generator
+    :type random_generator: :py:class:`numpy.random.Generator`
+
+    :return: 2-tuple composed of:
+
+             * Type of oil spilled (str or None)
+             * Fuel or cargo spill flag (boolean)
+
+    :rtype: tuple
+    """
+    vessel_type = "barge"
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Set 'fuel_spill'
+    #
+    # Fuel_spill is used to flag ship tracks with barge designation
+    # as non-oil cargo traffic with, hence, fuel-spill risk only
+    # instead of combined cargo- & fuel-spill risk.
+    #
+    # This flag will turn to True (fuel-spill risk only) when:
+    # 1) Tug is not included in Casey's pre-selected "Voyage" dataset,
+    #    which selected tug traffic that traveled within a 2 km of
+    #    known marine oil terminal at some point in 2018.  If not
+    #    included, the origin/destination values are null.
+    # 2) Tug is included in Casey's pre-selected data but is not
+    #    joined by our origin-destination analysis and, as a result,
+    #    has null values for origin/destination.
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    fuel_spill = False
+
+    # Assign US and CAD origin/destinations from oil_attrs file
+    CAD_origin_destination = oil_attrs["categories"]["CAD_origin_destination"]
+    US_origin_destination = oil_attrs["categories"]["US_origin_destination"]
+
+    # Get cargo oil type attribution information from oil-type yaml files
+    yaml_file = transport_data_dir / Path(oil_attrs["files"]["CAD_origin"]).name
+    with yaml_file.open("rt") as f:
+        CAD_yaml = yaml.safe_load(f)
+    yaml_file = transport_data_dir / Path(oil_attrs["files"]["WA_destination"]).name
+    with yaml_file.open("rt") as f:
+        WA_in_yaml = yaml.safe_load(f)
+        WA_in_noinfo = _calc_no_info_facilities(WA_in_yaml)
+    yaml_file = transport_data_dir / Path(oil_attrs["files"]["WA_origin"]).name
+    with yaml_file.open("rt") as f:
+        WA_out_yaml = yaml.safe_load(f)
+        WA_out_noinfo = _calc_no_info_facilities(WA_out_yaml)
+    # US_origin is for US as origin
+    yaml_file = transport_data_dir / Path(oil_attrs["files"]["US_origin"]).name
+    with yaml_file.open("rt") as f:
+        US_yaml = yaml.safe_load(f)
+    # US_combined represents the combined import and export of oil
+    yaml_file = transport_data_dir / Path(oil_attrs["files"]["US_combined"]).name
+    with yaml_file.open("rt") as f:
+        USall_yaml = yaml.safe_load(f)
+    yaml_file = transport_data_dir / Path(oil_attrs["files"]["Pacific_origin"]).name
+    with yaml_file.open("rt") as f:
+        Pacific_yaml = yaml.safe_load(f)
+
+    # get probability of non-allocated track being an oil-barge
+    probability_oilcargo = oil_attrs["vessel_attributes"]["barge"][
+        "probability_oilcargo"
+    ]
+    probability_fuelonly = 1 - probability_oilcargo
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # these pairs need to be used together for "get_oil_type_cargo"
+    # (but don't yet have error-checks in place):
+    # - "WA_in_yaml" and "destination"
+    # - "WA_out_yaml" and "origin"
+    #
+    # ERROR CATCH for case of no oil transfer for given selection of
+    # yaml file, origin, and vessel_type is currently to set flag to fuel
+    # spill potential and not cargo spill potential
+    #
+    # Why?
+    #
+    # Because there are lots of tugs that are not associated
+    # with oil tank barges. We do our best to identify oil cargo and
+    # then need to rely on a probability of oil cargo informed by AIS
+    # traffic data.
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    if origin in CAD_origin_destination:
+        if origin == "Westridge Marine Terminal":
+            if destination in CAD_origin_destination:
+                oil_type = "jet"
+            else:
+                # allocate oil type based on a 'barge' from Westridge
+                oil_type = get_oil_type_cargo(
+                    CAD_yaml, origin, vessel_type, random_generator
+                )
+        else:
+            if destination in US_origin_destination:
+                # we have better information on WA fuel transfers,
+                # so I'm prioritizing this information source
+
+                oil_type = get_oil_type_cargo(
+                    WA_in_yaml, destination, vessel_type, random_generator
+                )
+
+                # There is a possibility that barge traffic has a CAD
+                # origin but the US destination is matched with no fuel
+                # transport.  It's not likely; but a possibility. This
+                # is an error catch for if there is no fuel-type
+                # associated with a barge import to WA destination.
+                # sum(probability) == 0 will return empty oil type
+
+                # *** ERROR CATCH ***
+                if not oil_type:
+                    fuel_spill = True
+                    oil_type = None
+                # *** END ERROR CATCH ***
+
+            elif destination == "ESSO Nanaimo Departure Bay":
+                # These are fixed to have a oil type option for all
+                # vessel types.  No error catch needed.
+                # See CAD_origin.yaml for verification.
+
+                oil_type = get_oil_type_cargo(
+                    CAD_yaml, destination, vessel_type, random_generator
+                )
+
+            elif destination == "Suncor Nanaimo":
+                # Similar to ESSO. No error catch needed.
+
+                oil_type = get_oil_type_cargo(
+                    CAD_yaml, destination, vessel_type, random_generator
+                )
+
+            else:
+                # if origin is a CAD terminal with no US oil terminal
+                # destination and no destination to a better known
+                # CAD terminal then just use the CAD origin allocation
+                # An option here is to flag a destination of 'Pacific'
+                # or 'US' and use US fuel allocation. I didn't see a
+                # compelling case for adding this complexity, so I kept
+                # it simple.  Similar to ESSO, above, no error catch
+                # needed.
+
+                oil_type = get_oil_type_cargo(
+                    CAD_yaml, origin, vessel_type, random_generator
+                )
+
+    elif origin in US_origin_destination and origin not in WA_out_noinfo[vessel_type]:
+        oil_type = get_oil_type_cargo(
+            WA_out_yaml, origin, vessel_type, random_generator
+        )
+
+        # *** ERROR CATCH ***
+        # As a result of using 2 different data sources (AIS and
+        # Ecology), there is a chance that AIS has origin from a
+        # marine terminal for which no barge transfers are recorded
+        # in the DOE database.  For this unlikely but possible case,
+        # I attribute the barge in a way that is consistent with the
+        # DOE database by allocating the barge as a non-oil cargo barge
+        # that will pose a fuel-oil spill risk only.
+        if not oil_type:
+            fuel_spill = True
+            oil_type = None
+        # *** END ERROR CATCH ***
+
+    elif (
+        destination in US_origin_destination
+        and destination not in WA_in_noinfo[vessel_type]
+    ):
+        oil_type = get_oil_type_cargo(
+            WA_in_yaml, destination, vessel_type, random_generator
+        )
+
+        # *** ERROR CATCH ***
+        # Same explanation as given above, in
+        # 'elif origin in US_origin_destination'
+        if not oil_type:
+            fuel_spill = True
+            oil_type = None
+        # *** END ERROR CATCH ***
+
+    elif destination in CAD_origin_destination:
+        if destination == "Westridge Marine Terminal":
+            # Westridge doesn't receive crude for storage
+            oil_type = "jet"
+        else:
+            oil_type = get_oil_type_cargo(
+                CAD_yaml, destination, vessel_type, random_generator
+            )
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Remaining cases are those that were not linked to an oil terminal
+    # in our origin-destination analysis for transport to/from
+    # known oil-transfer facilities.  Tracks were not joined (and will
+    # have null values for origin/destination) if adjacent
+    # ship tracks are (a) < 1 km long, (b) over 4 hours apart, (c)
+    # requiring > 80 knts to join.  The tracks that lack details of
+    # origin-destination fall into the category of ship tracks that
+    # may or may not be oil-traffic.  As such, I first use probability
+    # of oil-cargo for tank barge traffic to
+    # weight whether the ship track represents an oil-carge & fuel spill
+    # risk (fuel_spill = False) or a fuel-spill risk only (fuel_spill = True).
+    # For the cases in which fuel_spill is False, I use origin
+    # as 'US','Pacific' or 'Canada' to specify cargo allocation
+    # NOTE: Currently Canada == US
+    # ALSO NOTE: Once the tracks that are identified as potential
+    # cargo-spill tracks (fuel_spill = False), they will still be treated
+    # like any other tank traffic with an .8/.2 probility of
+    # cargo/fuel spill.
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    elif origin == "Pacific":
+        fuel_spill = random_generator.choice(
+            [False, True], p=[probability_oilcargo, probability_fuelonly]
+        )
+        if fuel_spill:
+            oil_type = None
+        else:
+            oil_type = get_oil_type_cargo(
+                Pacific_yaml, None, vessel_type, random_generator
+            )
+    elif origin == "US":
+        fuel_spill = random_generator.choice(
+            [False, True], p=[probability_oilcargo, probability_fuelonly]
+        )
+        if fuel_spill:
+            oil_type = None
+        else:
+            oil_type = get_oil_type_cargo(US_yaml, None, vessel_type, random_generator)
+    elif origin == "Canada":
+        fuel_spill = random_generator.choice(
+            [False, True], p=[probability_oilcargo, probability_fuelonly]
+        )
+        if fuel_spill:
+            oil_type = None
+        else:
+            oil_type = get_oil_type_cargo(US_yaml, None, vessel_type, random_generator)
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # Remaining cases have null values for origin destination.
+    # I first use probability of oil-cargo for tank barge traffic to
+    # weight whether the ship track is an oil-cargo & fuel spill risk
+    # (fuel_spill = False) or a fuel-spill risk only (fuel_spill = True)
+    # For the cases in which fuel_spill is False, I use the US_generic fuel allocation
+    # to attribute fuel type.
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    else:
+        fuel_spill = random_generator.choice(
+            [False, True], p=[probability_oilcargo, probability_fuelonly]
+        )
+        if fuel_spill:
+            oil_type = None
+        else:
+            oil_type = get_oil_type_cargo(US_yaml, None, vessel_type, random_generator)
+
+    return oil_type, fuel_spill
+
+
+def get_oil_type_tanker(
+    oil_attrs, origin, destination, transport_data_dir, random_generator
+):
+    """Randomly choose type of cargo oil spilled from a tanker based on AIS track
+    origin & destination, and oil cargo attribution analysis.
+
+    Decision tree for allocating oil type to tanker traffic see Google drawing
+    [Tanker_Oil_Attribution](https://docs.google.com/drawings/d/1-4gl2yNNWxqXK-IOr4KNZxO-awBC-bNrjRNrt86fykU/edit)
+    for a visual representation.
+
+    :param dict oil_attrs: Oil attribution information from the output of make_oil_attrs.py.
+
+    :param str or None origin: Origin of AIS track from which spill occurs.
+
+    :param str or None destination: Destination of AIS track from which spill occurs.
+
+    :param transport_data_dir: Directory path to marine_transport_data files repository
+                               cloned from https://github.com/MIDOSS/marine_transport_data.
+    :type transport_data_dir: :py:class:`pathlib.Path`
+
+    :param random_generator: PCG-64 random number generator
+    :type random_generator: :py:class:`numpy.random.Generator`
+
+    :return: Type of oil spilled.
+    :rtype: str
+    """
+    vessel_type = "tanker"
+
+    # Assign US and CAD origin/destinations from oil_attrs file
+    CAD_origin_destination = oil_attrs["categories"]["CAD_origin_destination"]
+    US_origin_destination = oil_attrs["categories"]["US_origin_destination"]
+
+    # Get cargo oil type attribution information from oil-type yaml files
+    yaml_file = transport_data_dir / Path(oil_attrs["files"]["CAD_origin"]).name
+    with yaml_file.open("rt") as f:
+        CAD_yaml = yaml.safe_load(f)
+    yaml_file = transport_data_dir / Path(oil_attrs["files"]["WA_destination"]).name
+    with yaml_file.open("rt") as f:
+        WA_in_yaml = yaml.safe_load(f)
+        WA_in_noinfo = _calc_no_info_facilities(WA_in_yaml)
+    yaml_file = transport_data_dir / Path(oil_attrs["files"]["WA_origin"]).name
+    with yaml_file.open("rt") as f:
+        WA_out_yaml = yaml.safe_load(f)
+        WA_out_noinfo = _calc_no_info_facilities(WA_out_yaml)
+    # US_origin is for US as origin
+    yaml_file = transport_data_dir / Path(oil_attrs["files"]["US_origin"]).name
+    with yaml_file.open("rt") as f:
+        US_yaml = yaml.safe_load(f)
+    # US_combined represents the combined import and export of oil
+    yaml_file = transport_data_dir / Path(oil_attrs["files"]["US_combined"]).name
+    with yaml_file.open("rt") as f:
+        USall_yaml = yaml.safe_load(f)
+    yaml_file = transport_data_dir / Path(oil_attrs["files"]["Pacific_origin"]).name
+    with yaml_file.open("rt") as f:
+        Pacific_yaml = yaml.safe_load(f)
+
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    # NOTE: these pairs need to be used together for
+    # "get_oil_type_cargo" (but don't yet have error-checks in place):
+    # - "WA_in_yaml" and "destination"
+    # - "WA_out_yaml" and "origin"
+    # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    if origin in CAD_origin_destination:
+        if origin == "Westridge Marine Terminal":
+            oil_type = get_oil_type_cargo(
+                CAD_yaml, origin, vessel_type, random_generator
+            )
+        else:
+            if destination in US_origin_destination:
+                # we have better information on WA fuel transfers,
+                # so I'm prioritizing this information source
+                oil_type = get_oil_type_cargo(
+                    WA_in_yaml, destination, vessel_type, random_generator
+                )
+            else:
+                oil_type = get_oil_type_cargo(
+                    CAD_yaml, origin, vessel_type, random_generator
+                )
+    elif origin in US_origin_destination and origin not in WA_out_noinfo[vessel_type]:
+        oil_type = get_oil_type_cargo(
+            WA_out_yaml, origin, vessel_type, random_generator
+        )
+    elif (
+        destination in US_origin_destination
+        and destination not in WA_in_noinfo[vessel_type]
+    ):
+        oil_type = get_oil_type_cargo(
+            WA_in_yaml, destination, vessel_type, random_generator
+        )
+    elif destination in CAD_origin_destination:
+        oil_type = get_oil_type_cargo(
+            CAD_yaml, destination, vessel_type, random_generator
+        )
+    elif origin == "Pacific":
+        oil_type = get_oil_type_cargo(Pacific_yaml, None, vessel_type, random_generator)
+    elif origin == "US":
+        oil_type = get_oil_type_cargo(US_yaml, None, vessel_type, random_generator)
+    else:
+        # Currently, this is a catch for all ship tracks not allocated with origin or destination
+        # It's a generic oil type attribution from the combined US import and export
+        oil_type = get_oil_type_cargo(USall_yaml, None, vessel_type, random_generator)
+
+    return oil_type
+
+
+def _calc_no_info_facilities(oil_xfer_info):
+    """Calculate vessel type keyed dict of lists of facilities for which there is
+    no oil transfer data.
+
+    :param dict oil_xfer_info: Oil transfer information from regional oil attribution YAML file.
+
+    :return: Dictionary of lists of facilities for which there is no oil transfer data,
+             keyed by vessel type
+    :rtype: dict
+    """
+    no_info_facilities = collections.defaultdict(list)
+    for facility in oil_xfer_info:
+        for vessel_type in oil_xfer_info[facility]:
+            try:
+                transfers = sum(
+                    [
+                        oil_xfer_info[facility][vessel_type][oil_type][
+                            "number_of_transfers"
+                        ]
+                        for oil_type in oil_xfer_info[facility][vessel_type]
+                    ]
+                )
+            except TypeError:
+                # Handle "names" stanza in YAML
+                continue
+            if transfers == 0:
+                no_info_facilities[vessel_type].append(facility)
+    return no_info_facilities
+
+
+def get_oil_type_cargo(cargo_info, facility, vessel_type, random_generator):
+    """Randomly choose cargo oil type based on facility and vessel type
+    by querying information in input yaml_file.
+
+    :param dict cargo_info: Cargo oil type attribution information from the output of a
+                            make_cargo_*.ipynb notebooks.
+
+    :param str or None facility: Vessel origin from AIS.
+
+    :param str vessel_type: Vessel type from which spill occurs.
+
+    :param random_generator: PCG-64 random number generator
+    :type random_generator: :py:class:`numpy.random.Generator`
+
+    :return: Cargo oil type.
+    :rtype: str
+    """
+    try:
+        ship = cargo_info[facility][vessel_type]
+    except KeyError:
+        ship = cargo_info[vessel_type]
+    raw_probs = numpy.array([ship[oil_type]["fraction_of_total"] for oil_type in ship])
+    if abs(raw_probs.sum() - 1) > 1e-4:
+        msg = (
+            f"Probable data entry error - sum of raw probabilities is not close to 1: "
+            f"{raw_probs.sum()} for {facility=}, {vessel_type=}"
+        )
+        logging.warning(msg)
+        raise ValueError(msg)
+    oil_type = random_generator.choice(list(ship.keys()), p=raw_probs / raw_probs.sum())
+    return oil_type
 
 
 def write_csv_file(df, csv_file):
@@ -860,6 +1646,8 @@ def cli(n_spills, config_file, csv_file, verbosity):
         datefmt="%Y-%m-%d %H:%M:%S",
         stream=sys.stdout,
     )
+    logging.getLogger("fiona").setLevel(logging.WARNING)
+    logging.getLogger("rasterio").setLevel(logging.WARNING)
     df = random_oil_spills(n_spills, config_file)
     write_csv_file(df, csv_file)
 

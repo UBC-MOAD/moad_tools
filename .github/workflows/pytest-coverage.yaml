@@ -29,7 +29,7 @@ jobs:
           path: ~/conda_pkgs_dir
           key: ${{ runner.os }}-conda-${{ env.CACHE_NUMBER }}-${{ hashFiles('envs/environment-test.yaml') }}
 
-      - uses: goanpeca/setup-miniconda@v1
+      - uses: conda-incubator/setup-miniconda@v2
         with:
            auto-update-conda: true
            auto-activate-base: false
@@ -52,7 +52,7 @@ jobs:
       - uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
-          author_name: pytest & coverage report
+          author_name: Python ${{ matrix.python-version }} pytest & coverage report
           fields: repo,eventName,ref,workflow
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_SALISHSEACAST_WEBHOOK_URL }}
@@ -61,7 +61,7 @@ jobs:
       - uses: 8398a7/action-slack@v3
         with:
           status: ${{ job.status }}
-          author_name: pytest & coverage report
+          author_name: Python ${{ matrix.python-version }} pytest & coverage report
           fields: repo,eventName,ref,workflow
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_MIDOSS_WEBHOOK_URL }}

@@ -94,7 +94,11 @@ def mock_calc_vte_probability(monkeypatch):
 @pytest.fixture
 def mock_get_length_origin_destination(monkeypatch):
     def get_length_origin_destination(
-        shapefiles_dir, vessel_type, spill_month, geotiff_bbox, random_generator,
+        shapefiles_dir,
+        vessel_type,
+        spill_month,
+        geotiff_bbox,
+        random_generator,
     ):
         return 16, None, None, "367704540"
 
@@ -106,8 +110,7 @@ def mock_get_length_origin_destination(monkeypatch):
 
 
 class TestRandomOilSpills:
-    """Unit tests for random_oil_spills() function.
-    """
+    """Unit tests for random_oil_spills() function."""
 
     def test_read_config(
         self,
@@ -150,16 +153,15 @@ class TestRandomOilSpills:
                 "spill_lat": [50.40640],
                 "geotiff_x_index": [134],
                 "geotiff_y_index": [393],
+                "vessel_type": ["other"],
                 "vessel_mmsi": ["367704540"],
                 "spill_volume": [13.95439],
+                "fuel_cargo": ["fuel"],
+                "Lagrangian_template": ["Lagrangian_diesel.dat"],
             }
         )
         pandas.testing.assert_frame_equal(df, expected)
 
-    @pytest.mark.xfail(
-        reason="2nd dataframe row changes every time a random_generator.choice() call is added; "
-        "finalize when script is complete"
-    )
     def test_dataframe_two_rows(
         self,
         mock_calc_vte_probability,
@@ -171,27 +173,34 @@ class TestRandomOilSpills:
     ):
         # Specifying the random seed makes the random number stream deterministic
         # so that calculated results are repeatable
-        df = random_oil_spills.random_oil_spills(2, config_file, random_seed=43)
+        df = random_oil_spills.random_oil_spills(2, config_file, random_seed=45)
 
         expected = pandas.DataFrame(
             {
                 "spill_date_hour": [
-                    pandas.Timestamp(arrow.get("2016-08-19 18:00").datetime),
-                    pandas.Timestamp(arrow.get("2018-08-27 15:00").datetime),
+                    pandas.Timestamp(arrow.get("2017-08-29 17:00").datetime),
+                    pandas.Timestamp(arrow.get("2016-08-04 22:00").datetime),
                 ],
                 "run_days": [7, 7],
-                "spill_lon": [-124.6175, -123.0092],
-                "spill_lat": [50.4064, 48.5654],
-                "geotiff_x_index": [134, 256],
-                "geotiff_y_index": [393, 500],
+                "spill_lon": [-122.8388, -123.0017],
+                "spill_lat": [48.5604, 48.7390],
+                "geotiff_x_index": [257, 245],
+                "geotiff_y_index": [511, 500],
+                "vessel_type": ["ferry", "other"],
+                "vessel_mmsi": ["367704540", "367704540"],
+                "spill_volume": [9300.0, 348.85994097108437],
+                "fuel_cargo": ["fuel", "fuel"],
+                "Lagrangian_template": [
+                    "Lagrangian_diesel.dat",
+                    "Lagrangian_diesel.dat",
+                ],
             },
         )
         pandas.testing.assert_frame_equal(df, expected)
 
 
 class TestGetDate:
-    """Unit test for get_date() function.
-    """
+    """Unit test for get_date() function."""
 
     def test_get_date(self, mock_calc_vte_probability):
         start_date = arrow.get("2015-01-01").datetime
@@ -208,8 +217,7 @@ class TestGetDate:
 
 
 class TestGetLatLonIndices:
-    """Unit test for get_lat_lon_indices() function.
-    """
+    """Unit test for get_lat_lon_indices() function."""
 
     def test_get_lat_lon_indices(self, config_file):
         with Path(config_file).open("r") as f:
@@ -262,8 +270,7 @@ class TestGetLatLonIndices:
 
 
 class TestGetVesselType:
-    """Unit tests for get_vessel_type() function.
-    """
+    """Unit tests for get_vessel_type() function."""
 
     def test_get_vessel_type(self, config_file):
         with Path(config_file).open("r") as f:
@@ -289,8 +296,7 @@ class TestGetVesselType:
 
 
 class TestGetLengthOriginDestination:
-    """Unit test for get_length_origin_destination() function.
-    """
+    """Unit test for get_length_origin_destination() function."""
 
     @pytest.mark.skipif(
         not Path(__file__)
@@ -333,8 +339,7 @@ class TestGetLengthOriginDestination:
 
 
 class TestAdjustTugTankBargeLength:
-    """Unit tests for adjust_tug_tank_barge_length() function.
-    """
+    """Unit tests for adjust_tug_tank_barge_length() function."""
 
     @pytest.mark.parametrize(
         "vessel_type, vessel_len",
@@ -354,25 +359,34 @@ class TestAdjustTugTankBargeLength:
         random_generator = numpy.random.default_rng()
 
         vessel_len = random_oil_spills.adjust_tug_tank_barge_length(
-            vessel_type, vessel_len, random_generator,
+            vessel_type,
+            vessel_len,
+            random_generator,
         )
 
         assert vessel_len == vessel_len
 
-    @pytest.mark.parametrize("vessel_type, vessel_len", (("atb", 43), ("barge", 34),))
+    @pytest.mark.parametrize(
+        "vessel_type, vessel_len",
+        (
+            ("atb", 43),
+            ("barge", 34),
+        ),
+    )
     def test_adjustment(self, vessel_type, vessel_len):
         random_generator = numpy.random.default_rng()
 
         vessel_len = random_oil_spills.adjust_tug_tank_barge_length(
-            vessel_type, vessel_len, random_generator,
+            vessel_type,
+            vessel_len,
+            random_generator,
         )
 
         assert vessel_len in [147, 172, 178, 206, 207]
 
 
 class TestGetOilCapacity:
-    """Unit test for get_oil_capacity() function.
-    """
+    """Unit test for get_oil_capacity() function."""
 
     def test_get_oil_capacity(self, config_file):
         with Path(config_file).open("r") as f:
@@ -381,7 +395,7 @@ class TestGetOilCapacity:
         # so that calculated results are repeatable
         random_generator = numpy.random.default_rng(seed=43)
 
-        with Path(config["oil attribution"]).open("r") as f:
+        with Path(config["oil attribution"]).open("rt") as f:
             oil_attrs = yaml.safe_load(f)
         vessel_len = 74
         vessel_type = "cargo"
@@ -413,7 +427,7 @@ class TestGetOilCapacity:
         # so that calculated results are repeatable
         random_generator = numpy.random.default_rng(seed=43)
 
-        with Path(config["oil attribution"]).open("r") as f:
+        with Path(config["oil attribution"]).open("rt") as f:
             oil_attrs = yaml.safe_load(f)
         fuel_capacity, cargo_capacity = random_oil_spills.get_oil_capacity(
             oil_attrs, vessel_len, vessel_type, random_generator
@@ -442,7 +456,7 @@ class TestGetOilCapacity:
         # so that calculated results are repeatable
         random_generator = numpy.random.default_rng(seed=43)
 
-        with Path(config["oil attribution"]).open("r") as f:
+        with Path(config["oil attribution"]).open("rt") as f:
             oil_attrs = yaml.safe_load(f)
         fuel_capacity, cargo_capacity = random_oil_spills.get_oil_capacity(
             oil_attrs, vessel_len, vessel_type, random_generator
@@ -451,7 +465,12 @@ class TestGetOilCapacity:
         assert fuel_capacity == oil_attrs["vessel_attributes"][vessel_type]["max_fuel"]
 
     @pytest.mark.parametrize(
-        "vessel_type, vessel_len", (("tanker", 0.10), ("atb", 0.10), ("barge", 0.10),)
+        "vessel_type, vessel_len",
+        (
+            ("tanker", 0.10),
+            ("atb", 0.10),
+            ("barge", 0.10),
+        ),
     )
     def test_min_cargo_capacity(self, vessel_type, vessel_len, config_file):
         with Path(config_file).open("r") as f:
@@ -460,7 +479,7 @@ class TestGetOilCapacity:
         # so that calculated results are repeatable
         random_generator = numpy.random.default_rng(seed=43)
 
-        with Path(config["oil attribution"]).open("r") as f:
+        with Path(config["oil attribution"]).open("rt") as f:
             oil_attrs = yaml.safe_load(f)
         fuel_capacity, cargo_capacity = random_oil_spills.get_oil_capacity(
             oil_attrs, vessel_len, vessel_type, random_generator
@@ -472,7 +491,11 @@ class TestGetOilCapacity:
 
     @pytest.mark.parametrize(
         "vessel_type, vessel_len",
-        (("tanker", 1_000_000), ("atb", 1_000_000), ("barge", 1_000_000),),
+        (
+            ("tanker", 1_000_000),
+            ("atb", 1_000_000),
+            ("barge", 1_000_000),
+        ),
     )
     def test_max_cargo_capacity(self, vessel_type, vessel_len, config_file):
         with Path(config_file).open("r") as f:
@@ -481,7 +504,7 @@ class TestGetOilCapacity:
         # so that calculated results are repeatable
         random_generator = numpy.random.default_rng(seed=43)
 
-        with Path(config["oil attribution"]).open("r") as f:
+        with Path(config["oil attribution"]).open("rt") as f:
             oil_attrs = yaml.safe_load(f)
         fuel_capacity, cargo_capacity = random_oil_spills.get_oil_capacity(
             oil_attrs, vessel_len, vessel_type, random_generator
@@ -492,9 +515,51 @@ class TestGetOilCapacity:
         )
 
 
+class TestFuelOrCargoSpill:
+    """Unit tests for fuel_or_cargo_spill() function."""
+
+    @pytest.mark.parametrize(
+        "vessel_type, random_seed, expected",
+        (
+            ("tanker", 43, False),
+            ("atb", 43, False),
+            ("barge", 43, False),
+            ("cargo", 43, True),
+            ("cruise", 43, True),
+            ("ferry", 43, True),
+            ("fishing", 43, True),
+            ("smallpass", 43, True),
+            ("other", 43, True),
+            # Different random seed results in change from fuel to cargo for tanker, atb & barge
+            ("tanker", 4341, True),
+            ("atb", 4341, True),
+            ("barge", 4341, True),
+            ("cargo", 4341, True),
+            ("cruise", 4341, True),
+            ("ferry", 4341, True),
+            ("fishing", 4341, True),
+            ("smallpass", 4341, True),
+            ("other", 4341, True),
+        ),
+    )
+    def test_fuel_or_cargo_spill(self, vessel_type, random_seed, expected, config_file):
+        with Path(config_file).open("r") as f:
+            config = yaml.safe_load(f)
+        # Specifying the random seed makes the random number stream deterministic
+        # so that calculated results are repeatable
+        random_generator = numpy.random.default_rng(seed=random_seed)
+
+        with Path(config["oil attribution"]).open("rt") as f:
+            oil_attrs = yaml.safe_load(f)
+        fuel_spill = random_oil_spills.fuel_or_cargo_spill(
+            oil_attrs, vessel_type, random_generator
+        )
+
+        assert fuel_spill == expected
+
+
 class TestChooseFractionSpilled:
-    """Unit test for choose_fraction_spilled() function.
-    """
+    """Unit test for choose_fraction_spilled() function."""
 
     def test_choose_fraction_spilled(self):
         # Specifying the random seed makes the random number stream deterministic
@@ -507,8 +572,7 @@ class TestChooseFractionSpilled:
 
 
 class TestCumulativeSpillFraction:
-    """Unit test for _cumulative_spill_fraction() function.
-    """
+    """Unit test for _cumulative_spill_fraction() function."""
 
     def test_cumulative_spill_fraction(self):
         nbins = 50
@@ -574,9 +638,315 @@ class TestCumulativeSpillFraction:
         numpy.testing.assert_allclose(cumulative, expected)
 
 
+class TestGetOilType:
+    """Unit tests for get_oil_type() function."""
+
+    @pytest.mark.parametrize(
+        "vessel_type, expected",
+        (
+            ("tanker", ("diesel", False)),
+            ("atb", ("diesel", False)),
+            ("barge", ("diesel", False)),
+            ("cargo", ("bunker", False)),
+            ("cruise", ("bunker", False)),
+            ("ferry", ("diesel", False)),
+            ("fishing", ("diesel", False)),
+            ("smallpass", ("diesel", False)),
+            ("other", ("diesel", False)),
+        ),
+    )
+    def test_get_oil_type_fuel_spill(self, vessel_type, expected, config_file):
+        with Path(config_file).open("r") as f:
+            config = yaml.safe_load(f)
+        # Specifying the random seed makes the random number stream deterministic
+        # so that calculated results are repeatable
+        random_generator = numpy.random.default_rng(seed=43)
+
+        with Path(config["oil attribution"]).open("rt") as f:
+            oil_attrs = yaml.safe_load(f)
+        marine_transport_data_dir = Path(config["oil attribution"]).parent
+        vessel_fuel_types_file = Path(oil_attrs["files"]["fuel"]).name
+        with (marine_transport_data_dir / vessel_fuel_types_file).open("rt") as f:
+            vessel_fuel_types = yaml.safe_load(f)
+        vessel_origin, vessel_dest, fuel_spill = None, None, True
+        oil_type = random_oil_spills.get_oil_type(
+            oil_attrs,
+            vessel_type,
+            vessel_origin,
+            vessel_dest,
+            fuel_spill,
+            vessel_fuel_types,
+            marine_transport_data_dir,
+            random_generator,
+        )
+
+        assert oil_type == expected
+
+    @pytest.mark.parametrize(
+        "vessel_type, random_seed, expected",
+        (
+            ("atb", 43, ("dilbit", False)),
+            ("atb", 4344, ("akns", False)),
+            ("tanker", 43, ("dilbit", False)),
+            ("tanker", 4344, ("akns", False)),
+        ),
+    )
+    def test_get_oil_type_atb_tanker_cargo_spill(
+        self, vessel_type, random_seed, expected, config_file, tmp_path, monkeypatch
+    ):
+        # Specifying the random seed makes the random number stream deterministic
+        # so that calculated results are repeatable
+        random_generator = numpy.random.default_rng(seed=random_seed)
+
+        with Path(config_file).open("r") as f:
+            config = yaml.safe_load(f)
+        oil_attribution_file = Path(config["oil attribution"])
+        marine_transport_data_dir = oil_attribution_file.parent
+        with oil_attribution_file.open("rt") as f:
+            oil_attrs = yaml.safe_load(f)
+        vessel_fuel_types_file = Path(oil_attrs["files"]["fuel"]).name
+        with (marine_transport_data_dir / vessel_fuel_types_file).open("rt") as f:
+            vessel_fuel_types = yaml.safe_load(f)
+        vessel_origin, vessel_dest, fuel_spill = (
+            "Westridge Marine Terminal",
+            "U.S. Oil & Refining",
+            False,
+        )
+
+        data_dir = tmp_path / "marine_transport_data"
+        data_dir.mkdir()
+        cargo_info_file = data_dir / "yaml_file"
+        cargo_info_file.write_text(
+            textwrap.dedent(
+                """\
+                Westridge Marine Terminal:
+                  atb:
+                    akns:
+                      fraction_of_total: 0.5
+                    bunker:
+                      fraction_of_total: 0
+                    diesel:
+                      fraction_of_total: 0
+                    dilbit:
+                      fraction_of_total: 0.5
+                    gas:
+                      fraction_of_total: 0
+                    jet:
+                      fraction_of_total: 0
+                    other:
+                      fraction_of_total: 0
+                    
+                  tanker:
+                    akns:
+                      fraction_of_total: 0.5
+                    bunker:
+                      fraction_of_total: 0
+                    diesel:
+                      fraction_of_total: 0
+                    dilbit:
+                      fraction_of_total: 0.5
+                    gas:
+                      fraction_of_total: 0
+                    jet:
+                      fraction_of_total: 0
+                    other:
+                      fraction_of_total: 0
+                """
+            )
+        )
+        monkeypatch.setitem(oil_attrs["files"], "CAD_origin", cargo_info_file)
+        empty_file = data_dir / "empty_file"
+        empty_file.write_text("")
+        for file_path in (
+            "WA_destination",
+            "WA_origin",
+            "US_origin",
+            "US_combined",
+            "Pacific_origin",
+        ):
+            monkeypatch.setitem(oil_attrs["files"], file_path, empty_file)
+
+        def mock_calc_no_info_facilities(oil_xfer_info):
+            return {}
+
+        monkeypatch.setattr(
+            random_oil_spills, "_calc_no_info_facilities", mock_calc_no_info_facilities
+        )
+
+        oil_type = random_oil_spills.get_oil_type(
+            oil_attrs,
+            vessel_type,
+            vessel_origin,
+            vessel_dest,
+            fuel_spill,
+            vessel_fuel_types,
+            data_dir,
+            random_generator,
+        )
+
+        assert oil_type == expected
+
+    @pytest.mark.parametrize(
+        "vessel_origin, vessel_dest, random_seed, expected",
+        (
+            ("Westridge Marine Terminal", "Suncor Nanaimo", 43, ("jet", False)),
+            ("Westridge Marine Terminal", "U.S. Oil & Refining", 43, ("dilbit", False)),
+            ("Westridge Marine Terminal", "U.S. Oil & Refining", 4344, ("akns", False)),
+            ("Pacific", None, 43, ("bunker", True)),
+        ),
+    )
+    def test_get_oil_type_barge_cargo_spill(
+        self,
+        vessel_origin,
+        vessel_dest,
+        random_seed,
+        expected,
+        config_file,
+        tmp_path,
+        monkeypatch,
+    ):
+        # Specifying the random seed makes the random number stream deterministic
+        # so that calculated results are repeatable
+        random_generator = numpy.random.default_rng(seed=random_seed)
+
+        with Path(config_file).open("r") as f:
+            config = yaml.safe_load(f)
+        oil_attribution_file = Path(config["oil attribution"])
+        marine_transport_data_dir = oil_attribution_file.parent
+        with oil_attribution_file.open("rt") as f:
+            oil_attrs = yaml.safe_load(f)
+        vessel_fuel_types_file = Path(oil_attrs["files"]["fuel"]).name
+        with (marine_transport_data_dir / vessel_fuel_types_file).open("rt") as f:
+            vessel_fuel_types = yaml.safe_load(f)
+        vessel_type, fuel_spill = "barge", False
+
+        data_dir = tmp_path / "marine_transport_data"
+        data_dir.mkdir()
+        cargo_info_file = data_dir / "yaml_file"
+        cargo_info_file.write_text(
+            textwrap.dedent(
+                """\
+                Westridge Marine Terminal:
+                  barge:
+                    akns:
+                      fraction_of_total: 0.5
+                    bunker:
+                      fraction_of_total: 0
+                    diesel:
+                      fraction_of_total: 0
+                    dilbit:
+                      fraction_of_total: 0.5
+                    gas:
+                      fraction_of_total: 0
+                    jet:
+                      fraction_of_total: 0
+                    other:
+                      fraction_of_total: 0
+                """
+            )
+        )
+        monkeypatch.setitem(oil_attrs["files"], "CAD_origin", cargo_info_file)
+        empty_file = data_dir / "empty_file"
+        empty_file.write_text("")
+        for file_path in (
+            "WA_destination",
+            "WA_origin",
+            "US_origin",
+            "US_combined",
+            "Pacific_origin",
+        ):
+            monkeypatch.setitem(oil_attrs["files"], file_path, empty_file)
+
+        def mock_calc_no_info_facilities(oil_xfer_info):
+            return {}
+
+        monkeypatch.setattr(
+            random_oil_spills, "_calc_no_info_facilities", mock_calc_no_info_facilities
+        )
+
+        oil_type = random_oil_spills.get_oil_type(
+            oil_attrs,
+            vessel_type,
+            vessel_origin,
+            vessel_dest,
+            fuel_spill,
+            vessel_fuel_types,
+            data_dir,
+            random_generator,
+        )
+
+        assert oil_type == expected
+
+
+class TestGetOilTypeCargo:
+    """Unit tests for get_oil_type_cargo() function."""
+
+    @pytest.mark.parametrize(
+        "vessel_type, random_seed, expected",
+        (
+            ("atb", 43, "dilbit"),
+            ("atb", 4344, "akns"),
+        ),
+    )
+    def test_get_oil_type_cargo_for_facility(self, vessel_type, random_seed, expected):
+        # Specifying the random seed makes the random number stream deterministic
+        # so that calculated results are repeatable
+        random_generator = numpy.random.default_rng(seed=random_seed)
+
+        cargo_info = {
+            "Westridge Marine Terminal": {
+                "atb": {
+                    "akns": {"fraction_of_total": 0.5},
+                    "bunker": {"fraction_of_total": 0},
+                    "diesel": {"fraction_of_total": 0},
+                    "dilbit": {"fraction_of_total": 0.5},
+                    "gas": {"fraction_of_total": 0},
+                    "jet": {"fraction_of_total": 0},
+                    "other": {"fraction_of_total": 0},
+                }
+            }
+        }
+        facility = "Westridge Marine Terminal"
+        oil_type = random_oil_spills.get_oil_type_cargo(
+            cargo_info, facility, vessel_type, random_generator
+        )
+
+        assert oil_type == expected
+
+    @pytest.mark.parametrize(
+        "vessel_type, random_seed, expected",
+        (
+            ("atb", 3, "bunker"),
+            ("atb", 4344, "diesel"),
+            ("atb", 43, "gas"),
+            ("atb", 4, "jet"),
+        ),
+    )
+    def test_get_oil_type_cargo_no_facility(self, vessel_type, random_seed, expected):
+        # Specifying the random seed makes the random number stream deterministic
+        # so that calculated results are repeatable
+        random_generator = numpy.random.default_rng(seed=random_seed)
+
+        cargo_info = {
+            "atb": {
+                "akns": {"fraction_of_total": 0.0111},
+                "bunker": {"fraction_of_total": 0.0934},
+                "diesel": {"fraction_of_total": 0.2717},
+                "dilbit": {"fraction_of_total": 0.0},
+                "gas": {"fraction_of_total": 0.4325},
+                "jet": {"fraction_of_total": 0.1524},
+                "other": {"fraction_of_total": 0.0389},
+            }
+        }
+        oil_type = random_oil_spills.get_oil_type_cargo(
+            cargo_info, None, vessel_type, random_generator
+        )
+
+        assert oil_type == expected
+
+
 class TestWriteCSVFile:
-    """Unit test for write_csv_file() function.
-    """
+    """Unit test for write_csv_file() function."""
 
     def test_write_csv_file(self, tmp_path):
         df = pandas.DataFrame(
