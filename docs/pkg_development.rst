@@ -84,17 +84,6 @@ Clone the code and documentation `repository`_ from GitHub with:
 
     $ git clone git@github.com:UBC-MOAD/moad_tools.git
 
-or
-
-.. code-block:: bash
-
-    $ git clone https://github.com/UBC-MOAD/moad_tools.git
-
-if you don't have `ssh key authentication`_ set up on GitHub
-(or copy the link from the :guilabel:`Clone or download` button on the `repository`_ page).
-
-.. _ssh key authentication: https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh
-
 
 .. _moad_toolsDevelopmentEnvironment:
 
