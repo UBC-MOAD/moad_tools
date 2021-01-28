@@ -23,7 +23,7 @@
 .. image:: https://img.shields.io/badge/license-Apache%202-cb2533.svg
     :target: https://www.apache.org/licenses/LICENSE-2.0
     :alt: Licensed under the Apache License, Version 2.0
-.. image:: https://img.shields.io/badge/python-3.6+-blue.svg
+.. image:: https://img.shields.io/badge/python-3.8+-blue.svg
     :target: https://docs.python.org/3.8/
     :alt: Python Version
 .. image:: https://img.shields.io/badge/version%20control-git-blue.svg?logo=github
@@ -50,7 +50,7 @@ The UBC EOAS MOAD Group Tools package (:kbd:`moad_tools`) is a collection of Pyt
 Python Versions
 ===============
 
-.. image:: https://img.shields.io/badge/python-3.6+-blue.svg
+.. image:: https://img.shields.io/badge/python-3.8+-blue.svg
     :target: https://docs.python.org/3.8/
     :alt: Python Version
 
@@ -341,7 +341,7 @@ The output looks something like::
   (line  444) ok        https://git-scm.com/
   (line  419) ok        https://codecov.io/gh/UBC-MOAD/moad_tools
   (line   21) ok        https://img.shields.io/badge/license-Apache%202-cb2533.svg
-  (line   21) ok        https://img.shields.io/badge/python-3.6+-blue.svg
+  (line   21) ok        https://img.shields.io/badge/python-3.8+-blue.svg
   (line   21) ok        https://img.shields.io/badge/version%20control-git-blue.svg?logo=github
   (line   21) ok        https://img.shields.io/badge/code%20style-black-000000.svg
   (line   21) ok        https://readthedocs.org/projects/ubc-moad-tools/badge/?version=latest
