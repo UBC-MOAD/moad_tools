@@ -1,7 +1,7 @@
 License
 =======
 
-The UBC EOAS MOAD Group moad_tools Python package code and documentation are copyright 2018-2020 by the `UBC EOAS MOAD Group`_ and The University of British Columbia.
+The UBC EOAS MOAD Group moad_tools Python package code and documentation are copyright 2018-2021 by the `UBC EOAS MOAD Group`_ and The University of British Columbia.
 
 They are licensed under the Apache License, Version 2.0.
 http://www.apache.org/licenses/LICENSE-2.0

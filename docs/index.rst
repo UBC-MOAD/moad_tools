@@ -1,4 +1,4 @@
-.. Copyright 2018-2020 The UBC EOAS MOAD Group
+.. Copyright 2018-2021 The UBC EOAS MOAD Group
 .. and The University of British Columbia
 ..
 .. Licensed under the Apache License, Version 2.0 (the "License");
