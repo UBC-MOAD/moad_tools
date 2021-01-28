@@ -34,6 +34,9 @@ dependencies:
   - scipy
   - xarray
 
+  # For coding style
+  - black
+
   # For unit tests
   - coverage
   - pytest
@@ -42,5 +45,6 @@ dependencies:
   - sphinx
   - sphinx_rtd_theme
 
-  # For coding style
-  - black
+  - pip:
+    # For unit tests
+    - pytest-randomly
