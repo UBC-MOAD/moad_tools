@@ -18,7 +18,6 @@ name: moad-tools
 
 channels:
   - conda-forge
-  - defaults
 
 dependencies:
   - arrow
