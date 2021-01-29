@@ -24,7 +24,7 @@
     :target: https://www.apache.org/licenses/LICENSE-2.0
     :alt: Licensed under the Apache License, Version 2.0
 .. image:: https://img.shields.io/badge/python-3.8+-blue.svg
-    :target: https://docs.python.org/3.8/
+    :target: https://docs.python.org/3.9/
     :alt: Python Version
 .. image:: https://img.shields.io/badge/version%20control-git-blue.svg?logo=github
     :target: https://github.com/UBC-MOAD/moad_tools
@@ -51,20 +51,20 @@ Python Versions
 ===============
 
 .. image:: https://img.shields.io/badge/python-3.8+-blue.svg
-    :target: https://docs.python.org/3.8/
+    :target: https://docs.python.org/3.9/
     :alt: Python Version
 
-The :kbd:`moad_tools` package is developed and tested using `Python`_ 3.8 or later.
-The package uses some Python language features that are not available in versions prior to 3.6,
+The :kbd:`moad_tools` package is developed using `Python`_ 3.9.
+It is tested for Python versions >=3.8.
+The package uses some Python language features that are not available in versions prior to 3.8,
 in particular:
 
 * `formatted string literals`_
   (aka *f-strings*)
-* the `file system path protocol`_
+  with :kbd:`=` specifiers
 
 .. _Python: https://www.python.org/
 .. _formatted string literals: https://docs.python.org/3/reference/lexical_analysis.html#f-strings
-.. _file system path protocol: https://docs.python.org/3/whatsnew/3.6.html#whatsnew36-pep519
 
 
 .. _moad_toolsGettingTheCode:
@@ -314,7 +314,7 @@ The output looks something like::
   (line  165) ok        https://docs.python.org/3/library/stdtypes.html#tuple
   (line  165) ok        https://docs.python.org/3/library/stdtypes.html#list
   writing output... [100%] pkg_development
-  (line   21) ok        https://docs.python.org/3.8/
+  (line   21) ok        https://docs.python.org/3.9/
   (line   21) ok        https://black.readthedocs.io/en/stable/
   (line   21) ok        https://ubc-moad-tools.readthedocs.io/en/latest/
   (line   54) ok        https://www.python.org/

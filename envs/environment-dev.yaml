@@ -28,7 +28,7 @@ dependencies:
   - pandas
   - pip
   - pytables
-  - python>=3.8
+  - python=3.9
   - pyyaml
   - rasterio
   - scipy
