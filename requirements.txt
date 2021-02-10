@@ -24,7 +24,7 @@ click-plugins==1.1.1
 cligj==0.7.1
 colorama==0.4.4
 coverage==5.4
-cryptography==3.3.1
+cryptography==3.3.2
 cycler==0.10.0
 docutils==0.16
 Fiona==1.8.18
