@@ -7,4 +7,4 @@ They are licensed under the Apache License, Version 2.0.
 http://www.apache.org/licenses/LICENSE-2.0
 Please see the LICENSE file for details of the license.
 
-.. _UBC EOAS MOAD Group: https://github.com/UBC-MOAD/docs/blob/master/CONTRIBUTORS.rst
+.. _UBC EOAS MOAD Group: https://github.com/UBC-MOAD/docs/blob/main/CONTRIBUTORS.rst

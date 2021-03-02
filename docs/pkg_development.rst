@@ -284,7 +284,7 @@ The output looks something like::
   preparing documents... done
   writing output... [ 33%] index
   (line    6) ok        http://www.apache.org/licenses/LICENSE-2.0
-  (line    4) ok        https://github.com/UBC-MOAD/docs/blob/master/CONTRIBUTORS.rst
+  (line    4) ok        https://github.com/UBC-MOAD/docs/blob/main/CONTRIBUTORS.rst
   writing output... [ 66%] moad_tools
   (line   21) ok        https://docs.python.org/3/library/stdtypes.html#str
   (line   21) ok        https://docs.python.org/3/library/stdtypes.html#str
@@ -433,7 +433,7 @@ or from the green checkmark to the left of the "Latest commit" message on the `r
 The testing coverage report is uploaded to `codecov.io`_
 
 .. _repo actions page: https://github.com/UBC-MOAD/moad_tools/actions
-.. _repo commits page: https://github.com/UBC-MOAD/moad_tools/commits/master
+.. _repo commits page: https://github.com/UBC-MOAD/moad_tools/commits/main
 .. _repo code overview page: https://github.com/UBC-MOAD/moad_tools
 .. _codecov.io: https://codecov.io/gh/UBC-MOAD/moad_tools
 
@@ -483,4 +483,4 @@ They are licensed under the Apache License, Version 2.0.
 http://www.apache.org/licenses/LICENSE-2.0
 Please see the LICENSE file for details of the license.
 
-.. _UBC EOAS MOAD Group: https://github.com/UBC-MOAD/docs/blob/master/CONTRIBUTORS.rst
+.. _UBC EOAS MOAD Group: https://github.com/UBC-MOAD/docs/blob/main/CONTRIBUTORS.rst
