@@ -1,0 +1,25 @@
+# virtualenv environment description for Make-MIDOSS-Forcing package
+# development environment on a Compute Canada cluster
+#
+# Create a virtualenv containing these packages with:
+#
+#    module spider python/3.8.2
+#    python3 -m virtualenv --no-download ~/venvs/dev-graham
+#    source ~/venvs/dev-graham/bin/activate
+#    python3 -m pip install -r environment-dev-graham.txt
+#
+# To deactivate
+#    deactivate
+
+bottleneck
+fiona
+geopandas
+rasterio
+xarray
+arrow
+click
+h5py
+netCDF4
+numpy
+python-dateutil
+pyyaml
