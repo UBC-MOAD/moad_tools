@@ -1,4 +1,4 @@
-# Copyright 2018-2020 The UBC EOAS MOAD Group
+# Copyright 2018-2021 The UBC EOAS MOAD Group
 # and The University of British Columbia
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,12 +17,4 @@
 import setuptools
 
 
-setuptools.setup(
-    entry_points={
-        "console_scripts": [
-            "geotiff-watermask = moad_tools.midoss.geotiff_watermask:cli",
-            "hdf5-to-netcdf4 = moad_tools.midoss.hdf5_to_netcdf4:cli",
-            "random-oil-spills = moad_tools.midoss.random_oil_spills:cli",
-        ]
-    }
-)
+setuptools.setup()

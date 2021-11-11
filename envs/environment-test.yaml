@@ -8,6 +8,7 @@ name: moad-tools-test
 
 channels:
   - conda-forge
+  - nodefaults
 
 dependencies:
   - arrow

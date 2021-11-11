@@ -10,7 +10,7 @@
 # The environment will include all of the tools used to develop,
 # test, and document the moad_tools package.
 #
-# See the requirements.txt file for an exhaustive list of all of the
+# See the envs/requirements.txt file for an exhaustive list of all of the
 # packages installed in the environment and their versions used in
 # recent development.
 
@@ -18,6 +18,7 @@ name: moad-tools
 
 channels:
   - conda-forge
+  - nodefaults
 
 dependencies:
   - arrow
