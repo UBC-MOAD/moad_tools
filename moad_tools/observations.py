@@ -100,9 +100,7 @@ def get_ndbc_buoy(buoy_id):
         logging.error(msg)
         raise ValueError(msg) from exc
 
-    columns = {
-        "('#YY', '#yr')_('MM', 'mo')_('DD', 'dy')_('hh', 'hr')_('mm', 'mn')": "time"
-    }
-    columns.update({t: f"{t[0]} [{t[1]}]" for t in df.columns[1:]})
-    df = df.rename(index=str, columns=columns).set_index("time").sort_index()
+    df.set_index(df.columns[0], inplace=True)
+    df.index.rename("time", inplace=True)
+    df.sort_index(inplace=True)
     return df
