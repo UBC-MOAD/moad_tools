@@ -22,13 +22,18 @@ UBC EOAS MOAD Group Tools Package
 .. image:: https://github.com/UBC-MOAD/moad_tools/workflows/sphinx-linkcheck/badge.svg
     :target: https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Asphinx-linkcheck
     :alt: Sphinx linkcheck
+.. image:: https://github.com/UBC-MOAD/moad_tools/actions/workflows/codeql-analysis.yaml/badge.svg
+      :target: https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:codeql-analysis
+      :alt: CodeQL analysis
 .. image:: https://img.shields.io/github/issues/SalishSeaCast/SalishSeaNowcast?logo=github
     :target: https://github.com/SalishSeaCast/SalishSeaNowcast/issues
     :alt: Issue Tracker
 
-The UBC EOAS MOAD Group Tools package (``moad_tools``) is a collection of Python modules that facilitate code reuse for the UBC EOAS MOAD Group.
+The UBC EOAS MOAD Group Tools package (``moad_tools``) is a collection of
+Python modules that facilitate code reuse for the UBC EOAS MOAD Group.
 
-Documentation for the package is in the ``docs/`` directory and is rendered at http://ubc-moad-tools.readthedocs.org/en/latest/.
+Documentation for the package is in the ``docs/`` directory and is rendered at
+http://ubc-moad-tools.readthedocs.org/en/latest/.
 
 .. image:: https://readthedocs.org/projects/ubc-moad-tools/badge/?version=latest
     :target: https://ubc-moad-tools.readthedocs.io/en/latest/
@@ -37,6 +42,8 @@ Documentation for the package is in the ``docs/`` directory and is rendered at h
 
 License
 =======
+
+.. SPDX-License-Identifier: Apache-2.0
 
 .. image:: https://img.shields.io/badge/license-Apache%202-cb2533.svg
     :target: https://www.apache.org/licenses/LICENSE-2.0

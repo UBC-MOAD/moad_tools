@@ -40,11 +40,15 @@
 .. image:: https://github.com/UBC-MOAD/moad_tools/workflows/sphinx-linkcheck/badge.svg
     :target: https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Asphinx-linkcheck
     :alt: Sphinx linkcheck
+.. image:: https://github.com/UBC-MOAD/moad_tools/actions/workflows/codeql-analysis.yaml/badge.svg
+      :target: https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:codeql-analysis
+      :alt: CodeQL analysis
 .. image:: https://img.shields.io/github/issues/UBC-MOAD/moad_tools?logo=github
     :target: https://github.com/UBC-MOAD/moad_tools/issues
     :alt: Issue Tracker
 
-The UBC EOAS MOAD Group Tools package (:kbd:`moad_tools`) is a collection of Python modules that facilitate code reuse for the UBC EOAS MOAD Group.
+The UBC EOAS MOAD Group Tools package (:kbd:`moad_tools`) is a collection of
+Python modules that facilitate code reuse for the UBC EOAS MOAD Group.
 
 
 .. _moad_toolsPythonVersions:
