@@ -29,7 +29,7 @@ dependencies:
   - pandas
   - pip
   - pytables
-  - python=3.9
+  - python=3.10
   - pyyaml
   - rasterio
   - scipy
