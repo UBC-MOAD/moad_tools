@@ -30,7 +30,7 @@ logging.getLogger(__name__).addHandler(logging.NullHandler())
 
 def get_ndbc_buoy(buoy_id):
     """Retrieve a collection of time series of the last 45 days of real-time observed
-    buoy data for an ECCC or NOAA data buoyfrom the NOAA National Data Buoy Center (NDBC)
+    buoy data for an ECCC or NOAA data buoy from the NOAA National Data Buoy Center (NDBC)
     https://www.ndbc.noaa.gov/data/realtime2/ web service.
 
     The time series is returned as a :py:class:`pandas.DataFrame` object.
