@@ -12,6 +12,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+# SPDX-License-Identifier: Apache-2.0
+
+
 """Functions and command-line tool to calculate a CSV file containing parameters of a set
 of random oil spills to drive Monte Carlo runs of MOHID.
 """
