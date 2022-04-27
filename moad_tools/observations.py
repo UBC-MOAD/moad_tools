@@ -1,4 +1,4 @@
-# Copyright 2018-2020 The UBC EOAS MOAD Group
+# Copyright 2018 – present The UBC EOAS MOAD Group
 # and The University of British Columbia
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,14 +14,12 @@
 # limitations under the License.
 """Functions for downloading observations data from web services.
 """
-from datetime import datetime
 import logging
 import urllib
 
 import pandas
 
 from moad_tools.places import PLACES
-
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 

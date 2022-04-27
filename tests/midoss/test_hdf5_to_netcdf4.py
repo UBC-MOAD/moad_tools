@@ -1,4 +1,4 @@
-# Copyright 2018-2020 The UBC EOAS MOAD Group
+# Copyright 2018 – present The UBC EOAS MOAD Group
 # and The University of British Columbia
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,8 +14,4 @@
 # limitations under the License.
 """Unit tests for hdf5_to_netcdf4 module.
 """
-from unittest.mock import Mock, patch
 
-import pytest
-
-from moad_tools.midoss import hdf5_to_netcdf4
