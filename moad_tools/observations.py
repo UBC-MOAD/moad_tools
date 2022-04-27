@@ -45,7 +45,7 @@ def get_ndbc_buoy(buoy_id):
     :rtype: :py:class:`pandas.DataFrame`
     """
     endpoint = "https://www.ndbc.noaa.gov/data/realtime2/"
-    msg = f"retrieving last 45 days of real-time buoy data from {endpoint}"
+    msg = f"retrieving available real-time buoy data from {endpoint}"
     try:
         buoy_number = int(buoy_id)
     except ValueError:
