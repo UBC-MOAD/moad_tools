@@ -13,7 +13,6 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
 import configparser
-import datetime
 import os
 import sys
 
@@ -30,14 +29,7 @@ project = setup_cfg["metadata"]["name"]
 author = "The UBC EOAS MOAD Group and The University of British Columbia"
 
 pkg_creation_year = 2018
-copyright_years = (
-    f"{pkg_creation_year}"
-    if datetime.date.today().year == pkg_creation_year
-    else f"{pkg_creation_year}-{datetime.date.today():%Y}"
-)
-copyright_years = (
-    "2018" if datetime.date.today().year == 2018 else f"2018-{datetime.date.today():%Y}"
-)
+copyright_years = f"{pkg_creation_year} – present"
 copyright = f"{copyright_years}, {author}"
 
 
