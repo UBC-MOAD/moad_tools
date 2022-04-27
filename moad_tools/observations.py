@@ -19,7 +19,7 @@
 """Functions for downloading observations data from web services.
 """
 import logging
-import urllib
+import urllib.error
 
 import pandas
 
