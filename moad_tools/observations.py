@@ -71,9 +71,6 @@ def get_ndbc_buoy(buoy_id):
     logging.info(msg)
     ndbc_url = f"{endpoint}{buoy_number}.txt"
 
-    def datetime_parser(yr, mo, dy, hr, mn):
-        return datetime.strptime(f"{yr} {mo} {dy} {hr} {mn}", "%Y %m %d %H %M")
-
     try:
         try:
             df = pandas.read_csv(
@@ -82,7 +79,7 @@ def get_ndbc_buoy(buoy_id):
                 header=[0, 1],
                 na_values="MM",
                 parse_dates=[[0, 1, 2, 3, 4]],
-                date_parser=datetime_parser,
+                date_parser=lambda x: pandas.to_datetime(x, format="%Y %m %d %H %M"),
             )
         except urllib.error.URLError:
             # Work around SSL: UNKNOWN_PROTOCOL error that appeared on 23may18
@@ -94,7 +91,7 @@ def get_ndbc_buoy(buoy_id):
                 header=[0, 1],
                 na_values="MM",
                 parse_dates=[[0, 1, 2, 3, 4]],
-                date_parser=datetime_parser,
+                date_parser=lambda x: pandas.to_datetime(x, format="%Y %m %d %H %M"),
             )
     except urllib.error.HTTPError as exc:
         msg = (
