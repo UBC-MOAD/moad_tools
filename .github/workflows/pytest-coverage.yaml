@@ -58,6 +58,5 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_MIDOSS_WEBHOOK_URL }}
         if: always()
 
-      - name: Upload coverage report to Codecov
-        uses: UBC-MOAD/gha-workflows/.github/workflows/upload-to-codecov.yaml@74399a6571c8e52fa1a0be313a64cb1635fac58a
-        if: always()
+    uses: UBC-MOAD/gha-workflows/.github/workflows/upload-to-codecov.yaml@74399a6571c8e52fa1a0be313a64cb1635fac58a
+    if: always()
