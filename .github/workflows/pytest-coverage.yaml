@@ -59,9 +59,5 @@ jobs:
         if: always()
 
       - name: Upload coverage report to Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.xml
-          flags: unittests
+        uses: UBC-MOAD/gha-workflows/.github/workflows/upload-to-codecov.yaml@74399a6571c8e52fa1a0be313a64cb1635fac58a
         if: always()
