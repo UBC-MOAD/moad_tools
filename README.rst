@@ -31,8 +31,8 @@ UBC EOAS MOAD Group Tools Package
 .. image:: https://github.com/UBC-MOAD/moad_tools/actions/workflows/codeql-analysis.yaml/badge.svg
       :target: https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:codeql-analysis
       :alt: CodeQL analysis
-.. image:: https://img.shields.io/github/issues/SalishSeaCast/SalishSeaNowcast?logo=github
-    :target: https://github.com/SalishSeaCast/SalishSeaNowcast/issues
+.. image:: https://img.shields.io/github/issues/UBC-MOAD/moad_tools?logo=github
+    :target: https://github.com/UBC-MOAD/moad_tools/issues
     :alt: Issue Tracker
 
 The UBC EOAS MOAD Group Tools package (``moad_tools``) is a collection of

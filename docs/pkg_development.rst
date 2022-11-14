@@ -337,7 +337,7 @@ The output looks something like::
   (line   76) ok        https://github.com/UBC-MOAD/moad_tools
   (line   90) ok        https://docs.github.com/en/github/authenticating-to-github/connecting-to-github-with-ssh
   (line   21) ok        https://www.apache.org/licenses/LICENSE-2.0
-  (line   21) ok        https://github.com/SalishSeaCast/SalishSeaNowcast/issues
+  (line   21) ok        https://github.com/UBC-MOAD/moad_tools/issues
   (line  136) ok        https://www.python.org/dev/peps/pep-0008/
   (line  169) ok        https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
   (line  169) ok        https://www.sphinx-doc.org/en/master/
@@ -360,10 +360,10 @@ The output looks something like::
   (line  410) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Apytest-with-coverage
   (line  419) ok        https://github.com/UBC-MOAD/moad_tools/actions
   (line  410) ok        https://github.com/UBC-MOAD/moad_tools/workflows/pytest-with-coverage/badge.svg
-  (line   21) ok        https://img.shields.io/github/issues/SalishSeaCast/SalishSeaNowcast?logo=github
+  (line   21) ok        https://img.shields.io/github/issues/UBC-MOAD/moad_tools?logo=github
   (line  419) ok        https://github.com/UBC-MOAD/moad_tools/commits/master
   (line  410) ok        https://codecov.io/gh/UBC-MOAD/moad_tools/branch/master/graph/badge.svg
-  (line  452) ok        https://img.shields.io/github/issues/SalishSeaCast/SalishSeaNowcast?logo=github
+  (line  452) ok        https://img.shields.io/github/issues/UBC-MOAD/moad_tools?logo=github
 
   build succeeded.
 
@@ -478,13 +478,13 @@ The :kbd:`moad_tools` package code and documentation source files are available 
 Issue Tracker
 =============
 
-.. image:: https://img.shields.io/github/issues/SalishSeaCast/SalishSeaNowcast?logo=github
-    :target: https://github.com/SalishSeaCast/SalishSeaNowcast/issues
+.. image:: https://img.shields.io/github/issues/UBC-MOAD/moad_tools?logo=github
+    :target: https://github.com/UBC-MOAD/moad_tools/issues
     :alt: Issue Tracker
 
 Development tasks,
 bug reports,
-and enhancement ideas are recorded and managed in the issue tracker at https://github.com/SalishSeaCast/SalishSeaNowcast/issues
+and enhancement ideas are recorded and managed in the issue tracker at https://github.com/UBC-MOAD/moad_tools/issues
 
 
 License
