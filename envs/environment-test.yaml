@@ -35,3 +35,6 @@ dependencies:
   - pip:
     # For unit tests
     - pytest-randomly
+
+    # editable install of moad_tools package
+    - --editable ../
