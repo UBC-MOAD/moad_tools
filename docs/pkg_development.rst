@@ -40,6 +40,12 @@
 .. image:: https://github.com/UBC-MOAD/moad_tools/workflows/sphinx-linkcheck/badge.svg
     :target: https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Asphinx-linkcheck
     :alt: Sphinx linkcheck
+.. image:: https://github.com/UBC-MOAD/moad_tools/workflows/pytest-with-coverage/badge.svg
+    :target: https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Apytest-with-coverage
+    :alt: Pytest with Coverage Status
+.. image:: https://codecov.io/gh/UBC-MOAD/moad_tools/branch/main/graph/badge.svg
+    :target: https://app.codecov.io/gh/UBC-MOAD/moad_tools
+    :alt: Codecov Testing Coverage Report
 .. image:: https://github.com/UBC-MOAD/moad_tools/actions/workflows/codeql-analysis.yaml/badge.svg
       :target: https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:codeql-analysis
       :alt: CodeQL analysis
@@ -351,9 +357,9 @@ The output looks something like::
   (line   21) ok        https://img.shields.io/badge/version%20control-git-blue.svg?logo=github
   (line   21) ok        https://img.shields.io/badge/code%20style-black-000000.svg
   (line   21) ok        https://readthedocs.org/projects/ubc-moad-tools/badge/?version=latest
-  (line  410) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3ACI
+  (line  410) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Apytest-with-coverage
   (line  419) ok        https://github.com/UBC-MOAD/moad_tools/actions
-  (line  410) ok        https://github.com/UBC-MOAD/moad_tools/workflows/CI/badge.svg
+  (line  410) ok        https://github.com/UBC-MOAD/moad_tools/workflows/pytest-with-coverage/badge.svg
   (line   21) ok        https://img.shields.io/github/issues/SalishSeaCast/SalishSeaNowcast?logo=github
   (line  419) ok        https://github.com/UBC-MOAD/moad_tools/commits/master
   (line  410) ok        https://codecov.io/gh/UBC-MOAD/moad_tools/branch/master/graph/badge.svg
@@ -398,7 +404,8 @@ The output looks something like::
 
   ============================ 11 passed in 1.98s =============================
 
-You can monitor what lines of code the test suite exercises using the `coverage.py`_ and `pytest-cov`_ tools with the command:
+You can monitor what lines of code the test suite exercises using the `coverage.py`_
+and `pytest-cov`_ tools with the command:
 
 .. _coverage.py: https://coverage.readthedocs.io/en/latest/
 .. _pytest-cov: https://pytest-cov.readthedocs.io/en/latest/
@@ -417,7 +424,8 @@ you can use
 
     (mohid-cmd)$ pytest --cov=./ --cov-report html
 
-to produce an HTML report that you can view in your browser by opening :file:`moad_tools/htmlcov/index.html`.
+to produce an HTML report that you can view in your browser by opening
+:file:`moad_tools/htmlcov/index.html`.
 
 
 .. _moad_toolsContinuousIntegration:
@@ -425,25 +433,28 @@ to produce an HTML report that you can view in your browser by opening :file:`mo
 Continuous Integration
 ----------------------
 
-.. image:: https://github.com/UBC-MOAD/moad_tools/workflows/CI/badge.svg
-    :target: https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3ACI
-    :alt: GitHub Workflow Status
-.. image:: https://codecov.io/gh/UBC-MOAD/moad_tools/branch/master/graph/badge.svg
-    :target: https://codecov.io/gh/UBC-MOAD/moad_tools
+.. image:: https://github.com/UBC-MOAD/moad_tools/workflows/pytest-with-coverage/badge.svg
+    :target: https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Apytest-with-coverage
+    :alt: Pytest with Coverage Status
+.. image:: https://codecov.io/gh/UBC-MOAD/moad_tools/branch/main/graph/badge.svg
+    :target: https://app.codecov.io/gh/UBC-MOAD/moad_tools
     :alt: Codecov Testing Coverage Report
 
-The :kbd:`moad_tools` package unit test suite is run and a coverage report is generated whenever changes are pushed to GitHub.
+The :kbd:`moad_tools` package unit test suite is run and a coverage report is generated
+whenever changes are pushed to GitHub.
 The results are visible on the `repo actions page`_,
 from the green checkmarks beside commits on the `repo commits page`_,
-or from the green checkmark to the left of the "Latest commit" message on the `repo code overview page`_ .
+or from the green checkmark to the left of the "Latest commit" message on the
+`repo code overview page`_ .
 The testing coverage report is uploaded to `codecov.io`_
 
 .. _repo actions page: https://github.com/UBC-MOAD/moad_tools/actions
 .. _repo commits page: https://github.com/UBC-MOAD/moad_tools/commits/main
 .. _repo code overview page: https://github.com/UBC-MOAD/moad_tools
-.. _codecov.io: https://codecov.io/gh/UBC-MOAD/moad_tools
+.. _codecov.io: https://app.codecov.io/gh/UBC-MOAD/moad_tools
 
-The `GitHub Actions`_ workflow configuration that defines the continuous integration tasks is in the :file:`.github/workflows/pytest-coverage.yaml` file.
+The `GitHub Actions`_ workflow configuration that defines the continuous integration tasks
+is in the :file:`.github/workflows/pytest-with-coverage.yaml` file.
 
 .. _GitHub Actions: https://docs.github.com/en/actions
 

@@ -1,0 +1,19 @@
+name: pytest-with-coverage
+
+on:
+  push:
+    branches: ['*']
+
+jobs:
+  pytest-with-coverage:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.8', '3.9', '3.10']
+    uses: UBC-MOAD/gha-workflows/.github/workflows/pytest-with-coverage.yaml@6e7acc377bd3284fe92b36e162dd2b58618849be
+    with:
+      python-version: ${{ matrix.python-version }}
+      conda-env-file: envs/environment-test.yaml
+      conda-env-name: moad-tools-test
+    secrets:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_SALISHSEACAST_WEBHOOK_URL }}
