@@ -22,6 +22,12 @@ UBC EOAS MOAD Group Tools Package
 .. image:: https://github.com/UBC-MOAD/moad_tools/workflows/sphinx-linkcheck/badge.svg
     :target: https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Asphinx-linkcheck
     :alt: Sphinx linkcheck
+.. image:: https://github.com/UBC-MOAD/moad_tools/workflows/pytest-with-coverage/badge.svg
+    :target: https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Apytest-with-coverage
+    :alt: Pytest with Coverage Status
+.. image:: https://codecov.io/gh/UBC-MOAD/moad_tools/branch/main/graph/badge.svg
+    :target: https://app.codecov.io/gh/UBC-MOAD/moad_tools
+    :alt: Codecov Testing Coverage Report
 .. image:: https://github.com/UBC-MOAD/moad_tools/actions/workflows/codeql-analysis.yaml/badge.svg
       :target: https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:codeql-analysis
       :alt: CodeQL analysis
