@@ -5,7 +5,7 @@
 .. you may not use this file except in compliance with the License.
 .. You may obtain a copy of the License at
 ..
-..    http://www.apache.org/licenses/LICENSE-2.0
+..    https://www.apache.org/licenses/LICENSE-2.0
 ..
 .. Unless required by applicable law or agreed to in writing, software
 .. distributed under the License is distributed on an "AS IS" BASIS,
@@ -103,13 +103,13 @@ Development Environment
 =======================
 
 Setting up an isolated development environment using `Conda`_ is recommended.
-Assuming that you have the `Anaconda Python Distribution`_ or `Miniconda3`_ installed,
-you can create and activate an environment called :kbd:`moad-tools` that will have all of the Python packages necessary for development,
+Assuming that you have `Miniconda3`_ installed,
+you can create and activate an environment called :kbd:`moad-tools` that will have
+all of the Python packages necessary for development,
 testing,
 and building the documentation with the commands below:
 
 .. _Conda: https://conda.io/en/latest/
-.. _Anaconda Python Distribution: https://www.anaconda.com/products/individual
 .. _Miniconda3: https://docs.conda.io/en/latest/miniconda.html
 
 .. code-block:: bash
@@ -119,7 +119,9 @@ and building the documentation with the commands below:
     $ conda activate moad-tools
     (moad-tools)$ python3 -m pip install --editable .
 
-The :kbd:`--editable` option in the :command:`pip install` command above installs the :kbd:`moad_tools` package via a symlink so that the installed package will be automatically updated as the repo evolves.
+The :kbd:`--editable` option in the :command:`pip install` command above installs the
+:kbd:`moad_tools` package via a symlink so that the installed package will be
+automatically updated as the repo evolves.
 
 To deactivate the environment use:
 
@@ -140,7 +142,7 @@ Coding Style
 The :kbd:`moad_tools` package uses the `black`_ code formatting tool to maintain a coding style that is very close to `PEP 8`_.
 
 .. _black: https://black.readthedocs.io/en/stable/
-.. _PEP 8: https://www.python.org/dev/peps/pep-0008/
+.. _PEP 8: https://peps.python.org/pep-0008/
 
 :command:`black` is installed as part of the :ref:`moad_toolsDevelopmentEnvironment` setup.
 
@@ -295,7 +297,7 @@ The output looks something like::
   checking consistency... done
   preparing documents... done
   writing output... [ 33%] index
-  (line    6) ok        http://www.apache.org/licenses/LICENSE-2.0
+  (line    6) ok        https://www.apache.org/licenses/LICENSE-2.0
   (line    4) ok        https://github.com/UBC-MOAD/docs/blob/main/CONTRIBUTORS.rst
   writing output... [ 66%] moad_tools
   (line   21) ok        https://docs.python.org/3/library/stdtypes.html#str
@@ -361,8 +363,8 @@ The output looks something like::
   (line  419) ok        https://github.com/UBC-MOAD/moad_tools/actions
   (line  410) ok        https://github.com/UBC-MOAD/moad_tools/workflows/pytest-with-coverage/badge.svg
   (line   21) ok        https://img.shields.io/github/issues/UBC-MOAD/moad_tools?logo=github
-  (line  419) ok        https://github.com/UBC-MOAD/moad_tools/commits/master
-  (line  410) ok        https://codecov.io/gh/UBC-MOAD/moad_tools/branch/master/graph/badge.svg
+  (line  419) ok        https://github.com/UBC-MOAD/moad_tools/commits/main
+  (line  410) ok        https://codecov.io/gh/UBC-MOAD/moad_tools/branch/main/graph/badge.svg
   (line  452) ok        https://img.shields.io/github/issues/UBC-MOAD/moad_tools?logo=github
 
   build succeeded.
@@ -498,7 +500,7 @@ The UBC EOAS MOAD Group moad_tools Python package code and documentation are
 copyright 2018 – present by the `UBC EOAS MOAD Group`_ and The University of British Columbia.
 
 They are licensed under the Apache License, Version 2.0.
-http://www.apache.org/licenses/LICENSE-2.0
+https://www.apache.org/licenses/LICENSE-2.0
 Please see the LICENSE file for details of the license.
 
 .. _UBC EOAS MOAD Group: https://github.com/UBC-MOAD/docs/blob/main/CONTRIBUTORS.rst
