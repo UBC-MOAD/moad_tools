@@ -17,7 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         language: [ 'python' ]
-    uses: UBC-MOAD/gha-workflows/.github/workflows/codeql-analysis.yaml@ba82e1f5186369c8afb7dbeac4ec31af0bd4c2fe
+    uses: UBC-MOAD/gha-workflows/.github/workflows/codeql-analysis.yaml@7ffd33f5895ff9729ffdaa8be50553111c3028a8
     with:
       language: ${{ matrix.language }}
     secrets:
