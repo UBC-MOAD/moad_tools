@@ -117,11 +117,13 @@ and building the documentation with the commands below:
     $ cd moad_tools
     $ conda env create -f envs/environment-dev.yaml
     $ conda activate moad-tools
-    (moad-tools)$ python3 -m pip install --editable .
 
-The :kbd:`--editable` option in the :command:`pip install` command above installs the
-:kbd:`moad_tools` package via a symlink so that the installed package will be
-automatically updated as the repo evolves.
+:py:obj:`moad_tools` is installed in `editable install mode`_ as part of the
+conda environment creation process.
+That means that the package is installed from the cloned repo via symlinks so that
+it will be automatically updated as the repo evolves.
+
+.. _editable install mode: https://pip.pypa.io/en/stable/topics/local-project-installs/#editable-installs
 
 To deactivate the environment use:
 

@@ -5,12 +5,11 @@
 #
 #   $ conda env create -f moad_tools/envs/environment-dev.yaml
 #   $ conda activate moad-tools
-#   (moad-tools)$ python3 -m pip install --editable moad_tools
 #
-# The environment will include all of the tools used to develop,
+# The environment will include all the tools used to develop,
 # test, and document the moad_tools package.
 #
-# See the envs/requirements.txt file for an exhaustive list of all of the
+# See the envs/requirements.txt file for an exhaustive list of all the
 # packages installed in the environment and their versions used in
 # recent development.
 
@@ -49,3 +48,6 @@ dependencies:
   - pip:
     # For unit tests
     - pytest-randomly
+
+    # editable install of moad_tools package
+    - --editable ../
