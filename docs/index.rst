@@ -22,7 +22,7 @@
 UBC EOAS MOAD Group Tools Documentation
 ***************************************
 
-This is the documentation for the UBC EOAS MOAD Group's :kbd:`moad_tools` Python package.
+This is the documentation for the UBC EOAS MOAD Group's :py:obj:`moad_tools` Python package.
 
 
 .. toctree::

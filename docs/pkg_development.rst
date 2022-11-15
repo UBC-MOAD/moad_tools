@@ -18,9 +18,9 @@
 
 .. _moad_toolsPackagedDevelopment:
 
-*************************************
-:kbd:`moad_tools` Package Development
-*************************************
+****************************************
+:py:obj:`moad_tools` Package Development
+****************************************
 
 .. image:: https://img.shields.io/badge/license-Apache%202-cb2533.svg
     :target: https://www.apache.org/licenses/LICENSE-2.0
@@ -53,7 +53,7 @@
     :target: https://github.com/UBC-MOAD/moad_tools/issues
     :alt: Issue Tracker
 
-The UBC EOAS MOAD Group Tools package (:kbd:`moad_tools`) is a collection of
+The UBC EOAS MOAD Group Tools package (:py:obj:`moad_tools`) is a collection of
 Python modules that facilitate code reuse for the UBC EOAS MOAD Group.
 
 
@@ -66,7 +66,7 @@ Python Versions
     :target: https://docs.python.org/3.10/
     :alt: Python Version
 
-The :kbd:`moad_tools` package is developed using `Python`_ 3.10.
+The :py:obj:`moad_tools` package is developed using `Python`_ 3.10.
 It is tested for Python versions >=3.8.
 The package uses some Python language features that are not available in versions prior to 3.8,
 in particular:
@@ -141,7 +141,8 @@ Coding Style
     :target: https://black.readthedocs.io/en/stable/
     :alt: The uncompromising Python code formatter
 
-The :kbd:`moad_tools` package uses the `black`_ code formatting tool to maintain a coding style that is very close to `PEP 8`_.
+The :py:obj:`moad_tools` package uses the `black`_ code formatting tool to maintain
+a coding style that is very close to `PEP 8`_.
 
 .. _black: https://black.readthedocs.io/en/stable/
 .. _PEP 8: https://peps.python.org/pep-0008/
@@ -174,7 +175,8 @@ Documentation
     :target: https://ubc-moad-tools.readthedocs.io/en/latest/
     :alt: Documentation Status
 
-The ::kbd:`moad_tools` documentation is written in `reStructuredText`_ and converted to HTML using `Sphinx`_.
+The ::py:obj:`moad_tools` documentation is written in `reStructuredText`_ and
+converted to HTML using `Sphinx`_.
 
 .. _reStructuredText: https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
 .. _Sphinx: https://www.sphinx-doc.org/en/master/
@@ -383,7 +385,7 @@ The output looks something like::
 Running the Unit Tests
 ======================
 
-The test suite for the :kbd:`moad_tools` package is in :file:`moad_tools/tests/`.
+The test suite for the :py:obj:`moad_tools` package is in :file:`moad_tools/tests/`.
 The `pytest`_ tool is used for test parametrization and as the test runner for the suite.
 
 .. _pytest: https://docs.pytest.org/en/latest/
@@ -444,7 +446,7 @@ Continuous Integration
     :target: https://app.codecov.io/gh/UBC-MOAD/moad_tools
     :alt: Codecov Testing Coverage Report
 
-The :kbd:`moad_tools` package unit test suite is run and a coverage report is generated
+The :py:obj:`moad_tools` package unit test suite is run and a coverage report is generated
 whenever changes are pushed to GitHub.
 The results are visible on the `repo actions page`_,
 from the green checkmarks beside commits on the `repo commits page`_,
@@ -472,7 +474,8 @@ Version Control Repository
     :target: https://github.com/UBC-MOAD/moad_tools
     :alt: Git on GitHub
 
-The :kbd:`moad_tools` package code and documentation source files are available in the :kbd:`moad_tools` `Git`_ repository at https://github.com/UBC-MOAD/moad_tools.
+The :py:obj:`moad_tools` package code and documentation source files are available
+in the ``moad_tools`` `Git`_ repository at https://github.com/UBC-MOAD/moad_tools.
 
 .. _Git: https://git-scm.com/
 

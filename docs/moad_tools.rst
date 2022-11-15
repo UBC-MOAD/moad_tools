@@ -16,9 +16,9 @@
 .. SPDX-License-Identifier: Apache-2.0
 
 
-*********************
-:kbd:`moad_tools` API
-*********************
+************************
+:py:obj:`moad_tools` API
+************************
 
 :kbd:`moad_tools.geo_tools` Module
 ==================================
