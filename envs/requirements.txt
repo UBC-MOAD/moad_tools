@@ -99,7 +99,7 @@ tables==3.7.0
 threadpoolctl==3.1.0
 toml==0.10.2
 tomli==2.0.1
-tornado==6.2
+tornado==6.3.2
 typing_extensions==4.4.0
 unicodedata2==15.0.0
 urllib3==1.26.14
