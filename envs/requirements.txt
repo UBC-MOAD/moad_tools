@@ -62,7 +62,7 @@ pluggy==1.0.0
 ply==3.11
 pooch==1.6.0
 pycparser==2.21
-Pygments==2.14.0
+Pygments==2.15.0
 pyOpenSSL==23.0.0
 pyparsing==3.0.9
 pyproj==3.4.1
