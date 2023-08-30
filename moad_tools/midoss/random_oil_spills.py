@@ -238,7 +238,7 @@ def get_date(start_date, end_date, vte_probability, random_generator):
     # Now that month is selected, we need to choose day, year, and time.
     # We weight these all the same.
     time_period = end_date - start_date
-    time_period_inhours = numpy.int(time_period.total_seconds() / 3600)
+    time_period_inhours = int(time_period.total_seconds() / 3600)
     date_arr = [
         start_date + timedelta(hours=i) for i in range(0, time_period_inhours + 1)
     ]
