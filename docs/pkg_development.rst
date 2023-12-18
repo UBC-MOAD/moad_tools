@@ -25,7 +25,7 @@
 .. image:: https://img.shields.io/badge/license-Apache%202-cb2533.svg
     :target: https://www.apache.org/licenses/LICENSE-2.0
     :alt: Licensed under the Apache License, Version 2.0
-.. image:: https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-blue?logo=python&label=Python&logoColor=gold
+.. image:: https://img.shields.io/badge/Python-3.11%20%7C%203.12-blue?logo=python&label=Python&logoColor=gold
     :target: https://docs.python.org/3.12/
     :alt: Python Version
 .. image:: https://img.shields.io/badge/version%20control-git-blue.svg?logo=github
@@ -62,12 +62,12 @@ Python modules that facilitate code reuse for the UBC EOAS MOAD Group.
 Python Versions
 ===============
 
-.. image:: https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-blue?logo=python&label=Python&logoColor=gold
+.. image:: https://img.shields.io/badge/Python-3.11%20%7C%203.12-blue?logo=python&label=Python&logoColor=gold
     :target: https://docs.python.org/3.12/
     :alt: Python Version
 
 The :py:obj:`moad_tools` package is developed using `Python`_ 3.12.
-It is tested for Python versions >=3.10.
+It is tested for Python versions >=3.11.
 
 .. _Python: https://www.python.org/
 
@@ -333,7 +333,7 @@ The output looks something like:
     ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Asphinx-linkcheck
     ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/workflows/pytest-with-coverage/badge.svg
     ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/issues
-    ( pkg_development: line   23) ok        https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-blue?logo=python&label=Python&logoColor=gold
+    ( pkg_development: line   23) ok        https://img.shields.io/badge/Python-3.11%20%7C%203.12-blue?logo=python&label=Python&logoColor=gold
     ( pkg_development: line   23) ok        https://img.shields.io/badge/license-Apache%202-cb2533.svg
     ( pkg_development: line   23) ok        https://img.shields.io/badge/code%20style-black-000000.svg
     ( pkg_development: line   23) ok        https://img.shields.io/badge/version%20control-git-blue.svg?logo=github
