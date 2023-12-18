@@ -29,7 +29,7 @@ docutils==0.20.1
 exceptiongroup==1.2.0
 fiona==1.9.5
 folium==0.15.1
-fonttools==4.46.0
+fonttools==4.47.0
 GDAL==3.8.1
 geopandas==0.14.1
 idna==3.6
