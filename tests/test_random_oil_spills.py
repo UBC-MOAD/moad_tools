@@ -28,6 +28,7 @@ import numpy
 import pandas
 import pytest
 import shapely.geometry
+import shapely.testing
 import xarray
 import yaml
 
@@ -270,7 +271,7 @@ class TestGetLatLonIndices:
         assert lon == pytest.approx(expected.lon)
         assert geotiff_x_index == expected.geotiff_x_index
         assert geotiff_y_index == expected.geotiff_y_index
-        assert geotiff_bbox.almost_equals(expected.geotiff_bbox)
+        shapely.testing.assert_geometries_equal(geotiff_bbox, expected.geotiff_bbox, tolerance=1e-6)
 
 
 class TestGetVesselType:
