@@ -1,0 +1,71 @@
+# Copyright 2018 – present The UBC EOAS MOAD Group
+# and The University of British Columbia
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# SPDX-License-Identifier: Apache-2.0
+
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "moad_tools"
+#dynamic = [ "version" ]
+version = "22.1"
+description = """\
+    A collection of Python modules that facilitate code reuse for the UBC EOAS MOAD Group.\
+    """
+readme = "README.rst"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+license-files = { paths = ["LICENSE"] }
+authors = [
+    { name = "Doug Latornell", email= "dlatornell@eoas.ubc.ca" }
+]
+dependencies = [
+    # see envs/environment-dev.yaml for conda environment dev installation
+    # see envs/requirements.txt for package versions used during recent development
+    # see envs/environment-rtd.yaml for conda environment used for readthedocs build
+    "arrow",
+    "click",
+    "geopandas",
+    "matplotlib",
+    "netcdf4",
+    "numpy",
+    "pandas",
+    "tables",  # pkg name is pytables but pip see it as tables
+    "pyyaml",
+    "rasterio",
+    "scipy",
+    "xarray",
+]
+
+[project.urls]
+"Documentation" = "https://ubc-moad-tools.readthedocs.io/en/latest/"
+"Changelog" = "https://github.com/UBC-MOAD/moad_tools/releases"
+"Issue Tracker" = "https://github.com/UBC-MOAD/moad_tools/issues"
+"Source Code" = "https://github.com/UBC-MOAD/moad_tools"
+
+[project.scripts]
+geotiff-watermask = "moad_tools.midoss.geotiff_watermask:cli"
+hdf5-to-netcdf4 = "moad_tools.midoss.hdf5_to_netcdf4:cli"
+random-oil-spills = "moad_tools.midoss.random_oil_spills:cli"
+
+
+
+[tool.coverage.run]
+branch = true
+source = [ "moad_tools", "tests"]
