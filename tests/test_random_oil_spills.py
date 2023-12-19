@@ -271,7 +271,9 @@ class TestGetLatLonIndices:
         assert lon == pytest.approx(expected.lon)
         assert geotiff_x_index == expected.geotiff_x_index
         assert geotiff_y_index == expected.geotiff_y_index
-        shapely.testing.assert_geometries_equal(geotiff_bbox, expected.geotiff_bbox, tolerance=1e-6)
+        shapely.testing.assert_geometries_equal(
+            geotiff_bbox, expected.geotiff_bbox, tolerance=1e-6
+        )
 
 
 class TestGetVesselType:
@@ -725,7 +727,7 @@ class TestGetOilType:
                       fraction_of_total: 0
                     other:
                       fraction_of_total: 0
-                    
+
                   tanker:
                     akns:
                       fraction_of_total: 0.5

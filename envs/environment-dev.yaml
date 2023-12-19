@@ -34,9 +34,10 @@ dependencies:
   - scipy
   - xarray
 
-  # For coding style, and pkg management
+  # For coding style, repo QA, and pkg management
   - black
   - hatch
+  - pre-commit
 
   # For unit tests
   - pytest

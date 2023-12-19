@@ -610,10 +610,8 @@ def get_oil_capacity(oil_attrs, vessel_length, vessel_type, random_generator):
             else 0
         )
     else:
-
         # ~~~ tankers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         if vessel_type == "tanker":
-
             bins = oil_attrs["vessel_attributes"]["tanker"]["length_bins"]
 
             if vessel_length >= max(max(bins)):
@@ -635,7 +633,6 @@ def get_oil_capacity(oil_attrs, vessel_length, vessel_type, random_generator):
 
         # ~~~ atbs ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         elif vessel_type == "atb":
-
             atb_min_cargo = oil_attrs["vessel_attributes"]["atb"]["min_cargo"]
             atb_max_cargo = oil_attrs["vessel_attributes"]["atb"]["max_cargo"]
 
@@ -671,7 +668,6 @@ def get_oil_capacity(oil_attrs, vessel_length, vessel_type, random_generator):
 
         # ~~~ barges ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         elif vessel_type == "barge":
-
             cargo_weight = oil_attrs["vessel_attributes"]["barge"][
                 "cargo_capacity_probability"
             ]
@@ -695,7 +691,6 @@ def get_oil_capacity(oil_attrs, vessel_length, vessel_type, random_generator):
         ###  Fuel capacities below this line are still being evaluated ###
         # ~~~ cargo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         elif vessel_type == "cargo":
-
             C = oil_attrs["vessel_attributes"]["cargo"]["fuel_fit_coefs"]
 
             fit_capacity = numpy.exp(C[1]) * numpy.exp(C[0] * vessel_length)
@@ -710,7 +705,6 @@ def get_oil_capacity(oil_attrs, vessel_length, vessel_type, random_generator):
 
         # ~~~ cruise ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         elif vessel_type == "cruise":
-
             C = oil_attrs["vessel_attributes"]["cruise"]["fuel_fit_coefs"]
 
             fit_capacity = C[1] + C[0] * vessel_length
@@ -725,7 +719,6 @@ def get_oil_capacity(oil_attrs, vessel_length, vessel_type, random_generator):
 
         # ~~~ ferry ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         elif vessel_type == "ferry":
-
             C = oil_attrs["vessel_attributes"]["ferry"]["fuel_fit_coefs"]
 
             fit_capacity = numpy.exp(C[1]) * numpy.exp(C[0] * vessel_length)
@@ -740,10 +733,9 @@ def get_oil_capacity(oil_attrs, vessel_length, vessel_type, random_generator):
 
         # ~~~ fishing ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         elif vessel_type == "fishing":
-
             C = oil_attrs["vessel_attributes"]["fishing"]["fuel_fit_coefs"]
 
-            fit_capacity = C[2] + C[1] * vessel_length + C[0] * vessel_length ** 2
+            fit_capacity = C[2] + C[1] * vessel_length + C[0] * vessel_length**2
 
             cargo_capacity = 0
 
@@ -755,7 +747,6 @@ def get_oil_capacity(oil_attrs, vessel_length, vessel_type, random_generator):
 
         # ~~~ small pass ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         elif vessel_type == "smallpass":
-
             C = oil_attrs["vessel_attributes"]["smallpass"]["fuel_fit_coefs"]
 
             fit_capacity = numpy.exp(C[1]) * numpy.exp(C[0] * vessel_length)
@@ -770,7 +761,6 @@ def get_oil_capacity(oil_attrs, vessel_length, vessel_type, random_generator):
 
         # ~~~ other ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         elif vessel_type == "other":
-
             C = oil_attrs["vessel_attributes"]["other"]["fuel_fit_coefs"]
 
             fit_capacity = numpy.exp(C[1]) * numpy.exp(C[0] * vessel_length)
@@ -1592,18 +1582,18 @@ def write_csv_file(df, csv_file):
     help="""
     Calculate and store a CSV file containing parameters of a set of random oil spills
     to drive Monte Carlo runs of MOHID.
-    
+
     \b
-    Please see 
-    
+    Please see
+
     \b
     https://ubc-moad-tools.readthedocs.io/en/latest/moad_tools.html#moad_tools.midoss.random_oil_spills.cli
-    
+
     for more information about arguments and options, and
-    
+
     \b
     https://ubc-moad-tools.readthedocs.io/en/latest/moad_tools.html#processing-configuration-yaml-file
-    
+
     for details of the contents of the config file.
 """
 )
@@ -1622,7 +1612,7 @@ def write_csv_file(df, csv_file):
     type=click.Choice(("debug", "info", "warning", "error", "critical")),
     help="""
         Choose how much information you want to see about the progress of the calculation;
-        warning, error, and critical should be silent unless something bad goes wrong. 
+        warning, error, and critical should be silent unless something bad goes wrong.
     """,
 )
 def cli(n_spills, config_file, csv_file, verbosity):
