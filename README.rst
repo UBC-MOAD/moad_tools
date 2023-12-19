@@ -16,6 +16,9 @@ UBC EOAS MOAD Group Tools Package
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://black.readthedocs.io/en/stable/
     :alt: The uncompromising Python code formatter
+.. image:: https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg
+    :target: https://github.com/pypa/hatch
+    :alt: Hatch project
 .. image:: https://readthedocs.org/projects/ubc-moad-tools/badge/?version=latest
     :target: https://ubc-moad-tools.readthedocs.io/en/latest/
     :alt: Documentation Status
