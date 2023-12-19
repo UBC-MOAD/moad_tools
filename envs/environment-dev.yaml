@@ -51,5 +51,5 @@ dependencies:
     # For unit tests
     - pytest-randomly
 
-    # editable install of moad_tools package
+    # Install moad_tools package in editable mode
     - --editable ../

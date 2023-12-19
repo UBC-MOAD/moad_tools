@@ -23,3 +23,6 @@ dependencies:
     - commonmark
     - recommonmark
     - readthedocs-sphinx-ext
+
+    # Install moad_tools package in editable mode
+    - --editable ../
