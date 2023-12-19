@@ -12,7 +12,7 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 
-import configparser
+import importlib.metadata
 import os
 import sys
 
@@ -22,21 +22,14 @@ sys.path.insert(0, os.path.abspath(".."))
 
 # -- Project information -----------------------------------------------------
 
-setup_cfg = configparser.ConfigParser()
-setup_cfg.read(os.path.abspath("../setup.cfg"))
-project = setup_cfg["metadata"]["name"]
-
-author = "The UBC EOAS MOAD Group and The University of British Columbia"
+project = "moad_tools"
 
 pkg_creation_year = 2018
 copyright_years = f"{pkg_creation_year} – present"
-copyright = f"{copyright_years}, {author}"
-
-
-import moad_tools
+copyright = f"{copyright_years} by the UBC EOAS MOAD Group and The University of British Columbia"
 
 # The short X.Y version.
-version = moad_tools.__version__
+version = importlib.metadata.version(project)
 # The full version, including alpha/beta/rc tags.
 release = version
 
