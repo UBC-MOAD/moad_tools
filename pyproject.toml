@@ -23,8 +23,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "moad_tools"
-#dynamic = [ "version" ]
-version = "22.1"
+dynamic = [ "version" ]
 description = """\
     A collection of Python modules that facilitate code reuse for the UBC EOAS MOAD Group.\
     """
@@ -68,3 +67,7 @@ random-oil-spills = "moad_tools.midoss.random_oil_spills:cli"
 [tool.coverage.run]
 branch = true
 source = [ "moad_tools", "tests"]
+
+
+[tool.hatch.version]
+path = "moad_tools/__about__.py"
