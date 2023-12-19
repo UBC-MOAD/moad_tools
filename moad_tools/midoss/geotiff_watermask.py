@@ -120,16 +120,16 @@ def write_numpy_file(watermask, numpy_file):
 
 @click.command(
     help="""
-    Calculate and store a Numpy array file containing a SalishSeaCast domain water mask for the 
-    AIS ship track density GeoTIFF files used to generate oil spill parameters for 
+    Calculate and store a Numpy array file containing a SalishSeaCast domain water mask for the
+    AIS ship track density GeoTIFF files used to generate oil spill parameters for
     Monte Carlo runs of MOHID.
 
     \b
-    Please see 
-    
+    Please see
+
     \b
     https://ubc-moad-tools.readthedocs.io/en/latest/moad_tools.html#moad_tools.midoss.geotiff_watermask.cli
-    
+
     for more information about arguments and options.
     """
 )
@@ -151,7 +151,7 @@ def write_numpy_file(watermask, numpy_file):
     type=click.Choice(("debug", "info", "warning", "error", "critical")),
     help="""
         Choose how much information you want to see about the progress of the calculation;
-        warning, error, and critical should be silent unless something bad goes wrong. 
+        warning, error, and critical should be silent unless something bad goes wrong.
     """,
 )
 def cli(geotiff_file, meshmask_file, numpy_file, verbosity):

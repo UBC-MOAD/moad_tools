@@ -422,7 +422,7 @@ def _write_netcdf(ds, netcdf4_file, time_coord=True, scaled_vars=True):
     type=click.Choice(("debug", "info", "warning", "error", "critical")),
     help="""
         Choose how much information you want to see about the progress of the transformation;
-        warning, error, and critical should be silent unless something bad goes wrong. 
+        warning, error, and critical should be silent unless something bad goes wrong.
     """,
 )
 def cli(hdf5_file, netcdf4_file, verbosity):
