@@ -16,9 +16,4 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-"""moad_tools - UBC EOAS MOAD Group Tools Package
-"""
-import setuptools
-
-
-setuptools.setup()
+__version__ = "22.2.dev0"
