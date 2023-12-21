@@ -69,5 +69,8 @@ branch = true
 source = [ "moad_tools", "tests"]
 
 
+[tool.hatch.build.targets.wheel]
+packages = ["moad_tools"]
+
 [tool.hatch.version]
 path = "moad_tools/__about__.py"
