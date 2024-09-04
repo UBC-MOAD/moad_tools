@@ -27,7 +27,7 @@ cligj==0.7.2
 colorama==0.4.6
 contourpy==1.2.0
 coverage==7.3.3
-cryptography==42.0.4
+cryptography==43.0.1
 cycler==0.12.1
 distlib==0.3.8
 docutils==0.20.1
