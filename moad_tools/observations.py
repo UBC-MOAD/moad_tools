@@ -63,9 +63,11 @@ def get_ndbc_buoy(buoy_id):
     msg = " ".join(
         (
             msg,
-            f"for buoy {buoy_number}"
-            if int(buoy_number) == buoy_id
-            else f"for buoy {buoy_number} {buoy_id}",
+            (
+                f"for buoy {buoy_number}"
+                if int(buoy_number) == buoy_id
+                else f"for buoy {buoy_number} {buoy_id}"
+            ),
         )
     )
     logging.info(msg)
