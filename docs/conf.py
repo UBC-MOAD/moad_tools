@@ -76,19 +76,20 @@ autodoc_mock_imports = [
     "yaml",
 ]
 
-# Private GitHub repositories that linkcheck will ignore
+# Private GitHub repositories and Google drawings that linkcheck will ignore
 linkcheck_ignore = [
     "https://github.com/MIDOSS/marine_transport_data",
+    "https://docs.google.com/drawings/d/1-4gl2yNNWxqXK-IOr4KNZxO-awBC-bNrjRNrt86fykU/edit",
+    "https://docs.google.com/drawings/d/10PM53-UnnILYCAPKU9MxiR-Y4OW0tIMhVzSjaHr-iSc/edit",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
 # The suffix(es) of source filenames.
-# You can specify multiple suffix as a list of string:
-#
-# source_suffix = ['.rst', '.md']
-source_suffix = ".rst"
+# You can specify multiple suffix as a dictionary mapping the file extensions (suffixes)
+# of source files to their file types:
+source_suffix = {".rst": "restructuredtext"}
 
 # The master toctree document.
 master_doc = "index"
