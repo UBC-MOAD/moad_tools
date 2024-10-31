@@ -19,23 +19,21 @@
 """Functions and command-line tool to calculate a CSV file containing parameters of a set
 of random oil spills to drive Monte Carlo runs of MOHID.
 """
-import collections
-import datetime
-import logging
-import sys
-from datetime import timedelta
-from pathlib import Path
-from types import SimpleNamespace
-
 import arrow
 import click
+import collections
 import geopandas
+import logging
 import numpy
 import pandas
 import rasterio
 import shapely.geometry
+import sys
 import xarray
 import yaml
+from datetime import timedelta
+from pathlib import Path
+from types import SimpleNamespace
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 
@@ -50,11 +48,11 @@ def random_oil_spills(n_spills, config_file, random_seed=None):
                             dictionary from.
 
     :param random_seed: Seed to initialize random number generator with.
-                        This is facilitates a reproducible stream of random number that is useful
+                        This facilitates a reproducible stream of random numbers that is useful
                         for unit testing.
     :type random_seed: None or int
 
-    :return: Dataframe of random oil spill parameters with :kbd:`n_spills` rows.
+    :return: Dataframe of random oil spill parameters with ``n_spills`` rows.
     :rtype: :py:class:`pandas.DataFrame`
     """
     with Path(config_file).open("rt") as f:
