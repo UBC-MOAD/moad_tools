@@ -235,15 +235,16 @@ The output looks something like:
 .. code-block:: text
 
     Removing everything under '_build'...
-    Running Sphinx v7.2.6
+    Running Sphinx v8.1.3
+    loading translations [en]... done
     making output directory... done
-    loading intersphinx inventory from https://mohid-cmd.readthedocs.io/en/latest/objects.inv...
-    loading intersphinx inventory from https://numpy.org/doc/1.18/objects.inv...
-    loading intersphinx inventory from https://pandas.pydata.org/docs/objects.inv...
-    loading intersphinx inventory from https://docs.python.org/3/objects.inv...
-    loading intersphinx inventory from https://rasterio.readthedocs.io/en/latest/objects.inv...
-    loading intersphinx inventory from https://shapely.readthedocs.io/en/latest/objects.inv...
-    loading intersphinx inventory from https://xarray.pydata.org/en/stable/objects.inv...
+    loading intersphinx inventory 'mohidcmd' from https://mohid-cmd.readthedocs.io/en/latest/objects.inv ...
+    loading intersphinx inventory 'numpy' from https://numpy.org/doc/1.18/objects.inv ...
+    loading intersphinx inventory 'pandas' from https://pandas.pydata.org/docs/objects.inv ...
+    loading intersphinx inventory 'python' from https://docs.python.org/3/objects.inv ...
+    loading intersphinx inventory 'rasterio' from https://rasterio.readthedocs.io/en/latest/objects.inv ...
+    loading intersphinx inventory 'shapely' from https://shapely.readthedocs.io/en/latest/objects.inv ...
+    loading intersphinx inventory 'xarray' from https://xarray.pydata.org/en/stable/objects.inv ...
     intersphinx inventory has moved: https://xarray.pydata.org/en/stable/objects.inv -> https://docs.xarray.dev/en/stable/objects.inv
     building [mo]: targets for 0 po files that are out of date
     writing output...
@@ -254,9 +255,16 @@ The output looks something like:
     pickling environment... done
     checking consistency... done
     preparing documents... done
-    copying assets... copying static files... done
-    copying extra files... done
-    done
+    copying assets...
+    copying static files...
+    Writing evaluated template result to /media/doug/warehouse/MOAD/moad_tools/docs/_build/html/_static/language_data.js
+    Writing evaluated template result to /media/doug/warehouse/MOAD/moad_tools/docs/_build/html/_static/basic.css
+    Writing evaluated template result to /media/doug/warehouse/MOAD/moad_tools/docs/_build/html/_static/documentation_options.js
+    Writing evaluated template result to /media/doug/warehouse/MOAD/moad_tools/docs/_build/html/_static/js/versions.js
+    copying static files: done
+    copying extra files...
+    copying extra files: done
+    copying assets: done
     writing output... [100%] pkg_development
     generating indices... genindex py-modindex done
     highlighting module code... [100%] moad_tools.observations
@@ -265,7 +273,7 @@ The output looks something like:
     dumping object inventory... done
     build succeeded.
 
-  The HTML pages are in _build/html.
+    The HTML pages are in _build/html.
 
 The HTML rendering of the docs ends up in :file:`docs/_build/html/`.
 You can open the :file:`index.html` file in that directory tree in your browser to preview the results of the build.
@@ -301,82 +309,102 @@ The output looks something like:
 
 .. code-block:: text
 
-    Running Sphinx v7.2.6
+    Removing everything under '_build'...
+    Running Sphinx v8.1.3
+    loading translations [en]... done
     making output directory... done
-    loading pickled environment... done
+    loading intersphinx inventory 'mohidcmd' from https://mohid-cmd.readthedocs.io/en/latest/objects.inv ...
+    loading intersphinx inventory 'numpy' from https://numpy.org/doc/1.18/objects.inv ...
+    loading intersphinx inventory 'pandas' from https://pandas.pydata.org/docs/objects.inv ...
+    loading intersphinx inventory 'python' from https://docs.python.org/3/objects.inv ...
+    loading intersphinx inventory 'rasterio' from https://rasterio.readthedocs.io/en/latest/objects.inv ...
+    loading intersphinx inventory 'shapely' from https://shapely.readthedocs.io/en/latest/objects.inv ...
+    loading intersphinx inventory 'xarray' from https://xarray.pydata.org/en/stable/objects.inv ...
+    intersphinx inventory has moved: https://xarray.pydata.org/en/stable/objects.inv -> https://docs.xarray.dev/en/stable/objects.inv
     building [mo]: targets for 0 po files that are out of date
     writing output...
     building [linkcheck]: targets for 3 source files that are out of date
-    updating environment: 0 added, 1 changed, 0 removed
+    updating environment: [new config] 3 added, 0 changed, 0 removed
     reading sources... [100%] pkg_development
     looking for now-outdated files... none found
     pickling environment... done
     checking consistency... done
     preparing documents... done
-    copying assets... done
+    copying assets...
+    copying assets: done
     writing output... [100%] pkg_development
 
-    (      moad_tools: line    1) -ignored- https://github.com/MIDOSS/marine_transport_data
-    (      moad_tools: line    3) ok        https://docs.python.org/3/library/exceptions.html#KeyError
-    (      moad_tools: line    1) ok        https://docs.python.org/3/library/functions.html#float
-    (      moad_tools: line    1) ok        https://docs.python.org/3/library/functions.html#int
-    (      moad_tools: line    1) ok        https://docs.python.org/3/library/datetime.html#datetime.datetime
+    (      moad_tools: line  174) -ignored- https://github.com/MIDOSS/marine_transport_data
+    (      moad_tools: line    4) -ignored- https://docs.google.com/drawings/d/10PM53-UnnILYCAPKU9MxiR-Y4OW0tIMhVzSjaHr-iSc/edit
+    (      moad_tools: line    4) -ignored- https://docs.google.com/drawings/d/1-4gl2yNNWxqXK-IOr4KNZxO-awBC-bNrjRNrt86fykU/edit
     ( pkg_development: line   23) ok        https://black.readthedocs.io/en/stable/
-    ( pkg_development: line   23) ok        https://codecov.io/gh/UBC-MOAD/moad_tools/branch/main/graph/badge.svg
+    (      moad_tools: line    3) ok        https://docs.python.org/3/library/exceptions.html#KeyError
+    (      moad_tools: line  174) ok        https://docs.python.org/3/library/datetime.html#datetime.datetime
     ( pkg_development: line   23) ok        https://app.codecov.io/gh/UBC-MOAD/moad_tools
-    ( pkg_development: line  412) ok        https://coverage.readthedocs.io/en/latest/
-    ( pkg_development: line   98) ok        https://conda.io/en/latest/
-    ( pkg_development: line   98) ok        https://docs.conda.io/en/latest/miniconda.html
-    ( pkg_development: line  461) ok        https://docs.github.com/en/actions
-    ( pkg_development: line  387) ok        https://docs.pytest.org/en/latest/
-    (      moad_tools: line    1) ok        https://docs.google.com/document/d/14hAxrTFpKloy88zRYLL4TiqLwbn8s53MYQeCt6B3MJ4/edit
+    ( pkg_development: line  430) ok        https://coverage.readthedocs.io/en/latest/
+    ( pkg_development: line  112) ok        https://docs.conda.io/en/latest/
+    ( pkg_development: line  112) ok        https://docs.conda.io/en/latest/miniconda.html
+    ( pkg_development: line  479) ok        https://docs.github.com/en/actions
+    ( pkg_development: line   29) ok        https://codecov.io/gh/UBC-MOAD/moad_tools/branch/main/graph/badge.svg
+    ( pkg_development: line  399) ok        https://docs.pytest.org/en/latest/
     ( pkg_development: line   23) ok        https://docs.python.org/3.12/
-    (      moad_tools: line    1) ok        https://docs.python.org/3/library/pathlib.html#pathlib.Path
-    (      moad_tools: line    1) ok        https://docs.python.org/3/library/stdtypes.html#dict
-    (      moad_tools: line    1) ok        https://docs.python.org/3/library/stdtypes.html#list
-    (      moad_tools: line    1) ok        https://docs.python.org/3/library/stdtypes.html#str
-    (      moad_tools: line    1) ok        https://docs.python.org/3/library/stdtypes.html#tuple
-    (      moad_tools: line    1) ok        https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset
-    ( pkg_development: line  476) ok        https://git-scm.com/
-    (      moad_tools: line    4) ok        https://docs.google.com/drawings/d/10PM53-UnnILYCAPKU9MxiR-Y4OW0tIMhVzSjaHr-iSc/edit
-    (      moad_tools: line    4) ok        https://docs.google.com/drawings/d/1-4gl2yNNWxqXK-IOr4KNZxO-awBC-bNrjRNrt86fykU/edit
+    (      moad_tools: line  174) ok        https://docs.python.org/3/library/functions.html#float
+    (      moad_tools: line   33) ok        https://docs.python.org/3/library/functions.html#int
+    (      moad_tools: line    1) ok        https://docs.google.com/document/d/14hAxrTFpKloy88zRYLL4TiqLwbn8s53MYQeCt6B3MJ4/edit
+    (      moad_tools: line   63) ok        https://docs.python.org/3/library/pathlib.html#pathlib.Path
+    (      moad_tools: line  174) ok        https://docs.python.org/3/library/stdtypes.html#list
+    (      moad_tools: line   24) ok        https://docs.python.org/3/library/stdtypes.html#str
     (      moad_tools: line    4) ok        https://docs.google.com/spreadsheets/d/1dlT0JydkFG43LorqgtHle5IN6caRYjf_3qLrUYqANDY/edit
+    (      moad_tools: line  174) ok        https://docs.python.org/3/library/stdtypes.html#tuple
+    (      moad_tools: line  174) ok        https://docs.python.org/3/library/stdtypes.html#dict
+    ( pkg_development: line  494) ok        https://git-scm.com/
+    (      moad_tools: line   54) ok        https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset
+    ( pkg_development: line   32) ok        https://github.com/UBC-MOAD/moad_tools/actions/workflows/codeql-analysis.yaml/badge.svg
     (           index: line    6) ok        https://github.com/UBC-MOAD/docs/blob/main/CONTRIBUTORS.rst
-    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/actions/workflows/codeql-analysis.yaml/badge.svg
+    ( pkg_development: line   26) ok        https://github.com/UBC-MOAD/moad_tools/actions/workflows/pytest-with-coverage.yaml/badge.svg
     ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools
-    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:codeql-analysis
-    ( pkg_development: line  448) ok        https://github.com/UBC-MOAD/moad_tools/actions
-    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Asphinx-linkcheck
-    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/workflows/pytest-with-coverage/badge.svg
+    ( pkg_development: line  466) ok        https://github.com/UBC-MOAD/moad_tools/actions
+    ( pkg_development: line   39) ok        https://github.com/UBC-MOAD/moad_tools/actions/workflows/sphinx-linkcheck.yaml/badge.svg
+    ( pkg_development: line  293) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Asphinx-linkcheck
+    ( pkg_development: line  457) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Apytest-with-coverage
+    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:sphinx-linkcheck
+    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:pytest-with-coverage
     ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/issues
-    ( pkg_development: line   23) ok        https://img.shields.io/badge/Python-3.11%20%7C%203.12-blue?logo=python&label=Python&logoColor=gold
-    ( pkg_development: line   23) ok        https://img.shields.io/badge/license-Apache%202-cb2533.svg
-    ( pkg_development: line   23) ok        https://img.shields.io/badge/code%20style-black-000000.svg
-    ( pkg_development: line   23) ok        https://img.shields.io/badge/version%20control-git-blue.svg?logo=github
-    ( pkg_development: line   23) ok        https://img.shields.io/github/issues/UBC-MOAD/moad_tools?logo=github
-    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/workflows/sphinx-linkcheck/badge.svg
+    ( pkg_development: line  459) ok        https://github.com/UBC-MOAD/moad_tools/workflows/pytest-with-coverage/badge.svg
+    ( pkg_development: line  295) ok        https://github.com/UBC-MOAD/moad_tools/workflows/sphinx-linkcheck/badge.svg
+    ( pkg_development: line   65) ok        https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg
+    ( pkg_development: line   62) ok        https://img.shields.io/badge/code%20style-black-000000.svg
+    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/releases
+    ( pkg_development: line   53) ok        https://img.shields.io/badge/license-Apache%202-cb2533.svg
+    ( pkg_development: line   56) ok        https://img.shields.io/badge/version%20control-git-blue.svg?logo=github
+    ( pkg_development: line   59) ok        https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
+    ( pkg_development: line   23) ok        https://github.com/pypa/hatch
+    ( pkg_development: line   49) ok        https://img.shields.io/github/issues/UBC-MOAD/moad_tools?logo=github
+    ( pkg_development: line   43) ok        https://img.shields.io/github/v/release/UBC-MOAD/moad_tools?logo=github
+    ( pkg_development: line  466) ok        https://github.com/UBC-MOAD/moad_tools/commits/main
+    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:CodeQL
     (      moad_tools: line   76) ok        https://mohid-cmd.readthedocs.io/en/latest/
+    ( pkg_development: line   46) ok        https://img.shields.io/python/required-version-toml?tomlFilePath=https://raw.githubusercontent.com/UBC-MOAD/moad_tools/main/pyproject.toml&logo=Python&logoColor=gold&label=Python
     (      moad_tools: line   76) ok        https://mohid-cmd.readthedocs.io/en/latest/monte-carlo.html#monte-carlo-sub-command
-    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Apytest-with-coverage
-    (      moad_tools: line    1) ok        https://numpy.org/doc/1.18/reference/random/generator.html#numpy.random.Generator
-    (      moad_tools: line    1) ok        https://numpy.org/doc/1.18/reference/generated/numpy.ndarray.html#numpy.ndarray
+    (      moad_tools: line   54) ok        https://numpy.org/doc/1.18/reference/generated/numpy.ndarray.html#numpy.ndarray
+    ( pkg_development: line  128) ok        https://pip.pypa.io/en/stable/topics/local-project-installs/#editable-installs
+    (      moad_tools: line  174) ok        https://numpy.org/doc/1.18/reference/random/generator.html#numpy.random.Generator
     (      moad_tools: line    5) ok        https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame
-    ( pkg_development: line  114) ok        https://pip.pypa.io/en/stable/topics/local-project-installs/#editable-installs
-    ( pkg_development: line  137) ok        https://peps.python.org/pep-0008/
-    ( pkg_development: line  412) ok        https://pytest-cov.readthedocs.io/en/latest/
-    (      moad_tools: line    1) ok        https://rasterio.readthedocs.io/en/latest/api/rasterio.io.html#rasterio.io.DatasetReader
+    (      moad_tools: line   54) ok        https://rasterio.readthedocs.io/en/latest/api/rasterio.io.html#rasterio.io.DatasetReader
+    ( pkg_development: line  430) ok        https://pytest-cov.readthedocs.io/en/latest/
+    ( pkg_development: line   23) ok        https://pre-commit.com
+    ( pkg_development: line  154) ok        https://pre-commit.com/
     (           index: line    9) ok        https://www.apache.org/licenses/LICENSE-2.0
-    ( pkg_development: line   23) ok        https://ubc-moad-tools.readthedocs.io/en/latest/
-    ( pkg_development: line   23) ok        https://readthedocs.org/projects/ubc-moad-tools/badge/?version=latest
-    ( pkg_development: line   69) ok        https://www.python.org/
-    ( pkg_development: line  188) ok        https://readthedocs.org/projects/ubc-moad-tools/builds/
-    ( pkg_development: line  171) ok        https://www.sphinx-doc.org/en/master/
-    ( pkg_development: line  171) ok        https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
-    ( pkg_development: line  448) ok        https://github.com/UBC-MOAD/moad_tools/commits/main
+    ( pkg_development: line   36) ok        https://readthedocs.org/projects/ubc-moad-tools/badge/?version=latest
     (      moad_tools: line    1) ok        https://www.ndbc.noaa.gov/data/realtime2/
+    ( pkg_development: line   23) ok        https://ubc-moad-tools.readthedocs.io/en/latest/
+    ( pkg_development: line   83) ok        https://www.python.org/
+    ( pkg_development: line  187) ok        https://www.sphinx-doc.org/en/master/
+    ( pkg_development: line  187) ok        https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
+    ( pkg_development: line  204) ok        https://readthedocs.org/projects/ubc-moad-tools/builds/
     build succeeded.
 
-  Look for any errors in the above output or in _build/linkcheck/output.txt
+    Look for any errors in the above output or in _build/linkcheck/output.txt
 
 :command:`make linkcheck` is run monthly via a `scheduled GitHub Actions workflow`_
 
