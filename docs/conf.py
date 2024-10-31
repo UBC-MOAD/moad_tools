@@ -76,9 +76,11 @@ autodoc_mock_imports = [
     "yaml",
 ]
 
-# Private GitHub repositories that linkcheck will ignore
+# Private GitHub repositories and Google drawings that linkcheck will ignore
 linkcheck_ignore = [
     "https://github.com/MIDOSS/marine_transport_data",
+    "https://docs.google.com/drawings/d/1-4gl2yNNWxqXK-IOr4KNZxO-awBC-bNrjRNrt86fykU/edit",
+    "https://docs.google.com/drawings/d/10PM53-UnnILYCAPKU9MxiR-Y4OW0tIMhVzSjaHr-iSc/edit",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
