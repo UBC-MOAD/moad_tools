@@ -47,8 +47,13 @@ class TestGetNDBC_Buoy:
     def test_bad_buoy_number(self, buoy_id, caplog, monkeypatch):
         def mock_read_csv(url, **kwargs):
             raise urllib.error.HTTPError(
-            "http://", 404, "Not Found", "headers", fp=None,
+                "http://",
+                404,
+                "Not Found",
+                "headers",
+                fp=None,
             )
+
         monkeypatch.setattr(observations.pandas, "read_csv", mock_read_csv)
         caplog.set_level("DEBUG")
 
