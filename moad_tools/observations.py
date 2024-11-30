@@ -75,26 +75,12 @@ def get_ndbc_buoy(buoy_id):
 
     try:
         try:
-            df = pandas.read_csv(
-                ndbc_url,
-                delim_whitespace=True,
-                header=[0, 1],
-                na_values="MM",
-                parse_dates=[[0, 1, 2, 3, 4]],
-                date_parser=lambda x: pandas.to_datetime(x, format="%Y %m %d %H %M"),
-            )
+            df = pandas.read_csv(ndbc_url, sep=r"\s+", header=[0, 1])
         except urllib.error.URLError:
             # Work around SSL: UNKNOWN_PROTOCOL error that appeared on 23may18
             # by trying HTTP instead of HTTPS
             ndbc_url = ndbc_url.replace("https://", "http://")
-            df = pandas.read_csv(
-                ndbc_url,
-                delim_whitespace=True,
-                header=[0, 1],
-                na_values="MM",
-                parse_dates=[[0, 1, 2, 3, 4]],
-                date_parser=lambda x: pandas.to_datetime(x, format="%Y %m %d %H %M"),
-            )
+            df = pandas.read_csv(ndbc_url, sep=r"\s+", header=[0, 1])
     except urllib.error.HTTPError as exc:
         msg = (
             f"buoy data request failed: HTTP Error {exc.code}: {exc.reason}: {ndbc_url}"
@@ -102,7 +88,15 @@ def get_ndbc_buoy(buoy_id):
         logging.error(msg)
         raise ValueError(msg) from exc
 
-    df.set_index(df.columns[0], inplace=True)
-    df.index.rename("time", inplace=True)
+    df["time"] = pandas.to_datetime(
+        dict(
+            year=df[("#YY", "#yr")],
+            month=df[("MM", "mo")],
+            day=df[("DD", "dy")],
+            hour=df[("hh", "hr")],
+            minute=df[("mm", "mn")],
+        )
+    )
+    df.set_index(df.time, inplace=True)
     df.sort_index(inplace=True)
     return df
