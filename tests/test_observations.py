@@ -19,7 +19,6 @@
 """Unit tests for observations module.
 """
 import urllib.error
-from unittest.mock import Mock, patch
 
 import pytest
 
@@ -44,11 +43,12 @@ class TestGetNDBC_Buoy:
         assert caplog.records[0].message == expected
 
     @pytest.mark.parametrize("buoy_id", [43])
-    @patch("moad_tools.observations.pandas.read_table", autospec=True)
-    def test_bad_buoy_number(self, m_read_table, buoy_id, caplog):
-        m_read_table.side_effect = urllib.error.HTTPError(
-            "http://", 404, "Not Found", "headers", Mock(name="fp")
-        )
+    def test_bad_buoy_number(self, buoy_id, caplog, monkeypatch):
+        def mock_read_csv(url, **kwargs):
+            raise urllib.error.HTTPError(
+            "http://", 404, "Not Found", "headers", fp=None,
+            )
+        monkeypatch.setattr(observations.pandas, "read_csv", mock_read_csv)
         caplog.set_level("DEBUG")
 
         with pytest.raises(ValueError):
