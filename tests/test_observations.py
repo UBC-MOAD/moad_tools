@@ -20,6 +20,7 @@
 """
 import urllib.error
 
+import pandas
 import pytest
 
 from moad_tools import observations
@@ -60,3 +61,39 @@ class TestGetNDBC_Buoy:
             "http://www.ndbc.noaa.gov/data/realtime2/43.txt"
         )
         assert caplog.records[1].message == expected
+
+    def test_create_dataframe(self, caplog, monkeypatch):
+        def mock_read_csv(url, **kwargs):
+            return pandas.DataFrame(
+                {
+                    ("#YY", "#yr"): [2024, 2024],
+                    ("MM", "mo"): [11, 11],
+                    ("DD", "dy"): [30, 30],
+                    ("hh", "hr"): [12, 13],
+                    ("mm", "mn"): [0, 0],
+                    ("WVHT", "m"): [0.8, 0.7],
+                    ("DPD", "sec"): [4, 3],
+                },
+                index=[0, 1],
+            )
+
+        monkeypatch.setattr(observations.pandas, "read_csv", mock_read_csv)
+        caplog.set_level("DEBUG")
+
+        df = observations.get_ndbc_buoy(43)
+
+        expected = pandas.DataFrame(
+            {
+                ("#YY", "#yr"): [2024, 2024],
+                ("MM", "mo"): [11, 11],
+                ("DD", "dy"): [30, 30],
+                ("hh", "hr"): [12, 13],
+                ("mm", "mn"): [0, 0],
+                ("WVHT", "m"): [0.8, 0.7],
+                ("DPD", "sec"): [4, 3],
+            },
+            index=[0, 1],
+        )
+        expected["time"] = pandas.to_datetime(["2024-11-30 12:00", "2024-11-30 13:00"])
+        expected.set_index(expected.time, inplace=True)
+        pandas.testing.assert_frame_equal(df, expected)
