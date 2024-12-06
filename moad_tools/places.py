@@ -19,7 +19,7 @@
 """UBC MOAD group geographic places information.
 
 It is recommended that library code that uses the :py:data:`PLACES` data
-structure from this module should use :kbd:`try...except` to catch
+structure from this module should use ``try...except`` to catch
 :py:exc:`KeyError` exceptions and produce an error message that is more
 informative than the default, for example:
 
