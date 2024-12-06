@@ -1,0 +1,33 @@
+# conda environment description file for moad_tools package without the midoss namespace
+# dependencies
+#
+# Create a conda environment for use of the package excluding the midoss namespace modules
+# with:
+#
+#   $ conda env create -f moad_tools/envs/environment-user.yaml
+#   $ conda activate moad-tools-user
+#
+# The environment will include the dependency packages required to use the moad_tools
+# package, excluding the modules in the midoss namespace.
+
+name: moad-tools
+
+channels:
+  - conda-forge
+  - nodefaults
+
+dependencies:
+  - arrow
+  - Click
+  - matplotlib
+  - netcdf4
+  - pandas
+  - pip
+  - python=3.12
+  - pyyaml
+  - scipy
+  - xarray
+
+  - pip:
+    # Install moad_tools package in editable mode
+    - --editable ../
