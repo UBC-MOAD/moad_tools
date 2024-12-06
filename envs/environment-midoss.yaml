@@ -1,0 +1,38 @@
+# conda environment description file for moad_tools package including midoss dependencies
+#
+# Create a conda environment for use of the package including the midoss namespace modules
+# with:
+#
+#   $ conda env create -f moad_tools/envs/environment-midoss.yaml
+#   $ conda activate moad-tools-midoss
+#
+# The environment will include all the dependency packages required to use the moad_tools
+# package, including the modules in the midoss namespace.
+
+name: moad-tools-midoss
+
+channels:
+  - conda-forge
+  - nodefaults
+
+dependencies:
+  - arrow
+  - Click
+  - matplotlib
+  - netcdf4
+  - pandas
+  - pip
+  - python=3.12
+  - pyyaml
+  - scipy
+  - xarray
+
+  # For modules in the midoss namespace
+  - geopandas
+  - pytables
+  - rasterio
+  - shapely
+
+  - pip:
+    # Install moad_tools package in editable mode
+    - --editable ../[midoss]
