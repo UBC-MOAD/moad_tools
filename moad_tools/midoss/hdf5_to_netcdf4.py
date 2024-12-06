@@ -438,10 +438,10 @@ def cli(hdf5_file, netcdf4_file, verbosity):
 
     :param str verbosity: Verbosity level of logging messages about the progress of the
                           transformation.
-                          Choices are :kbd:`debug, info, warning, error, critical`.
-                          :kbd:`warning`, :kbd:`error`, and :kbd:`critical` should be silent
-                          unless something bad goes wrong.
-                          Default is :kbd:`warning`.
+                          Choices are debug, info, warning, error, critical.
+                          The warning, error, and critical levels should be silent unless something
+                          bad goes wrong.
+                          Default is warning.
     """
     logging_level = getattr(logging, verbosity.upper())
     logging.basicConfig(

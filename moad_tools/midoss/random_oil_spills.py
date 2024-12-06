@@ -19,21 +19,22 @@
 """Functions and command-line tool to calculate a CSV file containing parameters of a set
 of random oil spills to drive Monte Carlo runs of MOHID.
 """
+import collections
+import logging
+import sys
+from datetime import timedelta
+from pathlib import Path
+from types import SimpleNamespace
+
 import arrow
 import click
-import collections
 import geopandas
-import logging
 import numpy
 import pandas
 import rasterio
 import shapely.geometry
-import sys
 import xarray
 import yaml
-from datetime import timedelta
-from pathlib import Path
-from types import SimpleNamespace
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 
@@ -1626,10 +1627,10 @@ def cli(n_spills, config_file, csv_file, verbosity):
 
     :param str verbosity: Verbosity level of logging messages about the progress of the
                           transformation.
-                          Choices are :kbd:`debug, info, warning, error, critical`.
-                          :kbd:`warning`, :kbd:`error`, and :kbd:`critical` should be silent
-                          unless something bad goes wrong.
-                          Default is :kbd:`warning`.
+                          Choices are debug, info, warning, error, critical.
+                          The warning, error, and critical levels should be silent unless something
+                          bad goes wrong.
+                          Default is warning.
     """
     logging_level = getattr(logging, verbosity.upper())
     logging.basicConfig(

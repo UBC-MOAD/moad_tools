@@ -20,8 +20,8 @@
 :py:obj:`moad_tools` API
 ************************
 
-:kbd:`moad_tools.geo_tools` Module
-==================================
+:py:mod:`moad_tools.geo_tools` Module
+=====================================
 
 .. automodule:: moad_tools.geo_tools
     :members:
@@ -29,8 +29,8 @@
     :show-inheritance:
 
 
-:kbd:`moad_tools.observations` Module
-=====================================
+:py:mod:`moad_tools.observations` Module
+========================================
 
 .. automodule:: moad_tools.observations
     :members:
@@ -38,8 +38,8 @@
     :show-inheritance:
 
 
-:kbd:`moad_tools.places` Module
-===============================
+:py:mod:`moad_tools.places` Module
+==================================
 
 .. automodule:: moad_tools.places
     :members:
@@ -47,8 +47,8 @@
     :show-inheritance:
 
 
-:kbd:`moad_tools.midoss` Sub-package
-====================================
+:py:mod:`moad_tools.midoss` Sub-package
+=======================================
 
 :command:`geotiff-watermask` Tool
 ---------------------------------
@@ -121,9 +121,11 @@ The :ref:`RandomOilSpillsFunctionsAndCommand-lineInterface` section below provid
 Processing Configuration YAML File
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A collection of values for the processing that the :command:`random-oil-spills` performs are stored in a YAML file that is passed in as the command-line argument :kbd:`CONFIG_FILE`.
+A collection of values for the processing that the :command:`random-oil-spills` performs
+are stored in a YAML file that is passed in as the command-line argument ``CONFIG_FILE``.
 
-In contrast to the :command:`random-oil-spills` command-line arguments :kbd:`N_SPILLS` and :kbd:`CSV_FILE` that may be different every time the script is run,
+In contrast to the :command:`random-oil-spills` command-line arguments ``N_SPILLS`` and
+``CSV_FILE`` that may be different every time the script is run,
 the values in the YAML file are likely to change only rarely.
 Storing them in a
 (version controlled)
