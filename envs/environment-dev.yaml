@@ -22,17 +22,20 @@ channels:
 dependencies:
   - arrow
   - Click
-  - geopandas
   - matplotlib
   - netcdf4
   - pandas
   - pip
-  - pytables
   - python=3.12
   - pyyaml
-  - rasterio
   - scipy
   - xarray
+
+  # For modules in the midoss namespace
+  - geopandas
+  - pytables
+  - rasterio
+  - shapely
 
   # For coding style, repo QA, and pkg management
   - black

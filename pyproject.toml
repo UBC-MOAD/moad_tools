@@ -40,16 +40,21 @@ dependencies = [
     # see envs/environment-rtd.yaml for conda environment used for readthedocs build
     "arrow",
     "click",
-    "geopandas",
     "matplotlib",
     "netcdf4",
     "numpy",
     "pandas",
-    "tables",  # pkg name is pytables but pip see it as tables
     "pyyaml",
-    "rasterio",
     "scipy",
     "xarray",
+]
+
+[project.optional-dependencies]
+midoss = [
+    "geopandas",
+    "tables",  # pkg name is pytables but pip sees it as tables
+    "rasterio",
+    "shapely",
 ]
 
 [project.urls]

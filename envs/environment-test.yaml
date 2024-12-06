@@ -13,16 +13,19 @@ channels:
 dependencies:
   - arrow
   - Click
-  - geopandas
   - matplotlib
   - netcdf4
   - pandas
   - pip
-  - pytables
   - pyyaml
-  - rasterio
   - scipy
   - xarray
+
+  # For modules in the midoss namespace
+  - geopandas
+  - pytables
+  - rasterio
+  - shapely
 
   # For unit tests and coverage monitoring
   - pytest
@@ -38,4 +41,4 @@ dependencies:
     - pytest-randomly
 
     # Install moad_tools package in editable mode
-    - --editable ../
+    - --editable ../[midoss]
