@@ -5,7 +5,7 @@
 # to create an isolated development environment.
 #
 # Create/update this file with:
-#   (moad-tools)$ python -m pip list --format=freeze >> envs/requirements.txt
+#   (moad-tools-dev)$ python -m pip list --format=freeze >> envs/requirements.txt
 
 affine==2.4.0
 alabaster==1.0.0

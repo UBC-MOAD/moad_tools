@@ -4,7 +4,7 @@
 # with:
 #
 #   $ conda env create -f moad_tools/envs/environment-dev.yaml
-#   $ conda activate moad-tools
+#   $ conda activate moad-tools-dev
 #
 # The environment will include all the tools used to develop,
 # test, and document the moad_tools package.
@@ -13,7 +13,7 @@
 # packages installed in the environment and their versions used in
 # recent development.
 
-name: moad-tools
+name: moad-tools-dev
 
 channels:
   - conda-forge

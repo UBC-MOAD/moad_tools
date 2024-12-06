@@ -111,7 +111,7 @@ Development Environment
 
 Setting up an isolated development environment using `Conda`_ is recommended.
 Assuming that you have `Miniconda3`_ installed,
-you can create and activate an environment called ``moad-tools`` that will have
+you can create and activate an environment called ``moad-tools-dev`` that will have
 all of the Python packages necessary for development,
 testing,
 and building the documentation with the commands below:
@@ -123,7 +123,7 @@ and building the documentation with the commands below:
 
     $ cd moad_tools
     $ conda env create -f envs/environment-dev.yaml
-    $ conda activate moad-tools
+    $ conda activate moad-tools-dev
 
 :py:obj:`moad_tools` is installed in `editable install mode`_ as part of the
 conda environment creation process.
@@ -136,7 +136,7 @@ To deactivate the environment use:
 
 .. code-block:: bash
 
-    (moad-tools)$ conda deactivate
+    (moad-tools-dev)$ conda deactivate
 
 
 .. _moad_toolsCodingStyle:
@@ -165,8 +165,8 @@ and run :command:`pre-commit install`:
 .. code-block:: bash
 
     $ cd moad_tools
-    $ conda activate moad-tools
-    (moad-tools)$ pre-commit install
+    $ conda activate moad-tools-dev
+    (moad-tools-dev)$ pre-commit install
 
 .. note::
     You only need to install the hooks once immediately after you make a new clone of the
@@ -221,13 +221,13 @@ Building and Previewing the Documentation
 -----------------------------------------
 
 Building the documentation is driven by the :file:`docs/Makefile`.
-With your ``moad-tools`` environment activated,
+With your ``moad-tools-dev`` environment activated,
 use:
 
 .. code-block:: bash
 
-    (moad-tools)$ cd moad_tools/docs/
-    (moad-tools) docs$ make clean html
+    (moad-tools-dev)$ cd moad_tools/docs/
+    (moad-tools-dev) docs$ make clean html
 
 to do a clean build of the documentation.
 The output looks something like:
@@ -281,7 +281,7 @@ To preview in Firefox from the command-line you can do:
 
 .. code-block:: bash
 
-    (moad-tools) docs$ firefox _build/html/index.html
+    (moad-tools-dev) docs$ firefox _build/html/index.html
 
 If you have write access to the `repository`_ on GitHub,
 whenever you push changes to GitHub the documentation is automatically re-built and rendered at https://ubc-moad-tools.readthedocs.io/en/latest/.
@@ -297,13 +297,13 @@ Link Checking the Documentation
     :alt: Sphinx linkcheck
 
 Sphinx also provides a link checker utility which can be run to find broken or redirected links in the docs.
-With your ``moad-tools`` environment activated,
+With your ``moad-tools-dev`` environment activated,
 use:
 
 .. code-block:: bash
 
-    (moad-tools)$ cd moad_tools/docs/
-    (moad-tools) docs$ make linkcheck
+    (moad-tools-dev)$ cd moad_tools/docs/
+    (moad-tools-dev) docs$ make linkcheck
 
 The output looks something like:
 
@@ -421,13 +421,13 @@ The `pytest`_ tool is used for test parametrization and as the test runner for t
 
 .. _pytest: https://docs.pytest.org/en/latest/
 
-With your ``moad-tools`` development environment activated,
+With your ``moad-tools-dev`` development environment activated,
 use:
 
 .. code-block:: bash
 
-    (mohid-cmd)$ cd moad_tools/
-    (mohid-cmd)$ pytest
+    (moad-tools-dev)$ cd moad_tools/
+    (moad-tools-dev)$ pytest
 
 to run the test suite.
 The output looks something like:
@@ -455,8 +455,8 @@ and `pytest-cov`_ tools with the command:
 
 .. code-block:: bash
 
-    (mohid-cmd)$ cd moad_tools/
-    (mohid-cmd)$ pytest --cov=./
+    (moad-tools-dev)$ cd moad_tools/
+    (moad-tools-dev)$ pytest --cov=./
 
 The test coverage report will be displayed below the test suite run output.
 
@@ -465,7 +465,7 @@ you can use
 
 .. code-block:: bash
 
-    (mohid-cmd)$ pytest --cov=./ --cov-report html
+    (moad-tools-dev)$ pytest --cov=./ --cov-report html
 
 to produce an HTML report that you can view in your browser by opening
 :file:`moad_tools/htmlcov/index.html`.
