@@ -56,4 +56,4 @@ dependencies:
     - pytest-randomly
 
     # Install moad_tools package in editable mode
-    - --editable ../
+    - --editable ../[midoss]
