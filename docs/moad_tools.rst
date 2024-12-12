@@ -50,6 +50,17 @@
 :py:mod:`moad_tools.midoss` Sub-package
 =======================================
 
+.. note::
+    Modules in the :py:mod:`moad_tools.midoss` namespace require the installation of some
+    packages that are not included the the ``moad-tools`` environment.
+    To use any of the modules below or their command-line tools,
+    please create and activate a ``moad-tools-midoss`` environment with:
+
+        ``conda env create -f envs/environment-midoss.yaml``
+
+        ``conda activate moad-tools-midoss``
+
+
 :command:`geotiff-watermask` Tool
 ---------------------------------
 
@@ -59,13 +70,45 @@
     :show-inheritance:
 
 
-:command:`hdf5-to-netCDF4` Tool
--------------------------------
+:py:mod:`moad_tools.midoss.hdf5_to_netCDF4` Module
+--------------------------------------------------
 
 .. automodule:: moad_tools.midoss.hdf5_to_netcdf4
     :members:
     :undoc-members:
     :show-inheritance:
+
+
+.. _hdf5-to-netcdf4Script:
+
+:command:`hdf5-to-netcdf4` Script
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The :command:`hdf5-to-netcdf4` script transforms selected contents of a MOHID HDF5 results
+file into a netCDF4 file.
+
+Information about the :command:`hdf5-to-netcdf4` command-line arguments and options is available via:
+
+.. code-block:: bash
+
+    hdf5-to-netcdf4 --help
+
+.. code-block:: text
+
+    Usage: hdf5-to-netcdf4 [OPTIONS] HDF5_FILE NETCDF4_FILE
+
+      Transform selected contents of a MOHID HDF5 results file HDF5_FILE into a
+      netCDF4 file stored as NETCDF4_FILE.
+
+    Options:
+      --version                       Show the version and exit.
+      -v, --verbosity [debug|info|warning|error|critical]
+                                      Choose how much information you want to see
+                                      about the progress of the transformation;
+                                      warning, error, and critical should be
+                                      silent unless something bad goes wrong.
+                                      [default: warning]
+      --help                          Show this message and exit.
 
 
 .. _RandomOilSpillsScript:
