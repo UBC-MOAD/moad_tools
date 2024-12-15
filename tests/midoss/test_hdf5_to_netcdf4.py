@@ -55,7 +55,7 @@ class TestNoTablesPackage:
     def test_cli_script_msg(self, monkeypatch, capsys):
         # Monkeypatch sys.argv to simulate CLI invocation despite the test being run
         # via pytest from the command line
-        monkeypatch.setattr(sys, "argv", shlex.split("hdf5-to-netcdd4 foo.hdf5 foo.nc"))
+        monkeypatch.setattr(sys, "argv", shlex.split("hdf5-to-netcdf4 foo.hdf5 foo.nc"))
 
         msg = (
             "Please create an environment with `conda env create -f envs/environment-midoss.yaml` "
