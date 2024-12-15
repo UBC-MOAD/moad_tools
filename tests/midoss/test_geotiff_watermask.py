@@ -57,7 +57,7 @@ class TestNoRasterioPackage:
 
         msg = (
             "Please create an environment with `conda env create -f envs/environment-midoss.yaml` "
-            "to use the hdf5_to_netcdf4 module or its command-line tool\n"
+            "to use the geotiff_watermask module or its command-line tool\n"
         )
         with pytest.raises(SystemExit) as exc:
             # noinspection PyUnresolvedReferences
