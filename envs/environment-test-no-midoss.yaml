@@ -4,7 +4,7 @@
 # coverage analysis can be run.
 # Primarily intended for creation of a conda env for use in a GitHub Actions workflow.
 
-name: moad-tools-test
+name: moad-tools-test-no-midoss
 
 channels:
   - conda-forge
@@ -21,12 +21,6 @@ dependencies:
   - scipy
   - xarray
 
-  # For modules in the midoss namespace
-  - geopandas
-  - pytables
-  - rasterio
-  - shapely
-
   # For unit tests and coverage monitoring
   - pytest
   - pytest-cov
@@ -41,4 +35,4 @@ dependencies:
     - pytest-randomly
 
     # Install moad_tools package in editable mode
-    - --editable ../[midoss]
+    - --editable ../

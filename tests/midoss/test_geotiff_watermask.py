@@ -16,7 +16,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-"""Unit tests for hdf5_to_netcdf4 module.
+"""Unit tests for geotiff_watermask module.
 """
 import shlex
 import sys
@@ -24,20 +24,18 @@ import sys
 import pytest
 
 try:
-    import tables
+    import rasterio
 
-    tables_imported = True
+    rasterio_imported = True
 except ImportError:
-    tables_imported = False
+    rasterio_imported = False
 
 
 @pytest.mark.skipif(
-    tables_imported, reason="PyTables package is in the conda environment"
+    rasterio_imported, reason="Rasterio package is in the conda environment"
 )
-class TestNoTablesPackage:
-    """Unit tests for handling of PyTables package (called `tables` in imports) not in the conda
-    environment.
-    """
+class TestNoRasterioPackage:
+    """Unit tests for handling of rasterio package not in the conda environment."""
 
     def test_module_import_msg(self, monkeypatch):
         # Monkeypatch sys.argv to an empty so that we get an import despite the test being run
@@ -46,11 +44,11 @@ class TestNoTablesPackage:
 
         msg = (
             "Please create an environment with `conda env create -f envs/environment-midoss.yaml` "
-            "to use the hdf5_to_netcdf4 module or its command-line tool"
+            "to use the geotiff_watermask module or its command-line tool"
         )
         with pytest.raises(ModuleNotFoundError, match=msg):
             # noinspection PyUnresolvedReferences
-            import moad_tools.midoss.hdf5_to_netcdf4
+            import moad_tools.midoss.geotiff_watermask
 
     def test_cli_script_msg(self, monkeypatch, capsys):
         # Monkeypatch sys.argv to simulate CLI invocation despite the test being run
@@ -59,11 +57,11 @@ class TestNoTablesPackage:
 
         msg = (
             "Please create an environment with `conda env create -f envs/environment-midoss.yaml` "
-            "to use the hdf5_to_netcdf4 module or its command-line tool\n"
+            "to use the geotiff_watermask module or its command-line tool\n"
         )
         with pytest.raises(SystemExit) as exc:
             # noinspection PyUnresolvedReferences
-            import moad_tools.midoss.hdf5_to_netcdf4
+            import moad_tools.midoss.geotiff_watermask
 
         assert capsys.readouterr().err == msg
         assert exc.value.code == 2

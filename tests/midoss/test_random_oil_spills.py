@@ -19,6 +19,8 @@
 """Unit tests for random_oil_spills module.
 """
 import logging
+import shlex
+import sys
 import textwrap
 from pathlib import Path
 from types import SimpleNamespace
@@ -27,12 +29,25 @@ import arrow
 import numpy
 import pandas
 import pytest
-import shapely.geometry
-import shapely.testing
 import xarray
 import yaml
 
-from moad_tools.midoss import random_oil_spills
+try:
+    import geopandas
+    import rasterio
+
+    # noinspection PyUnresolvedReferences
+    import shapely.geometry
+
+    # noinspection PyUnresolvedReferences
+    import shapely.testing
+
+    geopandas_rasterio_shapely_imported = True
+
+    # noinspection PyUnresolvedReferences
+    from moad_tools.midoss import random_oil_spills
+except ImportError:
+    geopandas_rasterio_shapely_imported = False
 
 
 @pytest.fixture
@@ -114,6 +129,49 @@ def mock_get_length_origin_destination(monkeypatch):
     )
 
 
+@pytest.mark.skipif(
+    geopandas_rasterio_shapely_imported,
+    reason="geopandas, rasterio or shapely packages are in the conda environment",
+)
+class TestNoGeoPandasRasterioShapelyPackages:
+    """Unit tests for handling of geopandas, rasterio or shapely packages not in the conda
+    environment.
+    """
+
+    def test_module_import_msg(self, monkeypatch):
+        # Monkeypatch sys.argv to an empty so that we get an import despite the test being run
+        # via pytest from the command line
+        monkeypatch.setattr(sys, "argv", [])
+
+        msg = (
+            "Please create an environment with `conda env create -f envs/environment-midoss.yaml` "
+            "to use the random_oil_spills module or its command-line tool"
+        )
+        with pytest.raises(ModuleNotFoundError, match=msg):
+            # noinspection PyUnresolvedReferences
+            import moad_tools.midoss.random_oil_spills
+
+    def test_cli_script_msg(self, monkeypatch, capsys):
+        # Monkeypatch sys.argv to simulate CLI invocation despite the test being run
+        # via pytest from the command line
+        monkeypatch.setattr(sys, "argv", shlex.split("hdf5-to-netcdf4 foo.hdf5 foo.nc"))
+
+        msg = (
+            "Please create an environment with `conda env create -f envs/environment-midoss.yaml` "
+            "to use the random_oil_spills module or its command-line tool\n"
+        )
+        with pytest.raises(SystemExit) as exc:
+            # noinspection PyUnresolvedReferences
+            import moad_tools.midoss.random_oil_spills
+
+        assert capsys.readouterr().err == msg
+        assert exc.value.code == 2
+
+
+@pytest.mark.skipif(
+    not geopandas_rasterio_shapely_imported,
+    reason="One or more of geopandas, rasterio or shapely packages are not in the conda environment",
+)
 class TestRandomOilSpills:
     """Unit tests for random_oil_spills() function."""
 
@@ -204,6 +262,10 @@ class TestRandomOilSpills:
         pandas.testing.assert_frame_equal(df, expected)
 
 
+@pytest.mark.skipif(
+    not geopandas_rasterio_shapely_imported,
+    reason="One or more of geopandas, rasterio or shapely packages are not in the conda environment",
+)
 class TestGetDate:
     """Unit test for get_date() function."""
 
@@ -221,6 +283,10 @@ class TestGetDate:
         assert spill_date_hour == arrow.get("2017-07-19 21:00").datetime
 
 
+@pytest.mark.skipif(
+    not geopandas_rasterio_shapely_imported,
+    reason="One or more of geopandas, rasterio or shapely packages are not in the conda environment",
+)
 class TestGetLatLonIndices:
     """Unit test for get_lat_lon_indices() function."""
 
@@ -276,6 +342,10 @@ class TestGetLatLonIndices:
         )
 
 
+@pytest.mark.skipif(
+    not geopandas_rasterio_shapely_imported,
+    reason="One or more of geopandas, rasterio or shapely packages are not in the conda environment",
+)
 class TestGetVesselType:
     """Unit tests for get_vessel_type() function."""
 
@@ -302,6 +372,10 @@ class TestGetVesselType:
         assert vessel_type == "ferry"
 
 
+@pytest.mark.skipif(
+    not geopandas_rasterio_shapely_imported,
+    reason="One or more of geopandas, rasterio or shapely packages are not in the conda environment",
+)
 class TestGetLengthOriginDestination:
     """Unit test for get_length_origin_destination() function."""
 
@@ -345,6 +419,10 @@ class TestGetLengthOriginDestination:
         assert vessel_mmsi == "367704540"
 
 
+@pytest.mark.skipif(
+    not geopandas_rasterio_shapely_imported,
+    reason="One or more of geopandas, rasterio or shapely packages are not in the conda environment",
+)
 class TestAdjustTugTankBargeLength:
     """Unit tests for adjust_tug_tank_barge_length() function."""
 
@@ -386,6 +464,10 @@ class TestAdjustTugTankBargeLength:
         assert vessel_len in [147, 172, 178, 206, 207]
 
 
+@pytest.mark.skipif(
+    not geopandas_rasterio_shapely_imported,
+    reason="One or more of geopandas, rasterio or shapely packages are not in the conda environment",
+)
 class TestGetOilCapacity:
     """Unit test for get_oil_capacity() function."""
 
@@ -507,6 +589,10 @@ class TestGetOilCapacity:
         )
 
 
+@pytest.mark.skipif(
+    not geopandas_rasterio_shapely_imported,
+    reason="One or more of geopandas, rasterio or shapely packages are not in the conda environment",
+)
 class TestFuelOrCargoSpill:
     """Unit tests for fuel_or_cargo_spill() function."""
 
@@ -550,6 +636,10 @@ class TestFuelOrCargoSpill:
         assert fuel_spill == expected
 
 
+@pytest.mark.skipif(
+    not geopandas_rasterio_shapely_imported,
+    reason="One or more of geopandas, rasterio or shapely packages are not in the conda environment",
+)
 class TestChooseFractionSpilled:
     """Unit test for choose_fraction_spilled() function."""
 
@@ -563,6 +653,10 @@ class TestChooseFractionSpilled:
         assert spill_fraction == pytest.approx(0.63)
 
 
+@pytest.mark.skipif(
+    not geopandas_rasterio_shapely_imported,
+    reason="One or more of geopandas, rasterio or shapely packages are not in the conda environment",
+)
 class TestCumulativeSpillFraction:
     """Unit test for _cumulative_spill_fraction() function."""
 
@@ -630,6 +724,10 @@ class TestCumulativeSpillFraction:
         numpy.testing.assert_allclose(cumulative, expected)
 
 
+@pytest.mark.skipif(
+    not geopandas_rasterio_shapely_imported,
+    reason="One or more of geopandas, rasterio or shapely packages are not in the conda environment",
+)
 class TestGetOilType:
     """Unit tests for get_oil_type() function."""
 
@@ -870,6 +968,10 @@ class TestGetOilType:
         assert oil_type == expected
 
 
+@pytest.mark.skipif(
+    not geopandas_rasterio_shapely_imported,
+    reason="One or more of geopandas, rasterio or shapely packages are not in the conda environment",
+)
 class TestGetOilTypeCargo:
     """Unit tests for get_oil_type_cargo() function."""
 
@@ -934,6 +1036,10 @@ class TestGetOilTypeCargo:
         assert oil_type == expected
 
 
+@pytest.mark.skipif(
+    not geopandas_rasterio_shapely_imported,
+    reason="One or more of geopandas, rasterio or shapely packages are not in the conda environment",
+)
 class TestWriteCSVFile:
     """Unit test for write_csv_file() function."""
 

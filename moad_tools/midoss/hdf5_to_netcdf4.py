@@ -30,8 +30,19 @@ from types import SimpleNamespace
 import arrow
 import click
 import numpy
-import tables
 import xarray
+
+try:
+    import tables
+except ImportError:
+    msg = (
+        "Please create an environment with `conda env create -f envs/environment-midoss.yaml` "
+        "to use the hdf5_to_netcdf4 module or its command-line tool"
+    )
+    if sys.argv:
+        print(msg, file=sys.stderr)
+        raise SystemExit(2)
+    raise ModuleNotFoundError(msg)
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 

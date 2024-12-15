@@ -50,8 +50,21 @@
 :py:mod:`moad_tools.midoss` Sub-package
 =======================================
 
-:command:`geotiff-watermask` Tool
----------------------------------
+.. note::
+    Modules in the :py:mod:`moad_tools.midoss` namespace require the installation of some
+    packages that are not included the the ``moad-tools`` environment.
+    To use any of the modules below or their command-line tools,
+    please create and activate a ``moad-tools-midoss`` environment with:
+
+        ``conda env create -f envs/environment-midoss.yaml``
+
+        ``conda activate moad-tools-midoss``
+
+
+.. _geotiff_watermaskModule:
+
+:py:mod:`moad_tools.midoss.geotiff_watermask` Module
+----------------------------------------------------
 
 .. automodule:: moad_tools.midoss.geotiff_watermask
     :members:
@@ -59,13 +72,85 @@
     :show-inheritance:
 
 
-:command:`hdf5-to-netCDF4` Tool
--------------------------------
+.. _geotiff-watermaskScript:
+
+:command:`geotiff-watermask` Script
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The :command:`geotiff-watermask` script calculates and stores a Numpy array file
+containing a SalishSeaCast domain water mask for the AIS ship track density GeoTIFF files
+used to generate oil spill parameters for Monte Carlo runs of MOHID.
+
+Information about the :command:`geotiff-watermask` command-line arguments and options is available via:
+
+.. code-block:: bash
+
+    geotiff-watermask --help
+
+.. code-block:: text
+
+    Usage: geotiff-watermask [OPTIONS] GEOTIFF_FILE MESHMASK_FILE NUMPY_FILE
+
+      Calculate and store a Numpy array file containing a SalishSeaCast domain
+      water mask for the AIS ship track density GeoTIFF files used to generate oil
+      spill parameters for Monte Carlo runs of MOHID.
+
+      Please see
+
+      https://ubc-moad-tools.readthedocs.io/en/latest/moad_tools.html#module-moad_tools.midoss.geotiff_watermask
+
+      for more information about arguments and options.
+
+    Options:
+      --version                       Show the version and exit.
+      -v, --verbosity [debug|info|warning|error|critical]
+                                      Choose how much information you want to see
+                                      about the progress of the calculation;
+                                      warning, error, and critical should be
+                                      silent unless something bad goes wrong.
+                                      [default: warning]
+      --help                          Show this message and exit.
+
+
+:py:mod:`moad_tools.midoss.hdf5_to_netCDF4` Module
+--------------------------------------------------
 
 .. automodule:: moad_tools.midoss.hdf5_to_netcdf4
     :members:
     :undoc-members:
     :show-inheritance:
+
+
+.. _hdf5-to-netcdf4Script:
+
+:command:`hdf5-to-netcdf4` Script
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The :command:`hdf5-to-netcdf4` script transforms selected contents of a MOHID HDF5 results
+file into a netCDF4 file.
+
+Information about the :command:`hdf5-to-netcdf4` command-line arguments and options is available via:
+
+.. code-block:: bash
+
+    hdf5-to-netcdf4 --help
+
+.. code-block:: text
+
+    Usage: hdf5-to-netcdf4 [OPTIONS] HDF5_FILE NETCDF4_FILE
+
+      Transform selected contents of a MOHID HDF5 results file HDF5_FILE into a
+      netCDF4 file stored as NETCDF4_FILE.
+
+    Options:
+      --version                       Show the version and exit.
+      -v, --verbosity [debug|info|warning|error|critical]
+                                      Choose how much information you want to see
+                                      about the progress of the transformation;
+                                      warning, error, and critical should be
+                                      silent unless something bad goes wrong.
+                                      [default: warning]
+      --help                          Show this message and exit.
 
 
 .. _RandomOilSpillsScript:
