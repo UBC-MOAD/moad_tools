@@ -22,7 +22,7 @@ dependencies:
   - netcdf4
   - pandas
   - pip
-  - python=3.12
+  - python=3.13
   - pyyaml
   - scipy
   - xarray
