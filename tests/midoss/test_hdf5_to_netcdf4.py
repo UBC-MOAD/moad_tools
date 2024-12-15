@@ -49,8 +49,8 @@ class TestNoTablesPackage:
             "to use the hdf5_to_netcdf4 module or its command-line tool"
         )
         with pytest.raises(ModuleNotFoundError, match=msg):
-            # noinspection PyPackageRequirements
-            pass
+            # noinspection PyUnresolvedReferences
+            import moad_tools.midoss.hdf5_to_netcdf4
 
     def test_cli_script_msg(self, monkeypatch, capsys):
         # Monkeypatch sys.argv to simulate CLI invocation despite the test being run
@@ -62,8 +62,8 @@ class TestNoTablesPackage:
             "to use the hdf5_to_netcdf4 module or its command-line tool\n"
         )
         with pytest.raises(SystemExit) as exc:
-            # noinspection PyPackageRequirements
-            pass
+            # noinspection PyUnresolvedReferences
+            import moad_tools.midoss.hdf5_to_netcdf4
 
         assert capsys.readouterr().err == msg
         assert exc.value.code == 2
