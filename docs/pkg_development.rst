@@ -44,7 +44,7 @@
 |                            |     :target: https://github.com/UBC-MOAD/moad_tools/releases                                                                                                                                  |
 |                            |     :alt: Releases                                                                                                                                                                            |
 |                            | .. image:: https://img.shields.io/python/required-version-toml?tomlFilePath=https://raw.githubusercontent.com/UBC-MOAD/moad_tools/main/pyproject.toml&logo=Python&logoColor=gold&label=Python |
-|                            |      :target: https://docs.python.org/3.12/                                                                                                                                                   |
+|                            |      :target: https://docs.python.org/3/                                                                                                                                                      |
 |                            |      :alt: Python Version from PEP 621 TOML                                                                                                                                                   |
 |                            | .. image:: https://img.shields.io/github/issues/UBC-MOAD/moad_tools?logo=github                                                                                                               |
 |                            |     :target: https://github.com/UBC-MOAD/moad_tools/issues                                                                                                                                    |
@@ -77,10 +77,10 @@ Python Versions
 ===============
 
 .. image:: https://img.shields.io/python/required-version-toml?tomlFilePath=https://raw.githubusercontent.com/UBC-MOAD/moad_tools/main/pyproject.toml&logo=Python&logoColor=gold&label=Python
-    :target: https://docs.python.org/3.12/
+    :target: https://docs.python.org/3/
     :alt: Python Version from PEP 621 TOML
 
-The :py:obj:`moad_tools` package is developed using `Python`_ 3.12.
+The :py:obj:`moad_tools` package is developed using `Python`_ 3.13.
 It is tested for Python versions >=3.11.
 
 .. _Python: https://www.python.org/
@@ -334,74 +334,74 @@ The output looks something like:
     copying assets: done
     writing output... [100%] pkg_development
 
-    (      moad_tools: line  174) -ignored- https://github.com/MIDOSS/marine_transport_data
+    (      moad_tools: line  261) -ignored- https://github.com/MIDOSS/marine_transport_data
     (      moad_tools: line    4) -ignored- https://docs.google.com/drawings/d/10PM53-UnnILYCAPKU9MxiR-Y4OW0tIMhVzSjaHr-iSc/edit
     (      moad_tools: line    4) -ignored- https://docs.google.com/drawings/d/1-4gl2yNNWxqXK-IOr4KNZxO-awBC-bNrjRNrt86fykU/edit
-    ( pkg_development: line   23) ok        https://black.readthedocs.io/en/stable/
     (      moad_tools: line    3) ok        https://docs.python.org/3/library/exceptions.html#KeyError
-    (      moad_tools: line  174) ok        https://docs.python.org/3/library/datetime.html#datetime.datetime
-    ( pkg_development: line   23) ok        https://app.codecov.io/gh/UBC-MOAD/moad_tools
-    ( pkg_development: line  430) ok        https://coverage.readthedocs.io/en/latest/
-    ( pkg_development: line  112) ok        https://docs.conda.io/en/latest/
-    ( pkg_development: line  112) ok        https://docs.conda.io/en/latest/miniconda.html
-    ( pkg_development: line  479) ok        https://docs.github.com/en/actions
-    ( pkg_development: line   29) ok        https://codecov.io/gh/UBC-MOAD/moad_tools/branch/main/graph/badge.svg
-    ( pkg_development: line  399) ok        https://docs.pytest.org/en/latest/
-    ( pkg_development: line   23) ok        https://docs.python.org/3.12/
-    (      moad_tools: line  174) ok        https://docs.python.org/3/library/functions.html#float
+    (      moad_tools: line  261) ok        https://docs.python.org/3/library/datetime.html#datetime.datetime
+    (      moad_tools: line  261) ok        https://docs.python.org/3/library/functions.html#float
     (      moad_tools: line   33) ok        https://docs.python.org/3/library/functions.html#int
     (      moad_tools: line    1) ok        https://docs.google.com/document/d/14hAxrTFpKloy88zRYLL4TiqLwbn8s53MYQeCt6B3MJ4/edit
-    (      moad_tools: line   63) ok        https://docs.python.org/3/library/pathlib.html#pathlib.Path
-    (      moad_tools: line  174) ok        https://docs.python.org/3/library/stdtypes.html#list
-    (      moad_tools: line   24) ok        https://docs.python.org/3/library/stdtypes.html#str
+    ( pkg_development: line   23) ok        https://black.readthedocs.io/en/stable/
+    ( pkg_development: line  112) ok        https://docs.conda.io/en/latest/
+    ( pkg_development: line   23) ok        https://app.codecov.io/gh/UBC-MOAD/moad_tools
+    ( pkg_development: line  450) ok        https://coverage.readthedocs.io/en/latest/
+    ( pkg_development: line  112) ok        https://docs.conda.io/en/latest/miniconda.html
+    ( pkg_development: line   29) ok        https://codecov.io/gh/UBC-MOAD/moad_tools/branch/main/graph/badge.svg
+    ( pkg_development: line  499) ok        https://docs.github.com/en/actions
+    ( pkg_development: line  419) ok        https://docs.pytest.org/en/latest/
+    ( pkg_development: line   23) ok        https://docs.python.org/3.12/
+    (      moad_tools: line  116) ok        https://docs.python.org/3/library/pathlib.html#pathlib.Path
+    (      moad_tools: line  261) ok        https://docs.python.org/3/library/stdtypes.html#dict
     (      moad_tools: line    4) ok        https://docs.google.com/spreadsheets/d/1dlT0JydkFG43LorqgtHle5IN6caRYjf_3qLrUYqANDY/edit
-    (      moad_tools: line  174) ok        https://docs.python.org/3/library/stdtypes.html#tuple
-    (      moad_tools: line  174) ok        https://docs.python.org/3/library/stdtypes.html#dict
-    ( pkg_development: line  494) ok        https://git-scm.com/
-    (      moad_tools: line   54) ok        https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset
-    ( pkg_development: line   32) ok        https://github.com/UBC-MOAD/moad_tools/actions/workflows/codeql-analysis.yaml/badge.svg
+    (      moad_tools: line   24) ok        https://docs.python.org/3/library/stdtypes.html#str
+    (      moad_tools: line  261) ok        https://docs.python.org/3/library/stdtypes.html#list
+    ( pkg_development: line  514) ok        https://git-scm.com/
+    (      moad_tools: line   67) ok        https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset
+    (      moad_tools: line  261) ok        https://docs.python.org/3/library/stdtypes.html#tuple
     (           index: line    6) ok        https://github.com/UBC-MOAD/docs/blob/main/CONTRIBUTORS.rst
-    ( pkg_development: line   26) ok        https://github.com/UBC-MOAD/moad_tools/actions/workflows/pytest-with-coverage.yaml/badge.svg
     ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools
-    ( pkg_development: line  466) ok        https://github.com/UBC-MOAD/moad_tools/actions
+    ( pkg_development: line   26) ok        https://github.com/UBC-MOAD/moad_tools/actions/workflows/pytest-with-coverage.yaml/badge.svg
     ( pkg_development: line   39) ok        https://github.com/UBC-MOAD/moad_tools/actions/workflows/sphinx-linkcheck.yaml/badge.svg
+    ( pkg_development: line   32) ok        https://github.com/UBC-MOAD/moad_tools/actions/workflows/codeql-analysis.yaml/badge.svg
+    ( pkg_development: line  486) ok        https://github.com/UBC-MOAD/moad_tools/actions
     ( pkg_development: line  293) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Asphinx-linkcheck
-    ( pkg_development: line  457) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Apytest-with-coverage
-    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:sphinx-linkcheck
+    ( pkg_development: line  477) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Apytest-with-coverage
     ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:pytest-with-coverage
-    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/issues
-    ( pkg_development: line  459) ok        https://github.com/UBC-MOAD/moad_tools/workflows/pytest-with-coverage/badge.svg
-    ( pkg_development: line  295) ok        https://github.com/UBC-MOAD/moad_tools/workflows/sphinx-linkcheck/badge.svg
-    ( pkg_development: line   65) ok        https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg
-    ( pkg_development: line   62) ok        https://img.shields.io/badge/code%20style-black-000000.svg
-    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/releases
-    ( pkg_development: line   53) ok        https://img.shields.io/badge/license-Apache%202-cb2533.svg
-    ( pkg_development: line   56) ok        https://img.shields.io/badge/version%20control-git-blue.svg?logo=github
-    ( pkg_development: line   59) ok        https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
-    ( pkg_development: line   23) ok        https://github.com/pypa/hatch
-    ( pkg_development: line   49) ok        https://img.shields.io/github/issues/UBC-MOAD/moad_tools?logo=github
-    ( pkg_development: line   43) ok        https://img.shields.io/github/v/release/UBC-MOAD/moad_tools?logo=github
-    ( pkg_development: line  466) ok        https://github.com/UBC-MOAD/moad_tools/commits/main
     ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:CodeQL
-    (      moad_tools: line   76) ok        https://mohid-cmd.readthedocs.io/en/latest/
+    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/issues
+    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:sphinx-linkcheck
+    ( pkg_development: line  479) ok        https://github.com/UBC-MOAD/moad_tools/workflows/pytest-with-coverage/badge.svg
+    ( pkg_development: line   65) ok        https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg
+    ( pkg_development: line  295) ok        https://github.com/UBC-MOAD/moad_tools/workflows/sphinx-linkcheck/badge.svg
+    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/releases
+    ( pkg_development: line   62) ok        https://img.shields.io/badge/code%20style-black-000000.svg
+    ( pkg_development: line   56) ok        https://img.shields.io/badge/version%20control-git-blue.svg?logo=github
+    ( pkg_development: line   53) ok        https://img.shields.io/badge/license-Apache%202-cb2533.svg
+    ( pkg_development: line   49) ok        https://img.shields.io/github/issues/UBC-MOAD/moad_tools?logo=github
+    ( pkg_development: line   59) ok        https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
+    ( pkg_development: line   43) ok        https://img.shields.io/github/v/release/UBC-MOAD/moad_tools?logo=github
     ( pkg_development: line   46) ok        https://img.shields.io/python/required-version-toml?tomlFilePath=https://raw.githubusercontent.com/UBC-MOAD/moad_tools/main/pyproject.toml&logo=Python&logoColor=gold&label=Python
-    (      moad_tools: line   76) ok        https://mohid-cmd.readthedocs.io/en/latest/monte-carlo.html#monte-carlo-sub-command
-    (      moad_tools: line   54) ok        https://numpy.org/doc/1.18/reference/generated/numpy.ndarray.html#numpy.ndarray
-    ( pkg_development: line  128) ok        https://pip.pypa.io/en/stable/topics/local-project-installs/#editable-installs
-    (      moad_tools: line  174) ok        https://numpy.org/doc/1.18/reference/random/generator.html#numpy.random.Generator
+    (      moad_tools: line  161) ok        https://mohid-cmd.readthedocs.io/en/latest/
+    ( pkg_development: line  486) ok        https://github.com/UBC-MOAD/moad_tools/commits/main
+    (      moad_tools: line   67) ok        https://numpy.org/doc/1.18/reference/generated/numpy.ndarray.html#numpy.ndarray
+    ( pkg_development: line   23) ok        https://github.com/pypa/hatch
+    (      moad_tools: line  161) ok        https://mohid-cmd.readthedocs.io/en/latest/monte-carlo.html#monte-carlo-sub-command
+    (      moad_tools: line  261) ok        https://numpy.org/doc/1.18/reference/random/generator.html#numpy.random.Generator
     (      moad_tools: line    5) ok        https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame
-    (      moad_tools: line   54) ok        https://rasterio.readthedocs.io/en/latest/api/rasterio.io.html#rasterio.io.DatasetReader
-    ( pkg_development: line  430) ok        https://pytest-cov.readthedocs.io/en/latest/
-    ( pkg_development: line   23) ok        https://pre-commit.com
+    ( pkg_development: line  128) ok        https://pip.pypa.io/en/stable/topics/local-project-installs/#editable-installs
+    ( pkg_development: line  450) ok        https://pytest-cov.readthedocs.io/en/latest/
     ( pkg_development: line  154) ok        https://pre-commit.com/
+    ( pkg_development: line   23) ok        https://pre-commit.com
+    (      moad_tools: line   67) ok        https://rasterio.readthedocs.io/en/latest/api/rasterio.io.html#rasterio.io.DatasetReader
     (           index: line    9) ok        https://www.apache.org/licenses/LICENSE-2.0
     ( pkg_development: line   36) ok        https://readthedocs.org/projects/ubc-moad-tools/badge/?version=latest
     (      moad_tools: line    1) ok        https://www.ndbc.noaa.gov/data/realtime2/
     ( pkg_development: line   23) ok        https://ubc-moad-tools.readthedocs.io/en/latest/
-    ( pkg_development: line   83) ok        https://www.python.org/
-    ( pkg_development: line  187) ok        https://www.sphinx-doc.org/en/master/
-    ( pkg_development: line  187) ok        https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
     ( pkg_development: line  204) ok        https://readthedocs.org/projects/ubc-moad-tools/builds/
+    ( pkg_development: line  187) ok        https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
+    ( pkg_development: line  187) ok        https://www.sphinx-doc.org/en/master/
+    ( pkg_development: line   83) ok        https://www.python.org/
     build succeeded.
 
     Look for any errors in the above output or in _build/linkcheck/output.txt
@@ -434,18 +434,21 @@ The output looks something like:
 
 .. code-block:: text
 
-================================================================================================================================================================= test session starts =================================================================================================================================================================
-platform linux -- Python 3.12.0, pytest-7.4.3, pluggy-1.3.0
-Using --randomly-seed=3176178277
-rootdir: /media/doug/warehouse/MOAD/moad_tools
-plugins: randomly-3.15.0, cov-4.1.0
-collected 89 items
+    ================================ test session starts ================================
+    platform linux -- Python 3.13.1, pytest-8.3.4, pluggy-1.5.0
+    Using --randomly-seed=812651130
+    rootdir: /media/doug/warehouse/MOAD/moad_tools
+    configfile: pyproject.toml
+    plugins: cov-6.0.0, randomly-3.16.0, anyio-4.7.0
+    collected 96 items
 
-tests/test_random_oil_spills.py .s.......................................................
-..............................                                                      [ 97%]
-tests/test_observations.py ..                                                       [100%]
+    tests/midoss/test_hdf5_to_netcdf4.py ss                                         [  2%]
+    tests/midoss/test_geotiff_watermask.py ss                                       [  4%]
+    tests/midoss/test_random_oil_spills.py .s.............................................
+    ............................ss............                                      [ 96%]
+    tests/test_observations.py ...                                                  [100%]
 
-============================= 88 passed, 1 skipped in 2.01s =============================
+    =========================== 89 passed, 7 skipped in 1.57s ===========================
 
 You can monitor what lines of code the test suite exercises using the `coverage.py`_
 and `pytest-cov`_ tools with the command:
