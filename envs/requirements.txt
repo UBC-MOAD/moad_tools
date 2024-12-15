@@ -135,11 +135,9 @@ types-python-dateutil==2.9.0.20241206
 typing_extensions==4.12.2
 tzdata==2024.2
 ukkonen==1.0.1
-unicodedata2==15.1.0
 urllib3==2.2.3
 userpath==1.7.0
 virtualenv==20.28.0
-wheel==0.45.1
 xarray==2024.11.0
 xyzservices==2024.9.0
 zipp==3.21.0
