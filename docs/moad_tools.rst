@@ -61,13 +61,55 @@
         ``conda activate moad-tools-midoss``
 
 
-:command:`geotiff-watermask` Tool
----------------------------------
+.. _geotiff_watermaskModule:
+
+:py:mod:`moad_tools.midoss.geotiff_watermask` Module
+----------------------------------------------------
 
 .. automodule:: moad_tools.midoss.geotiff_watermask
     :members:
     :undoc-members:
     :show-inheritance:
+
+
+.. _geotiff-watermaskScript:
+
+:command:`geotiff-watermask` Script
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The :command:`geotiff-watermask` script calculates and stores a Numpy array file
+containing a SalishSeaCast domain water mask for the AIS ship track density GeoTIFF files
+used to generate oil spill parameters for Monte Carlo runs of MOHID.
+
+Information about the :command:`geotiff-watermask` command-line arguments and options is available via:
+
+.. code-block:: bash
+
+    geotiff-watermask --help
+
+.. code-block:: text
+
+    Usage: geotiff-watermask [OPTIONS] GEOTIFF_FILE MESHMASK_FILE NUMPY_FILE
+
+      Calculate and store a Numpy array file containing a SalishSeaCast domain
+      water mask for the AIS ship track density GeoTIFF files used to generate oil
+      spill parameters for Monte Carlo runs of MOHID.
+
+      Please see
+
+      https://ubc-moad-tools.readthedocs.io/en/latest/moad_tools.html#module-moad_tools.midoss.geotiff_watermask
+
+      for more information about arguments and options.
+
+    Options:
+      --version                       Show the version and exit.
+      -v, --verbosity [debug|info|warning|error|critical]
+                                      Choose how much information you want to see
+                                      about the progress of the calculation;
+                                      warning, error, and critical should be
+                                      silent unless something bad goes wrong.
+                                      [default: warning]
+      --help                          Show this message and exit.
 
 
 :py:mod:`moad_tools.midoss.hdf5_to_netCDF4` Module

@@ -140,7 +140,7 @@ def write_numpy_file(watermask, numpy_file):
     Please see
 
     \b
-    https://ubc-moad-tools.readthedocs.io/en/latest/moad_tools.html#moad_tools.midoss.geotiff_watermask.cli
+    https://ubc-moad-tools.readthedocs.io/en/latest/moad_tools.html#module-moad_tools.midoss.geotiff_watermask
 
     for more information about arguments and options.
     """
