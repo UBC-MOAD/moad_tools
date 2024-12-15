@@ -1,0 +1,46 @@
+name: pytest-no-midoss
+# Run test suit in an environment that does not include the packages that are needed only
+# in the midoss namespace. This tests exceptions and messages to direct user to create
+# the appropriate conda environment. Test coverage is not reported from this workflow
+# because many tests are skipped.
+
+on:
+  push:
+    branches: [ '*' ]
+  # Enable workflow to be triggered from GitHub CLI, browser, or via API
+  # primarily for testing conda env solution for new Python versions
+  workflow_dispatch:
+
+jobs:
+  pytest-with-coverage:
+    permissions:
+      contents: read
+      pull-requests: write
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Conda environment with Micromamba
+        uses: mamba-org/setup-micromamba@06375d89d211a1232ef63355742e9e2e564bc7f7
+        with:
+           environment-file: envs/environment-test-no-midoss.yaml
+           environment-name: moad-tools-test-no-midoss
+           # environment caching does not play nicely with --editable installed packages
+           cache-environment: false
+           cache-downloads: true
+           # persist downloads cache for 1 day
+           cache-downloads-key: downloads-${{ steps.date.outputs.date }}
+           create-args: >-
+             python=${{ inputs.python-version }}
+
+      - name: pytest package
+        shell: bash -l {0}
+        run: |
+          pytest
+
+      # Test coverage is not reported from this workflow because many tests are skipped.
