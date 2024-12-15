@@ -26,8 +26,20 @@ from pathlib import Path
 
 import click
 import numpy
-import rasterio
 import xarray
+
+try:
+    import rasterio
+except ImportError:
+    msg = (
+        "Please create an environment with `conda env create -f envs/environment-midoss.yaml` "
+        "to use the geotiff_watermask module or its command-line tool"
+    )
+    if sys.argv:
+        print(msg, file=sys.stderr)
+        raise SystemExit(2)
+    raise ModuleNotFoundError(msg)
+
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 
