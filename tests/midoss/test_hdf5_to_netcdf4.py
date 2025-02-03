@@ -16,8 +16,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-"""Unit tests for hdf5_to_netcdf4 module.
-"""
+"""Unit tests for hdf5_to_netcdf4 module."""
 import shlex
 import sys
 

@@ -16,8 +16,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-"""Unit tests for random_oil_spills module.
-"""
+"""Unit tests for random_oil_spills module."""
 import logging
 import shlex
 import sys
