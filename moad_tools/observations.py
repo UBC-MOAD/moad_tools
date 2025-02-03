@@ -16,8 +16,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-"""Functions for downloading observations data from web services.
-"""
+"""Functions for downloading observations data from web services."""
 import logging
 import urllib.error
 

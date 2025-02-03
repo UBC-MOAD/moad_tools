@@ -16,8 +16,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-"""Unit tests for geotiff_watermask module.
-"""
+"""Unit tests for geotiff_watermask module."""
 import shlex
 import sys
 
