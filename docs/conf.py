@@ -15,6 +15,8 @@
 import importlib.metadata
 import os
 import sys
+import tomllib
+from pathlib import Path
 
 
 sys.path.insert(0, os.path.abspath(".."))
@@ -22,7 +24,9 @@ sys.path.insert(0, os.path.abspath(".."))
 
 # -- Project information -----------------------------------------------------
 
-project = "moad_tools"
+with Path("../pyproject.toml").open("rb") as f:
+    pkg_info = tomllib.load(f)
+project = pkg_info["project"]["name"]
 
 pkg_creation_year = 2018
 copyright_years = f"{pkg_creation_year} – present"
