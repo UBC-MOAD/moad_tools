@@ -129,7 +129,7 @@ toml==0.10.2
 tomli==2.2.1
 tomli_w==1.1.0
 tomlkit==0.13.2
-tornado==6.4.2
+tornado==6.5.1
 trove-classifiers==2024.10.21.16
 types-python-dateutil==2.9.0.20241206
 typing_extensions==4.12.2
