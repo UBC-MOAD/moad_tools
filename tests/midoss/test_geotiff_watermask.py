@@ -17,6 +17,7 @@
 
 
 """Unit tests for geotiff_watermask module."""
+
 import shlex
 import sys
 

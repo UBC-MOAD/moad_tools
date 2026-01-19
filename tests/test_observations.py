@@ -17,6 +17,7 @@
 
 
 """Unit tests for observations module."""
+
 import urllib.error
 
 import pandas
