@@ -19,6 +19,7 @@
 """Functions and command-line tool to calculate a CSV file containing parameters of a set
 of random oil spills to drive Monte Carlo runs of MOHID.
 """
+
 import collections
 import logging
 import sys
@@ -1589,8 +1590,7 @@ def write_csv_file(df, csv_file):
     logging.info(f"wrote CSV file to {csv_file}")
 
 
-@click.command(
-    help="""
+@click.command(help="""
     Calculate and store a CSV file containing parameters of a set of random oil spills
     to drive Monte Carlo runs of MOHID.
 
@@ -1606,8 +1606,7 @@ def write_csv_file(df, csv_file):
     https://ubc-moad-tools.readthedocs.io/en/latest/moad_tools.html#processing-configuration-yaml-file
 
     for details of the contents of the config file.
-"""
-)
+""")
 @click.version_option()
 @click.argument("n_spills", type=int)
 @click.argument(

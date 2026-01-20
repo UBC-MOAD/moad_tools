@@ -17,6 +17,7 @@
 
 
 """Unit tests for random_oil_spills module."""
+
 import logging
 import shlex
 import sys
@@ -57,9 +58,7 @@ def config_file(tmp_path):
     geotiff_watermask = geotiffs_dir / "geotiff-watermask.npy"
     ssc_mesh = test_data / "mesh_mask201702.nc"
     config_file = tmp_path / "random_oil_spills.yaml"
-    config_file.write_text(
-        textwrap.dedent(
-            f"""\
+    config_file.write_text(textwrap.dedent(f"""\
             start date: 2015-01-01
             end date: 2018-12-31
 
@@ -81,9 +80,7 @@ def config_file(tmp_path):
               - other
 
             oil attribution: {test_data}/oil_attribution.yaml
-            """
-        )
-    )
+            """))
     return str(config_file)
 
 
@@ -805,9 +802,7 @@ class TestGetOilType:
         data_dir = tmp_path / "marine_transport_data"
         data_dir.mkdir()
         cargo_info_file = data_dir / "yaml_file"
-        cargo_info_file.write_text(
-            textwrap.dedent(
-                """\
+        cargo_info_file.write_text(textwrap.dedent("""\
                 Westridge Marine Terminal:
                   atb:
                     akns:
@@ -840,9 +835,7 @@ class TestGetOilType:
                       fraction_of_total: 0
                     other:
                       fraction_of_total: 0
-                """
-            )
-        )
+                """))
         monkeypatch.setitem(oil_attrs["files"], "CAD_origin", cargo_info_file)
         empty_file = data_dir / "empty_file"
         empty_file.write_text("")
@@ -912,9 +905,7 @@ class TestGetOilType:
         data_dir = tmp_path / "marine_transport_data"
         data_dir.mkdir()
         cargo_info_file = data_dir / "yaml_file"
-        cargo_info_file.write_text(
-            textwrap.dedent(
-                """\
+        cargo_info_file.write_text(textwrap.dedent("""\
                 Westridge Marine Terminal:
                   barge:
                     akns:
@@ -931,9 +922,7 @@ class TestGetOilType:
                       fraction_of_total: 0
                     other:
                       fraction_of_total: 0
-                """
-            )
-        )
+                """))
         monkeypatch.setitem(oil_attrs["files"], "CAD_origin", cargo_info_file)
         empty_file = data_dir / "empty_file"
         empty_file.write_text("")
@@ -1056,12 +1045,10 @@ class TestWriteCSVFile:
 
         random_oil_spills.write_csv_file(df, str(out_csv))
 
-        expected = textwrap.dedent(
-            """\
+        expected = textwrap.dedent("""\
             spill_date_hour,run_days
             2016-08-19 18:00,7
             2015-01-06 10:00,7
-            """
-        )
+            """)
 
         assert out_csv.read_text() == expected

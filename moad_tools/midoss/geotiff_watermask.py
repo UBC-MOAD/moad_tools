@@ -20,6 +20,7 @@
 a SalishSeaCast domain water mask for the AIS ship track density GeoTIFF files used to
 generate oil spill parameters for Monte Carlo runs of MOHID.
 """
+
 import logging
 import sys
 from pathlib import Path
@@ -130,8 +131,7 @@ def write_numpy_file(watermask, numpy_file):
     logging.info(f"wrote Numpy boolean water mask array to: {numpy_path}")
 
 
-@click.command(
-    help="""
+@click.command(help="""
     Calculate and store a Numpy array file containing a SalishSeaCast domain water mask for the
     AIS ship track density GeoTIFF files used to generate oil spill parameters for
     Monte Carlo runs of MOHID.
@@ -143,8 +143,7 @@ def write_numpy_file(watermask, numpy_file):
     https://ubc-moad-tools.readthedocs.io/en/latest/moad_tools.html#module-moad_tools.midoss.geotiff_watermask
 
     for more information about arguments and options.
-    """
-)
+    """)
 @click.version_option()
 @click.argument(
     "geotiff_file",
