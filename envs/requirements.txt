@@ -88,7 +88,7 @@ pre_commit==4.5.1
 ptyprocess==0.7.0
 py-cpuinfo==9.0.0
 pycparser==2.22
-Pygments==2.19.2
+Pygments==2.20.0
 pyogrio==0.12.1
 pyparsing==3.3.2
 pyproj==3.7.2
