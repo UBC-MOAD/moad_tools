@@ -224,6 +224,10 @@ ENV/
 env.bak/
 venv.bak/
 
+# pixi environments
+.pixi/*
+!.pixi/config.toml
+
 # Spyder project settings
 .spyderproject
 .spyproject

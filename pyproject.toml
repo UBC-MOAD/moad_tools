@@ -30,7 +30,7 @@ description = """\
 readme = "README.rst"
 requires-python = ">=3.11"
 license = "Apache-2.0"
-license-files = { paths = ["LICENSE"] }
+license-files = [ "LICENSE" ]
 authors = [
     { name = "Doug Latornell", email= "dlatornell@eoas.ubc.ca" }
 ]
@@ -79,3 +79,17 @@ packages = ["moad_tools"]
 
 [tool.hatch.version]
 path = "moad_tools/__about__.py"
+
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-arm64", "osx-64", "win-64"]
+
+[tool.pixi.pypi-dependencies]
+moad_tools = { path = ".", editable = true }
+
+[tool.pixi.environments]
+default = { solve-group = "default" }
+midoss = { features = ["midoss"], solve-group = "default" }
+
+[tool.pixi.tasks]
