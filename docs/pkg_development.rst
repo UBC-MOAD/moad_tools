@@ -421,13 +421,12 @@ The `pytest`_ tool is used for test parametrization and as the test runner for t
 
 .. _pytest: https://docs.pytest.org/en/latest/
 
-With your ``moad-tools-dev`` development environment activated,
-use:
+Use:
 
 .. code-block:: bash
 
-    (moad-tools-dev)$ cd moad_tools/
-    (moad-tools-dev)$ pytest
+    $ cd moad_tools/
+    $ pixi run pytest
 
 to run the test suite.
 The output looks something like:
@@ -435,11 +434,11 @@ The output looks something like:
 .. code-block:: text
 
     ================================ test session starts ================================
-    platform linux -- Python 3.13.1, pytest-8.3.4, pluggy-1.5.0
-    Using --randomly-seed=812651130
+    platform linux -- Python 3.14.4, pytest-9.0.3, pluggy-1.6.0
+    Using --randomly-seed=3958680343
     rootdir: /media/doug/warehouse/MOAD/moad_tools
     configfile: pyproject.toml
-    plugins: cov-6.0.0, randomly-3.16.0, anyio-4.7.0
+    plugins: randomly-3.15.0, cov-7.1.0
     collected 96 items
 
     tests/midoss/test_hdf5_to_netcdf4.py ss                                         [  2%]
@@ -458,8 +457,8 @@ and `pytest-cov`_ tools with the command:
 
 .. code-block:: bash
 
-    (moad-tools-dev)$ cd moad_tools/
-    (moad-tools-dev)$ pytest --cov=./
+    $ cd moad_tools/
+    $ pixi run pytest-cov
 
 The test coverage report will be displayed below the test suite run output.
 
@@ -468,7 +467,7 @@ you can use
 
 .. code-block:: bash
 
-    (moad-tools-dev)$ pytest --cov=./ --cov-report html
+        $ pixi run pytest-cov-html
 
 to produce an HTML report that you can view in your browser by opening
 :file:`moad_tools/htmlcov/index.html`.
