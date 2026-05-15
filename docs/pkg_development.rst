@@ -80,7 +80,7 @@ Python Versions
     :target: https://docs.python.org/3/
     :alt: Python Version from PEP 621 TOML
 
-The :py:obj:`moad_tools` package is developed using `Python`_ 3.13.
+The :py:obj:`moad_tools` package is developed using `Python`_ 3.14.
 It is tested for Python versions >=3.12.
 
 .. _Python: https://www.python.org/
@@ -426,7 +426,7 @@ Use:
 .. code-block:: bash
 
     $ cd moad_tools/
-    $ pixi run pytest
+    $ pixi run -e test pytest
 
 to run the test suite.
 The output looks something like:
@@ -458,7 +458,7 @@ and `pytest-cov`_ tools with the command:
 .. code-block:: bash
 
     $ cd moad_tools/
-    $ pixi run pytest-cov
+    $ pixi run -e test pytest-cov
 
 The test coverage report will be displayed below the test suite run output.
 
@@ -467,7 +467,7 @@ you can use
 
 .. code-block:: bash
 
-        $ pixi run pytest-cov-html
+        $ pixi run -e test pytest-cov-html
 
 to produce an HTML report that you can view in your browser by opening
 :file:`moad_tools/htmlcov/index.html`.
