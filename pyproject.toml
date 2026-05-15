@@ -95,6 +95,9 @@ test = { features = ["test"], solve-group = "default" }
 test-py312 = ["py312", "test"]
 test-py313 = ["py313", "test"]
 test-py314 = ["py314", "test"]
+test-py312-no-midoss = { features = ["test-py312-no-midoss"] }
+test-py313-no-midoss = { features = ["test-py313-no-midoss"] }
+test-py314-no-midoss = { features = ["test-py314-no-midoss"] }
 
 [tool.pixi.tasks]
 
@@ -133,3 +136,18 @@ python = "3.13.*"
 
 [tool.pixi.feature.py314.dependencies]
 python = "3.14.*"
+
+[tool.pixi.feature.test-py312-no-midoss.dependencies]
+python = "3.12.*"
+pytest = ">=9.0.3,<10"
+
+[tool.pixi.feature.test-py313-no-midoss.dependencies]
+python = "3.13.*"
+pytest = ">=9.0.3,<10"
+
+[tool.pixi.feature.test-py314-no-midoss.dependencies]
+python = "3.14.*"
+pytest = ">=9.0.3,<10"
+
+[tool.pixi.feature.test-py314-no-midoss.tasks]
+pytest-no-midoss = "pytest"
