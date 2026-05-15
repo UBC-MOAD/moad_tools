@@ -81,7 +81,7 @@ Python Versions
     :alt: Python Version from PEP 621 TOML
 
 The :py:obj:`moad_tools` package is developed using `Python`_ 3.13.
-It is tested for Python versions >=3.11.
+It is tested for Python versions >=3.12.
 
 .. _Python: https://www.python.org/
 

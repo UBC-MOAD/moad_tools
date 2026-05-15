@@ -28,7 +28,7 @@ description = """\
     A collection of Python modules that facilitate code reuse for the UBC EOAS MOAD Group.\
     """
 readme = "README.rst"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 license = "Apache-2.0"
 license-files = [ "LICENSE" ]
 authors = [
