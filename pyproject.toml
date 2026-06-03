@@ -90,6 +90,7 @@ moad_tools = { path = ".", editable = true }
 
 [tool.pixi.environments]
 default = { solve-group = "default" }
+docs = { features = ["docs"], solve-group = "default" }
 midoss = { features = ["midoss"], solve-group = "default" }
 test = { features = ["test"], solve-group = "default" }
 test-py312 = ["py312", "test"]
@@ -151,3 +152,19 @@ pytest = ">=9.0.3,<10"
 
 [tool.pixi.feature.test-py314-no-midoss.tasks]
 pytest-no-midoss = "pytest"
+
+[tool.pixi.feature.docs.dependencies]
+docutils = "0.22.4.*"
+sphinx = "9.1.0.*"
+sphinx-notfound-page = "1.1.0.*"
+commonmark = "0.9.1.*"
+recommonmark = "0.7.1.*"
+mock = "5.2.0.*"
+pillow = "12.2.0.*"
+
+[tool.pixi.feature.docs.tasks]
+docs = { cmd = "make clean html", cwd = "docs/" }
+linkcheck = { cmd = "make clean linkcheck", cwd = "docs/" }
+
+[dependency-groups]
+docs = ["sphinx-rtd-theme==3.1.0"]

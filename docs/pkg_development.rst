@@ -33,7 +33,7 @@
 |                            |     :target: https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:CodeQL                                                                                                             |
 |                            |     :alt: CodeQL analysis                                                                                                                                                                     |
 +----------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| **Documentation**          | .. image:: https://readthedocs.org/projects/ubc-moad-tools/badge/?version=latest                                                                                                              |
+| **Documentation**          | .. image:: https://app.readthedocs.org/projects/ubc-moad-tools/badge/?version=latest                                                                                                          |
 |                            |     :target: https://ubc-moad-tools.readthedocs.io/en/latest/                                                                                                                                 |
 |                            |     :alt: Documentation Status                                                                                                                                                                |
 |                            | .. image:: https://github.com/UBC-MOAD/moad_tools/actions/workflows/sphinx-linkcheck.yaml/badge.svg                                                                                           |
@@ -180,7 +180,7 @@ and run :command:`pre-commit install`:
 Documentation
 =============
 
-.. image:: https://readthedocs.org/projects/ubc-moad-tools/badge/?version=latest
+.. image:: https://app.readthedocs.org/projects/ubc-moad-tools/badge/?version=latest
     :target: https://ubc-moad-tools.readthedocs.io/en/latest/
     :alt: Documentation Status
 
@@ -207,7 +207,7 @@ follow the instructions in the :ref:`moad_toolsDevelopmentEnvironment` section a
 In the development environment you can build the docs locally instead of having to push commits to GitHub to trigger a `build on readthedocs.org`_ and wait for it to complete.
 Below are instructions that explain how to:
 
-.. _build on readthedocs.org: https://readthedocs.org/projects/ubc-moad-tools/builds/
+.. _build on readthedocs.org: https://app.readthedocs.org/projects/ubc-moad-tools/builds/
 
 * build the docs with your changes,
   and preview them in Firefox
@@ -221,21 +221,21 @@ Building and Previewing the Documentation
 -----------------------------------------
 
 Building the documentation is driven by the :file:`docs/Makefile`.
-With your ``moad-tools-dev`` environment activated,
-use:
+Use:
 
 .. code-block:: bash
 
-    (moad-tools-dev)$ cd moad_tools/docs/
-    (moad-tools-dev) docs$ make clean html
+    $ cd moad_tools/
+    $ pixi run docs
 
 to do a clean build of the documentation.
 The output looks something like:
 
 .. code-block:: text
 
+    ✨ Pixi task (docs in docs): make clean html
     Removing everything under '_build'...
-    Running Sphinx v8.1.3
+    Running Sphinx v9.1.0
     loading translations [en]... done
     making output directory... done
     loading intersphinx inventory 'mohidcmd' from https://mohid-cmd.readthedocs.io/en/latest/objects.inv ...
@@ -258,8 +258,8 @@ The output looks something like:
     copying assets...
     copying static files...
     Writing evaluated template result to /media/doug/warehouse/MOAD/moad_tools/docs/_build/html/_static/language_data.js
-    Writing evaluated template result to /media/doug/warehouse/MOAD/moad_tools/docs/_build/html/_static/basic.css
     Writing evaluated template result to /media/doug/warehouse/MOAD/moad_tools/docs/_build/html/_static/documentation_options.js
+    Writing evaluated template result to /media/doug/warehouse/MOAD/moad_tools/docs/_build/html/_static/basic.css
     Writing evaluated template result to /media/doug/warehouse/MOAD/moad_tools/docs/_build/html/_static/js/versions.js
     copying static files: done
     copying extra files...
@@ -281,7 +281,7 @@ To preview in Firefox from the command-line you can do:
 
 .. code-block:: bash
 
-    (moad-tools-dev) docs$ firefox _build/html/index.html
+    $ firefox docs/_build/html/index.html
 
 If you have write access to the `repository`_ on GitHub,
 whenever you push changes to GitHub the documentation is automatically re-built and rendered at https://ubc-moad-tools.readthedocs.io/en/latest/.
@@ -297,20 +297,20 @@ Link Checking the Documentation
     :alt: Sphinx linkcheck
 
 Sphinx also provides a link checker utility which can be run to find broken or redirected links in the docs.
-With your ``moad-tools-dev`` environment activated,
-use:
+Use:
 
 .. code-block:: bash
 
-    (moad-tools-dev)$ cd moad_tools/docs/
-    (moad-tools-dev) docs$ make linkcheck
+    $ cd moad_tools/
+    $ pixi run linkcheck
 
 The output looks something like:
 
 .. code-block:: text
 
+    ✨ Pixi task (linkcheck in docs): make clean linkcheck
     Removing everything under '_build'...
-    Running Sphinx v8.1.3
+    Running Sphinx v9.1.0
     loading translations [en]... done
     making output directory... done
     loading intersphinx inventory 'mohidcmd' from https://mohid-cmd.readthedocs.io/en/latest/objects.inv ...
@@ -337,71 +337,71 @@ The output looks something like:
     (      moad_tools: line  261) -ignored- https://github.com/MIDOSS/marine_transport_data
     (      moad_tools: line    4) -ignored- https://docs.google.com/drawings/d/10PM53-UnnILYCAPKU9MxiR-Y4OW0tIMhVzSjaHr-iSc/edit
     (      moad_tools: line    4) -ignored- https://docs.google.com/drawings/d/1-4gl2yNNWxqXK-IOr4KNZxO-awBC-bNrjRNrt86fykU/edit
-    (      moad_tools: line    3) ok        https://docs.python.org/3/library/exceptions.html#KeyError
-    (      moad_tools: line  261) ok        https://docs.python.org/3/library/datetime.html#datetime.datetime
-    (      moad_tools: line  261) ok        https://docs.python.org/3/library/functions.html#float
-    (      moad_tools: line   33) ok        https://docs.python.org/3/library/functions.html#int
-    (      moad_tools: line    1) ok        https://docs.google.com/document/d/14hAxrTFpKloy88zRYLL4TiqLwbn8s53MYQeCt6B3MJ4/edit
     ( pkg_development: line   23) ok        https://black.readthedocs.io/en/stable/
-    ( pkg_development: line  112) ok        https://docs.conda.io/en/latest/
-    ( pkg_development: line   23) ok        https://app.codecov.io/gh/UBC-MOAD/moad_tools
-    ( pkg_development: line  450) ok        https://coverage.readthedocs.io/en/latest/
-    ( pkg_development: line  112) ok        https://docs.conda.io/en/latest/miniconda.html
+    ( pkg_development: line  451) ok        https://coverage.readthedocs.io/en/latest/
     ( pkg_development: line   29) ok        https://codecov.io/gh/UBC-MOAD/moad_tools/branch/main/graph/badge.svg
-    ( pkg_development: line  499) ok        https://docs.github.com/en/actions
-    ( pkg_development: line  419) ok        https://docs.pytest.org/en/latest/
-    ( pkg_development: line   23) ok        https://docs.python.org/3.12/
+    ( pkg_development: line   23) ok        https://app.codecov.io/gh/UBC-MOAD/moad_tools
+    ( pkg_development: line   36) ok        https://app.readthedocs.org/projects/ubc-moad-tools/badge/?version=latest
+    ( pkg_development: line  112) ok        https://docs.conda.io/en/latest/
+    ( pkg_development: line  112) ok        https://docs.conda.io/en/latest/miniconda.html
+    ( pkg_development: line  500) ok        https://docs.github.com/en/actions
+    ( pkg_development: line   23) ok        https://docs.python.org/3/
+    (      moad_tools: line  261) ok        https://docs.python.org/3/library/datetime.html#datetime.datetime
+    ( pkg_development: line  418) ok        https://docs.pytest.org/en/latest/
+    (      moad_tools: line    3) ok        https://docs.python.org/3/library/exceptions.html#KeyError
+    (      moad_tools: line  261) ok        https://docs.python.org/3/library/functions.html#float
+    ( pkg_development: line  204) ok        https://app.readthedocs.org/projects/ubc-moad-tools/builds/
+    (      moad_tools: line   33) ok        https://docs.python.org/3/library/functions.html#int
     (      moad_tools: line  116) ok        https://docs.python.org/3/library/pathlib.html#pathlib.Path
     (      moad_tools: line  261) ok        https://docs.python.org/3/library/stdtypes.html#dict
     (      moad_tools: line    4) ok        https://docs.google.com/spreadsheets/d/1dlT0JydkFG43LorqgtHle5IN6caRYjf_3qLrUYqANDY/edit
-    (      moad_tools: line   24) ok        https://docs.python.org/3/library/stdtypes.html#str
+    (      moad_tools: line    1) ok        https://docs.google.com/document/d/14hAxrTFpKloy88zRYLL4TiqLwbn8s53MYQeCt6B3MJ4/edit
     (      moad_tools: line  261) ok        https://docs.python.org/3/library/stdtypes.html#list
-    ( pkg_development: line  514) ok        https://git-scm.com/
+    (      moad_tools: line   24) ok        https://docs.python.org/3/library/stdtypes.html#str
     (      moad_tools: line   67) ok        https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset
     (      moad_tools: line  261) ok        https://docs.python.org/3/library/stdtypes.html#tuple
-    (           index: line    6) ok        https://github.com/UBC-MOAD/docs/blob/main/CONTRIBUTORS.rst
-    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools
+    ( pkg_development: line  515) ok        https://git-scm.com/
     ( pkg_development: line   26) ok        https://github.com/UBC-MOAD/moad_tools/actions/workflows/pytest-with-coverage.yaml/badge.svg
-    ( pkg_development: line   39) ok        https://github.com/UBC-MOAD/moad_tools/actions/workflows/sphinx-linkcheck.yaml/badge.svg
     ( pkg_development: line   32) ok        https://github.com/UBC-MOAD/moad_tools/actions/workflows/codeql-analysis.yaml/badge.svg
-    ( pkg_development: line  486) ok        https://github.com/UBC-MOAD/moad_tools/actions
+    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools
+    ( pkg_development: line  487) ok        https://github.com/UBC-MOAD/moad_tools/actions
     ( pkg_development: line  293) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Asphinx-linkcheck
-    ( pkg_development: line  477) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Apytest-with-coverage
-    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:pytest-with-coverage
     ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:CodeQL
+    ( pkg_development: line  478) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Apytest-with-coverage
     ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/issues
-    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:sphinx-linkcheck
-    ( pkg_development: line  479) ok        https://github.com/UBC-MOAD/moad_tools/workflows/pytest-with-coverage/badge.svg
-    ( pkg_development: line   65) ok        https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg
-    ( pkg_development: line  295) ok        https://github.com/UBC-MOAD/moad_tools/workflows/sphinx-linkcheck/badge.svg
+    ( pkg_development: line  480) ok        https://github.com/UBC-MOAD/moad_tools/workflows/pytest-with-coverage/badge.svg
+    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:pytest-with-coverage
     ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/releases
+    ( pkg_development: line   65) ok        https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg
+    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:sphinx-linkcheck
     ( pkg_development: line   62) ok        https://img.shields.io/badge/code%20style-black-000000.svg
+    ( pkg_development: line   59) ok        https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
+    ( pkg_development: line  295) ok        https://github.com/UBC-MOAD/moad_tools/workflows/sphinx-linkcheck/badge.svg
     ( pkg_development: line   56) ok        https://img.shields.io/badge/version%20control-git-blue.svg?logo=github
     ( pkg_development: line   53) ok        https://img.shields.io/badge/license-Apache%202-cb2533.svg
-    ( pkg_development: line   49) ok        https://img.shields.io/github/issues/UBC-MOAD/moad_tools?logo=github
-    ( pkg_development: line   59) ok        https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
     ( pkg_development: line   43) ok        https://img.shields.io/github/v/release/UBC-MOAD/moad_tools?logo=github
     ( pkg_development: line   46) ok        https://img.shields.io/python/required-version-toml?tomlFilePath=https://raw.githubusercontent.com/UBC-MOAD/moad_tools/main/pyproject.toml&logo=Python&logoColor=gold&label=Python
+    ( pkg_development: line   49) ok        https://img.shields.io/github/issues/UBC-MOAD/moad_tools?logo=github
     (      moad_tools: line  161) ok        https://mohid-cmd.readthedocs.io/en/latest/
-    ( pkg_development: line  486) ok        https://github.com/UBC-MOAD/moad_tools/commits/main
     (      moad_tools: line   67) ok        https://numpy.org/doc/1.18/reference/generated/numpy.ndarray.html#numpy.ndarray
-    ( pkg_development: line   23) ok        https://github.com/pypa/hatch
     (      moad_tools: line  161) ok        https://mohid-cmd.readthedocs.io/en/latest/monte-carlo.html#monte-carlo-sub-command
     (      moad_tools: line  261) ok        https://numpy.org/doc/1.18/reference/random/generator.html#numpy.random.Generator
-    (      moad_tools: line    5) ok        https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame
     ( pkg_development: line  128) ok        https://pip.pypa.io/en/stable/topics/local-project-installs/#editable-installs
-    ( pkg_development: line  450) ok        https://pytest-cov.readthedocs.io/en/latest/
-    ( pkg_development: line  154) ok        https://pre-commit.com/
-    ( pkg_development: line   23) ok        https://pre-commit.com
+    (      moad_tools: line    5) ok        https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame
+    ( pkg_development: line   23) ok        https://github.com/pypa/hatch
+    ( pkg_development: line  451) ok        https://pytest-cov.readthedocs.io/en/latest/
     (      moad_tools: line   67) ok        https://rasterio.readthedocs.io/en/latest/api/rasterio.io.html#rasterio.io.DatasetReader
-    (           index: line    9) ok        https://www.apache.org/licenses/LICENSE-2.0
-    ( pkg_development: line   36) ok        https://readthedocs.org/projects/ubc-moad-tools/badge/?version=latest
-    (      moad_tools: line    1) ok        https://www.ndbc.noaa.gov/data/realtime2/
     ( pkg_development: line   23) ok        https://ubc-moad-tools.readthedocs.io/en/latest/
-    ( pkg_development: line  204) ok        https://readthedocs.org/projects/ubc-moad-tools/builds/
+    ( pkg_development: line   23) ok        https://pre-commit.com
+    ( pkg_development: line  154) ok        https://pre-commit.com/
+    (           index: line    9) ok        https://www.apache.org/licenses/LICENSE-2.0
     ( pkg_development: line  187) ok        https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
     ( pkg_development: line  187) ok        https://www.sphinx-doc.org/en/master/
+    (      moad_tools: line    1) ok        https://www.ndbc.noaa.gov/data/realtime2/
+    ( pkg_development: line  487) ok        https://github.com/UBC-MOAD/moad_tools/commits/main
     ( pkg_development: line   83) ok        https://www.python.org/
+    ( pkg_development: line   39) ok        https://github.com/UBC-MOAD/moad_tools/actions/workflows/sphinx-linkcheck.yaml/badge.svg
+    (           index: line    6) ok        https://github.com/UBC-MOAD/docs/blob/main/CONTRIBUTORS.rst
     build succeeded.
 
     Look for any errors in the above output or in _build/linkcheck/output.txt
