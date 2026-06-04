@@ -35,7 +35,6 @@ authors = [
     { name = "Doug Latornell", email= "dlatornell@eoas.ubc.ca" }
 ]
 dependencies = [
-    # see envs/environment-dev.yaml for conda environment dev installation
     # see envs/requirements.txt for package versions used during recent development
     "arrow",
     "click",
