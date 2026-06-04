@@ -13916,7 +13916,7 @@ packages:
 - pypi: ./
   name: moad-tools
   version: 25.2.dev0
-  sha256: b4fb35296f3ad2edc8f05c52773cea44df74c6924192b5676ffbbc17fad8f21c
+  sha256: c8ed0237f139ab4e367043d3368b346df2cbd3299a20756d54474d5acd7f729b
   requires_dist:
   - arrow
   - click

@@ -40,7 +40,7 @@ try:
     import shapely.geometry
 except ImportError:
     msg = (
-        "Please create an environment with `conda env create -f envs/environment-midoss.yaml` "
+        "Please run your code in the `midoss` environment with `pixi run -e midoss ...` "
         "to use the random_oil_spills module or its command-line tool"
     )
     if sys.argv:

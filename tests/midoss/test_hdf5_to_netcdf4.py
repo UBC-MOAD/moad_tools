@@ -45,7 +45,7 @@ class TestNoTablesPackage:
         monkeypatch.setattr(sys, "argv", [])
 
         msg = (
-            "Please create an environment with `conda env create -f envs/environment-midoss.yaml` "
+            "Please run your code in the `midoss` environment with `pixi run -e midoss ...` "
             "to use the hdf5_to_netcdf4 module or its command-line tool"
         )
         with pytest.raises(ModuleNotFoundError, match=msg):
@@ -58,7 +58,7 @@ class TestNoTablesPackage:
         monkeypatch.setattr(sys, "argv", shlex.split("hdf5-to-netcdf4 foo.hdf5 foo.nc"))
 
         msg = (
-            "Please create an environment with `conda env create -f envs/environment-midoss.yaml` "
+            "Please run your code in the `midoss` environment with `pixi run -e midoss ...` "
             "to use the hdf5_to_netcdf4 module or its command-line tool\n"
         )
         with pytest.raises(SystemExit) as exc:

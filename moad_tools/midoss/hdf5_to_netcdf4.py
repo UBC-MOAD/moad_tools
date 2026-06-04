@@ -36,7 +36,7 @@ try:
     import tables
 except ImportError:
     msg = (
-        "Please create an environment with `conda env create -f envs/environment-midoss.yaml` "
+        "Please run your code in the `midoss` environment with `pixi run -e midoss ...` "
         "to use the hdf5_to_netcdf4 module or its command-line tool"
     )
     if sys.argv:
