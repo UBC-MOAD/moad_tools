@@ -52,13 +52,14 @@
 
 .. note::
     Modules in the :py:mod:`moad_tools.midoss` namespace require the installation of some
-    packages that are not included the the ``moad-tools`` environment.
-    To use any of the modules below or their command-line tools,
-    please create and activate a ``moad-tools-midoss`` environment with:
+    packages that are not included the the ``default`` environment.
+    To use any of the modules below,
+    please use the ``midoss`` environment.
+    To run their command-line tools,
+    please use :command:`pixi run -e midoss ...`.
+    Example:
 
-        ``conda env create -f envs/environment-midoss.yaml``
-
-        ``conda activate moad-tools-midoss``
+        ``pixi run -e midoss random-oil-spills --help``
 
 
 .. _geotiff_watermaskModule:
@@ -85,7 +86,7 @@ Information about the :command:`geotiff-watermask` command-line arguments and op
 
 .. code-block:: bash
 
-    geotiff-watermask --help
+    pixi run -e midoss geotiff-watermask --help
 
 .. code-block:: text
 
@@ -133,7 +134,7 @@ Information about the :command:`hdf5-to-netcdf4` command-line arguments and opti
 
 .. code-block:: bash
 
-    hdf5-to-netcdf4 --help
+    pixi run -e midoss hdf5-to-netcdf4 --help
 
 .. code-block:: text
 
@@ -167,7 +168,7 @@ Information about the :command:`random-oil-spills` command-line arguments and op
 
 .. code-block:: bash
 
-    random-oil-spills --help
+    pixi run -e midoss random-oil-spills --help
 
 .. code-block:: text
 
