@@ -51,7 +51,7 @@ httpx2==2.3.0
 hyperframe==6.1.0
 hyperlink==21.0.0
 identify==2.6.19
-idna==3.13
+idna==3.15
 imagesize==2.0.0
 importlib_metadata==8.8.0
 importlib_resources==7.1.0
