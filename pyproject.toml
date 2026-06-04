@@ -89,6 +89,7 @@ moad_tools = { path = ".", editable = true }
 
 [tool.pixi.environments]
 default = { solve-group = "default" }
+dev = { features = ["dev"], solve-group = "default" }
 docs = { features = ["docs"], solve-group = "default" }
 midoss = { features = ["midoss"], solve-group = "default" }
 test = { features = ["test"], solve-group = "default" }
@@ -165,5 +166,31 @@ pillow = "12.2.0.*"
 docs = { cmd = "make clean html", cwd = "docs/" }
 linkcheck = { cmd = "make clean linkcheck", cwd = "docs/" }
 
+[tool.pixi.feature.dev.dependencies]
+# For coding style, repo QA, and pkg management
+black = ">=26.5.1,<27"
+hatch = ">=1.17.0,<2"
+pip = ">=26.1.2,<27"
+pre-commit = ">=4.6.0,<5"
+# For unit tests
+pytest = ">=9.0.3,<10"
+pytest-cov = ">=7.1.0,<8"
+pytest-randomly = ">=3.15.0,<4"
+tomli = ">=2.4.1,<3"
+# For documentation
+docutils = "0.22.4.*"
+sphinx = "9.1.0.*"
+sphinx-notfound-page = "1.1.0.*"
+commonmark = "0.9.1.*"
+recommonmark = "0.7.1.*"
+mock = "5.2.0.*"
+pillow = "12.2.0.*"
+# midoss namespace dependencies
+geopandas = ">=1.1.3,<2"
+pytables = ">=3.11.1,<4"
+rasterio = ">=1.5.0,<2"
+shapely = ">=2.1.2,<3"
+
 [dependency-groups]
 docs = ["sphinx-rtd-theme==3.1.0"]
+dev = ["sphinx-rtd-theme==3.1.0"]
