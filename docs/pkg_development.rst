@@ -33,7 +33,7 @@
 |                            |     :target: https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:CodeQL                                                                                                             |
 |                            |     :alt: CodeQL analysis                                                                                                                                                                     |
 +----------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| **Documentation**          | .. image:: https://readthedocs.org/projects/ubc-moad-tools/badge/?version=latest                                                                                                              |
+| **Documentation**          | .. image:: https://app.readthedocs.org/projects/ubc-moad-tools/badge/?version=latest                                                                                                          |
 |                            |     :target: https://ubc-moad-tools.readthedocs.io/en/latest/                                                                                                                                 |
 |                            |     :alt: Documentation Status                                                                                                                                                                |
 |                            | .. image:: https://github.com/UBC-MOAD/moad_tools/actions/workflows/sphinx-linkcheck.yaml/badge.svg                                                                                           |
@@ -56,6 +56,9 @@
 |                            | .. image:: https://img.shields.io/badge/version%20control-git-blue.svg?logo=github                                                                                                            |
 |                            |     :target: https://github.com/UBC-MOAD/moad_tools                                                                                                                                           |
 |                            |     :alt: Git on GitHub                                                                                                                                                                       |
+|                            | .. image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json                                                                    |
+|                            |     :target: https://pixi.prefix.dev/latest/                                                                                                                                                  |
+|                            |     :alt: Pixi                                                                                                                                                                                |
 |                            | .. image:: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white                                                                                       |
 |                            |     :target: https://pre-commit.com                                                                                                                                                           |
 |                            |     :alt: pre-commit                                                                                                                                                                          |
@@ -80,8 +83,8 @@ Python Versions
     :target: https://docs.python.org/3/
     :alt: Python Version from PEP 621 TOML
 
-The :py:obj:`moad_tools` package is developed using `Python`_ 3.13.
-It is tested for Python versions >=3.11.
+The :py:obj:`moad_tools` package is developed using `Python`_ 3.14.
+It is tested for Python versions >=3.12.
 
 .. _Python: https://www.python.org/
 
@@ -109,26 +112,52 @@ Clone the code and documentation `repository`_ from GitHub with:
 Development Environment
 =======================
 
-Setting up an isolated development environment using `Conda`_ is recommended.
-Assuming that you have `Miniconda3`_ installed,
-you can create and activate an environment called ``moad-tools-dev`` that will have
-all of the Python packages necessary for development,
-testing,
-and building the documentation with the commands below:
+.. image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json
+    :target: https://pixi.prefix.dev/latest/
+    :alt: Pixi
 
-.. _Conda: https://docs.conda.io/en/latest/
-.. _Miniconda3: https://docs.conda.io/en/latest/miniconda.html
+:py:obj:`moad_tools` uses Pixi_ for package and environment management.
+If you don't already have Pixi_ installed,
+please follow its `installation instructions`_ to do so.
 
-.. code-block:: bash
+.. _Pixi: https://pixi.prefix.dev/latest/
+.. _`installation instructions`: https://pixi.prefix.dev/latest/installation/
 
-    $ cd moad_tools
-    $ conda env create -f envs/environment-dev.yaml
-    $ conda activate moad-tools-dev
+Most commands are executed using :command:`pixi run` in the :file:`moad_tools/` directory
+(or a sub-directory).
+Dependencies will be downloaded and linked in to environments if you do :command:`pixi install`
+after you clone the repository,
+or when you use :command:`pixi run` for the first time.
 
-:py:obj:`moad_tools` is installed in `editable install mode`_ as part of the
-conda environment creation process.
-That means that the package is installed from the cloned repo via symlinks so that
-it will be automatically updated as the repo evolves.
+* The ``default`` environment has the packages installed that are required to import and use the modules
+  in the :py:obj:`moad_tools` namespace
+
+* The ``midoss`` environment has the packages installed that are required to import and use the modules
+  in the :py:obj:`moad_tools.midoss` namespace,
+  and to run the command-line interface tools in that namespace;
+  e.g. :command:`pixi run -e midoss random-oil-spills --help`
+
+* Other environments used by commands in the sections below have addition packages for running
+  the test suite,
+  building and link checking the documentation,
+  etc.
+
+* If you are using an integrated development environment like VSCode or PyCharm
+  where you need a Python interpreter to support coding assistance features,
+  run development tasks,
+  etc.,
+  use the interpreter in the ``dev`` environment.
+  You can get its full path with :command:`pixi run -e dev which python`
+
+To get detailed information about the environments,
+the packages installed in them,
+`Pixi`_ tasks that are defined for them,
+etc.,
+use :command:`pixi info`.
+
+:py:obj:`moad_tools` is installed in `editable install mode`_ in all of the environments that
+`Pixi`_ creates.
+That means that changes you make to the code are immediately reflected in the environments.
 
 .. _editable install mode: https://pip.pypa.io/en/stable/topics/local-project-installs/#editable-installs
 
@@ -165,8 +194,7 @@ and run :command:`pre-commit install`:
 .. code-block:: bash
 
     $ cd moad_tools
-    $ conda activate moad-tools-dev
-    (moad-tools-dev)$ pre-commit install
+    $ pixi run -e dev pre-commit install
 
 .. note::
     You only need to install the hooks once immediately after you make a new clone of the
@@ -180,7 +208,7 @@ and run :command:`pre-commit install`:
 Documentation
 =============
 
-.. image:: https://readthedocs.org/projects/ubc-moad-tools/badge/?version=latest
+.. image:: https://app.readthedocs.org/projects/ubc-moad-tools/badge/?version=latest
     :target: https://ubc-moad-tools.readthedocs.io/en/latest/
     :alt: Documentation Status
 
@@ -207,7 +235,7 @@ follow the instructions in the :ref:`moad_toolsDevelopmentEnvironment` section a
 In the development environment you can build the docs locally instead of having to push commits to GitHub to trigger a `build on readthedocs.org`_ and wait for it to complete.
 Below are instructions that explain how to:
 
-.. _build on readthedocs.org: https://readthedocs.org/projects/ubc-moad-tools/builds/
+.. _build on readthedocs.org: https://app.readthedocs.org/projects/ubc-moad-tools/builds/
 
 * build the docs with your changes,
   and preview them in Firefox
@@ -221,21 +249,21 @@ Building and Previewing the Documentation
 -----------------------------------------
 
 Building the documentation is driven by the :file:`docs/Makefile`.
-With your ``moad-tools-dev`` environment activated,
-use:
+Use:
 
 .. code-block:: bash
 
-    (moad-tools-dev)$ cd moad_tools/docs/
-    (moad-tools-dev) docs$ make clean html
+    $ cd moad_tools/
+    $ pixi run docs
 
 to do a clean build of the documentation.
 The output looks something like:
 
 .. code-block:: text
 
+    ✨ Pixi task (docs in docs): make clean html
     Removing everything under '_build'...
-    Running Sphinx v8.1.3
+    Running Sphinx v9.1.0
     loading translations [en]... done
     making output directory... done
     loading intersphinx inventory 'mohidcmd' from https://mohid-cmd.readthedocs.io/en/latest/objects.inv ...
@@ -258,8 +286,8 @@ The output looks something like:
     copying assets...
     copying static files...
     Writing evaluated template result to /media/doug/warehouse/MOAD/moad_tools/docs/_build/html/_static/language_data.js
-    Writing evaluated template result to /media/doug/warehouse/MOAD/moad_tools/docs/_build/html/_static/basic.css
     Writing evaluated template result to /media/doug/warehouse/MOAD/moad_tools/docs/_build/html/_static/documentation_options.js
+    Writing evaluated template result to /media/doug/warehouse/MOAD/moad_tools/docs/_build/html/_static/basic.css
     Writing evaluated template result to /media/doug/warehouse/MOAD/moad_tools/docs/_build/html/_static/js/versions.js
     copying static files: done
     copying extra files...
@@ -281,7 +309,7 @@ To preview in Firefox from the command-line you can do:
 
 .. code-block:: bash
 
-    (moad-tools-dev) docs$ firefox _build/html/index.html
+    $ firefox docs/_build/html/index.html
 
 If you have write access to the `repository`_ on GitHub,
 whenever you push changes to GitHub the documentation is automatically re-built and rendered at https://ubc-moad-tools.readthedocs.io/en/latest/.
@@ -297,20 +325,20 @@ Link Checking the Documentation
     :alt: Sphinx linkcheck
 
 Sphinx also provides a link checker utility which can be run to find broken or redirected links in the docs.
-With your ``moad-tools-dev`` environment activated,
-use:
+Use:
 
 .. code-block:: bash
 
-    (moad-tools-dev)$ cd moad_tools/docs/
-    (moad-tools-dev) docs$ make linkcheck
+    $ cd moad_tools/
+    $ pixi run linkcheck
 
 The output looks something like:
 
 .. code-block:: text
 
+    ✨ Pixi task (linkcheck in docs): make clean linkcheck
     Removing everything under '_build'...
-    Running Sphinx v8.1.3
+    Running Sphinx v9.1.0
     loading translations [en]... done
     making output directory... done
     loading intersphinx inventory 'mohidcmd' from https://mohid-cmd.readthedocs.io/en/latest/objects.inv ...
@@ -337,71 +365,71 @@ The output looks something like:
     (      moad_tools: line  261) -ignored- https://github.com/MIDOSS/marine_transport_data
     (      moad_tools: line    4) -ignored- https://docs.google.com/drawings/d/10PM53-UnnILYCAPKU9MxiR-Y4OW0tIMhVzSjaHr-iSc/edit
     (      moad_tools: line    4) -ignored- https://docs.google.com/drawings/d/1-4gl2yNNWxqXK-IOr4KNZxO-awBC-bNrjRNrt86fykU/edit
-    (      moad_tools: line    3) ok        https://docs.python.org/3/library/exceptions.html#KeyError
-    (      moad_tools: line  261) ok        https://docs.python.org/3/library/datetime.html#datetime.datetime
-    (      moad_tools: line  261) ok        https://docs.python.org/3/library/functions.html#float
-    (      moad_tools: line   33) ok        https://docs.python.org/3/library/functions.html#int
-    (      moad_tools: line    1) ok        https://docs.google.com/document/d/14hAxrTFpKloy88zRYLL4TiqLwbn8s53MYQeCt6B3MJ4/edit
     ( pkg_development: line   23) ok        https://black.readthedocs.io/en/stable/
-    ( pkg_development: line  112) ok        https://docs.conda.io/en/latest/
-    ( pkg_development: line   23) ok        https://app.codecov.io/gh/UBC-MOAD/moad_tools
-    ( pkg_development: line  450) ok        https://coverage.readthedocs.io/en/latest/
-    ( pkg_development: line  112) ok        https://docs.conda.io/en/latest/miniconda.html
+    ( pkg_development: line  451) ok        https://coverage.readthedocs.io/en/latest/
     ( pkg_development: line   29) ok        https://codecov.io/gh/UBC-MOAD/moad_tools/branch/main/graph/badge.svg
-    ( pkg_development: line  499) ok        https://docs.github.com/en/actions
-    ( pkg_development: line  419) ok        https://docs.pytest.org/en/latest/
-    ( pkg_development: line   23) ok        https://docs.python.org/3.12/
+    ( pkg_development: line   23) ok        https://app.codecov.io/gh/UBC-MOAD/moad_tools
+    ( pkg_development: line   36) ok        https://app.readthedocs.org/projects/ubc-moad-tools/badge/?version=latest
+    ( pkg_development: line  112) ok        https://docs.conda.io/en/latest/
+    ( pkg_development: line  112) ok        https://docs.conda.io/en/latest/miniconda.html
+    ( pkg_development: line  500) ok        https://docs.github.com/en/actions
+    ( pkg_development: line   23) ok        https://docs.python.org/3/
+    (      moad_tools: line  261) ok        https://docs.python.org/3/library/datetime.html#datetime.datetime
+    ( pkg_development: line  418) ok        https://docs.pytest.org/en/latest/
+    (      moad_tools: line    3) ok        https://docs.python.org/3/library/exceptions.html#KeyError
+    (      moad_tools: line  261) ok        https://docs.python.org/3/library/functions.html#float
+    ( pkg_development: line  204) ok        https://app.readthedocs.org/projects/ubc-moad-tools/builds/
+    (      moad_tools: line   33) ok        https://docs.python.org/3/library/functions.html#int
     (      moad_tools: line  116) ok        https://docs.python.org/3/library/pathlib.html#pathlib.Path
     (      moad_tools: line  261) ok        https://docs.python.org/3/library/stdtypes.html#dict
     (      moad_tools: line    4) ok        https://docs.google.com/spreadsheets/d/1dlT0JydkFG43LorqgtHle5IN6caRYjf_3qLrUYqANDY/edit
-    (      moad_tools: line   24) ok        https://docs.python.org/3/library/stdtypes.html#str
+    (      moad_tools: line    1) ok        https://docs.google.com/document/d/14hAxrTFpKloy88zRYLL4TiqLwbn8s53MYQeCt6B3MJ4/edit
     (      moad_tools: line  261) ok        https://docs.python.org/3/library/stdtypes.html#list
-    ( pkg_development: line  514) ok        https://git-scm.com/
+    (      moad_tools: line   24) ok        https://docs.python.org/3/library/stdtypes.html#str
     (      moad_tools: line   67) ok        https://docs.xarray.dev/en/stable/generated/xarray.Dataset.html#xarray.Dataset
     (      moad_tools: line  261) ok        https://docs.python.org/3/library/stdtypes.html#tuple
-    (           index: line    6) ok        https://github.com/UBC-MOAD/docs/blob/main/CONTRIBUTORS.rst
-    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools
+    ( pkg_development: line  515) ok        https://git-scm.com/
     ( pkg_development: line   26) ok        https://github.com/UBC-MOAD/moad_tools/actions/workflows/pytest-with-coverage.yaml/badge.svg
-    ( pkg_development: line   39) ok        https://github.com/UBC-MOAD/moad_tools/actions/workflows/sphinx-linkcheck.yaml/badge.svg
     ( pkg_development: line   32) ok        https://github.com/UBC-MOAD/moad_tools/actions/workflows/codeql-analysis.yaml/badge.svg
-    ( pkg_development: line  486) ok        https://github.com/UBC-MOAD/moad_tools/actions
+    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools
+    ( pkg_development: line  487) ok        https://github.com/UBC-MOAD/moad_tools/actions
     ( pkg_development: line  293) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Asphinx-linkcheck
-    ( pkg_development: line  477) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Apytest-with-coverage
-    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:pytest-with-coverage
     ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:CodeQL
+    ( pkg_development: line  478) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow%3Apytest-with-coverage
     ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/issues
-    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:sphinx-linkcheck
-    ( pkg_development: line  479) ok        https://github.com/UBC-MOAD/moad_tools/workflows/pytest-with-coverage/badge.svg
-    ( pkg_development: line   65) ok        https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg
-    ( pkg_development: line  295) ok        https://github.com/UBC-MOAD/moad_tools/workflows/sphinx-linkcheck/badge.svg
+    ( pkg_development: line  480) ok        https://github.com/UBC-MOAD/moad_tools/workflows/pytest-with-coverage/badge.svg
+    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:pytest-with-coverage
     ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/releases
+    ( pkg_development: line   65) ok        https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg
+    ( pkg_development: line   23) ok        https://github.com/UBC-MOAD/moad_tools/actions?query=workflow:sphinx-linkcheck
     ( pkg_development: line   62) ok        https://img.shields.io/badge/code%20style-black-000000.svg
+    ( pkg_development: line   59) ok        https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
+    ( pkg_development: line  295) ok        https://github.com/UBC-MOAD/moad_tools/workflows/sphinx-linkcheck/badge.svg
     ( pkg_development: line   56) ok        https://img.shields.io/badge/version%20control-git-blue.svg?logo=github
     ( pkg_development: line   53) ok        https://img.shields.io/badge/license-Apache%202-cb2533.svg
-    ( pkg_development: line   49) ok        https://img.shields.io/github/issues/UBC-MOAD/moad_tools?logo=github
-    ( pkg_development: line   59) ok        https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
     ( pkg_development: line   43) ok        https://img.shields.io/github/v/release/UBC-MOAD/moad_tools?logo=github
     ( pkg_development: line   46) ok        https://img.shields.io/python/required-version-toml?tomlFilePath=https://raw.githubusercontent.com/UBC-MOAD/moad_tools/main/pyproject.toml&logo=Python&logoColor=gold&label=Python
+    ( pkg_development: line   49) ok        https://img.shields.io/github/issues/UBC-MOAD/moad_tools?logo=github
     (      moad_tools: line  161) ok        https://mohid-cmd.readthedocs.io/en/latest/
-    ( pkg_development: line  486) ok        https://github.com/UBC-MOAD/moad_tools/commits/main
     (      moad_tools: line   67) ok        https://numpy.org/doc/1.18/reference/generated/numpy.ndarray.html#numpy.ndarray
-    ( pkg_development: line   23) ok        https://github.com/pypa/hatch
     (      moad_tools: line  161) ok        https://mohid-cmd.readthedocs.io/en/latest/monte-carlo.html#monte-carlo-sub-command
     (      moad_tools: line  261) ok        https://numpy.org/doc/1.18/reference/random/generator.html#numpy.random.Generator
-    (      moad_tools: line    5) ok        https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame
     ( pkg_development: line  128) ok        https://pip.pypa.io/en/stable/topics/local-project-installs/#editable-installs
-    ( pkg_development: line  450) ok        https://pytest-cov.readthedocs.io/en/latest/
-    ( pkg_development: line  154) ok        https://pre-commit.com/
-    ( pkg_development: line   23) ok        https://pre-commit.com
+    (      moad_tools: line    5) ok        https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame
+    ( pkg_development: line   23) ok        https://github.com/pypa/hatch
+    ( pkg_development: line  451) ok        https://pytest-cov.readthedocs.io/en/latest/
     (      moad_tools: line   67) ok        https://rasterio.readthedocs.io/en/latest/api/rasterio.io.html#rasterio.io.DatasetReader
-    (           index: line    9) ok        https://www.apache.org/licenses/LICENSE-2.0
-    ( pkg_development: line   36) ok        https://readthedocs.org/projects/ubc-moad-tools/badge/?version=latest
-    (      moad_tools: line    1) ok        https://www.ndbc.noaa.gov/data/realtime2/
     ( pkg_development: line   23) ok        https://ubc-moad-tools.readthedocs.io/en/latest/
-    ( pkg_development: line  204) ok        https://readthedocs.org/projects/ubc-moad-tools/builds/
+    ( pkg_development: line   23) ok        https://pre-commit.com
+    ( pkg_development: line  154) ok        https://pre-commit.com/
+    (           index: line    9) ok        https://www.apache.org/licenses/LICENSE-2.0
     ( pkg_development: line  187) ok        https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
     ( pkg_development: line  187) ok        https://www.sphinx-doc.org/en/master/
+    (      moad_tools: line    1) ok        https://www.ndbc.noaa.gov/data/realtime2/
+    ( pkg_development: line  487) ok        https://github.com/UBC-MOAD/moad_tools/commits/main
     ( pkg_development: line   83) ok        https://www.python.org/
+    ( pkg_development: line   39) ok        https://github.com/UBC-MOAD/moad_tools/actions/workflows/sphinx-linkcheck.yaml/badge.svg
+    (           index: line    6) ok        https://github.com/UBC-MOAD/docs/blob/main/CONTRIBUTORS.rst
     build succeeded.
 
     Look for any errors in the above output or in _build/linkcheck/output.txt
@@ -421,13 +449,12 @@ The `pytest`_ tool is used for test parametrization and as the test runner for t
 
 .. _pytest: https://docs.pytest.org/en/latest/
 
-With your ``moad-tools-dev`` development environment activated,
-use:
+Use:
 
 .. code-block:: bash
 
-    (moad-tools-dev)$ cd moad_tools/
-    (moad-tools-dev)$ pytest
+    $ cd moad_tools/
+    $ pixi run -e test pytest
 
 to run the test suite.
 The output looks something like:
@@ -435,11 +462,11 @@ The output looks something like:
 .. code-block:: text
 
     ================================ test session starts ================================
-    platform linux -- Python 3.13.1, pytest-8.3.4, pluggy-1.5.0
-    Using --randomly-seed=812651130
+    platform linux -- Python 3.14.4, pytest-9.0.3, pluggy-1.6.0
+    Using --randomly-seed=3958680343
     rootdir: /media/doug/warehouse/MOAD/moad_tools
     configfile: pyproject.toml
-    plugins: cov-6.0.0, randomly-3.16.0, anyio-4.7.0
+    plugins: randomly-3.15.0, cov-7.1.0
     collected 96 items
 
     tests/midoss/test_hdf5_to_netcdf4.py ss                                         [  2%]
@@ -458,8 +485,8 @@ and `pytest-cov`_ tools with the command:
 
 .. code-block:: bash
 
-    (moad-tools-dev)$ cd moad_tools/
-    (moad-tools-dev)$ pytest --cov=./
+    $ cd moad_tools/
+    $ pixi run -e test pytest-cov
 
 The test coverage report will be displayed below the test suite run output.
 
@@ -468,7 +495,7 @@ you can use
 
 .. code-block:: bash
 
-    (moad-tools-dev)$ pytest --cov=./ --cov-report html
+        $ pixi run -e test pytest-cov-html
 
 to produce an HTML report that you can view in your browser by opening
 :file:`moad_tools/htmlcov/index.html`.
@@ -567,26 +594,34 @@ completed.
 
 The release process steps are:
 
-#. Use :command:`hatch version release` to bump the version from ``.devn`` to the next release
+#. Use :command:`pixi run -e dev hatch version release` to bump the version from ``.devn`` to the next release
    version identifier;
-   e.g. ``23.1.dev0`` to ``23.1``
+   e.g. ``25.2.dev0`` to ``26.1``
+
+#. Use :command:`pixi update` to update the lock file to reflect the new version identifier
 
 #. Commit the version bump
 
 #. Create an annotated tag for the release with :guilabel:`Git -> New Tag...` in PyCharm
    or :command:`git tag -e -a vyy.n`;
-   :command:`git tag -e -a v23.1`
+   :command:`git tag -e -a v26.1`
 
 #. Push the version bump commit and tag to GitHub
 
 #. Use the GitHub web interface to create a release,
    editing the auto-generated release notes into sections:
 
-   * Features
-   * Bug Fixes
-   * Documentation
-   * Maintenance
-   * Dependency Updates
+   .. code-block:: markdown
+
+       ### Features
+
+       ### Bug Fixes
+
+       ### Documentation
+
+       ### Maintenance
+
+       ### Dependency Updates
 
 #. Use the GitHub :guilabel:`Issues -> Milestones` web interface to edit the release
    milestone:
@@ -599,10 +634,10 @@ The release process steps are:
 
    * Set the :guilabel:`Title` to the next release version,
      prepended with a ``v``;
-     e.g. ``v23.2``
+     e.g. ``v26.2``
    * Set the :guilabel:`Due date` to the end of the year of the next release
    * Set the :guilabel:`Description` to something like
-     ``v23.2 release - when it's ready :-)``
+     ``v26.2 release - when it's ready :-)``
    * Create the next release milestone
 
 #. Review the open issues,
@@ -611,8 +646,10 @@ The release process steps are:
 
 #. Close the milestone for the just released version.
 
-#. Use :command:`hatch version minor,dev` to bump the version for the next development cycle,
-   or use :command:`hatch version major,minor,dev` for a year rollover version bump
+#. Use :command:`pixi run -e dev hatch version minor,dev` to bump the version for the next development cycle,
+   or use :command:`pixi run -e dev hatch version major,minor,dev` for a year rollover version bump
+
+#. Use :command:`pixi update` to update the lock file to reflect the new version identifier
 
 #. Commit the version bump
 

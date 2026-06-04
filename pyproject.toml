@@ -28,16 +28,14 @@ description = """\
     A collection of Python modules that facilitate code reuse for the UBC EOAS MOAD Group.\
     """
 readme = "README.rst"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 license = "Apache-2.0"
-license-files = { paths = ["LICENSE"] }
+license-files = [ "LICENSE" ]
 authors = [
     { name = "Doug Latornell", email= "dlatornell@eoas.ubc.ca" }
 ]
 dependencies = [
-    # see envs/environment-dev.yaml for conda environment dev installation
-    # see envs/requirements.txt for package versions used during recent development
-    # see envs/environment-rtd.yaml for conda environment used for readthedocs build
+    # see requirements.txt for package versions used during recent development
     "arrow",
     "click",
     "matplotlib",
@@ -51,10 +49,10 @@ dependencies = [
 
 [project.optional-dependencies]
 midoss = [
-    "geopandas",
-    "tables",  # pkg name is pytables but pip sees it as tables
-    "rasterio",
-    "shapely",
+    "geopandas>=1.1.3,<2",
+    "tables>=3.11.1,<4",  # pkg name is pytables but pip sees it as tables
+    "rasterio>=1.5.0,<2",
+    "shapely>=2.1.2,<3",
 ]
 
 [project.urls]
@@ -72,10 +70,129 @@ random-oil-spills = "moad_tools.midoss.random_oil_spills:cli"
 [tool.coverage.run]
 branch = true
 source = [ "moad_tools", "tests"]
-
+omit = [ ".pixi/*", "src/*" ]
 
 [tool.hatch.build.targets.wheel]
 packages = ["moad_tools"]
 
 [tool.hatch.version]
 path = "moad_tools/__about__.py"
+
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64", "osx-arm64", "osx-64", "win-64"]
+
+[tool.pixi.pypi-dependencies]
+moad_tools = { path = ".", editable = true }
+
+[tool.pixi.environments]
+default = { solve-group = "default" }
+dev = { features = ["dev"], solve-group = "default" }
+docs = { features = ["docs"], solve-group = "default" }
+midoss = { features = ["midoss"], solve-group = "default" }
+test = { features = ["test"], solve-group = "default" }
+test-py312 = ["py312", "test"]
+test-py313 = ["py313", "test"]
+test-py314 = ["py314", "test"]
+test-py312-no-midoss = { features = ["test-py312-no-midoss"] }
+test-py313-no-midoss = { features = ["test-py313-no-midoss"] }
+test-py314-no-midoss = { features = ["test-py314-no-midoss"] }
+
+[tool.pixi.tasks]
+
+[tool.pixi.dependencies]
+arrow = ">=1.4.0,<2"
+click = ">=8.3.3,<9"
+matplotlib = ">=3.10.9,<4"
+netcdf4 = ">=1.7.4,<2"
+pandas = "<3.0.0"
+pixi-pycharm = ">=0.0.11,<0.0.12"
+python = "*"
+pyyaml = ">=6.0.3,<7"
+scipy = ">=1.17.1,<2"
+xarray = ">=2026.4.0,<2027"
+
+[tool.pixi.feature.test.dependencies]
+geopandas = ">=1.1.3,<2"
+pytables = ">=3.11.1,<4"
+pytest = ">=9.0.3,<10"
+pytest-cov = ">=7.1.0,<8"
+pytest-randomly = ">=3.15.0,<4"
+rasterio = ">=1.5.0,<2"
+shapely = ">=2.1.2,<3"
+tomli = ">=2.4.1,<3"
+
+[tool.pixi.feature.test.tasks]
+pytest = "pytest"
+pytest-cov = "pytest --cov=./"
+pytest-cov-html = "pytest --cov=./ --cov-report html"
+
+[tool.pixi.feature.py312.dependencies]
+python = "3.12.*"
+
+[tool.pixi.feature.py313.dependencies]
+python = "3.13.*"
+
+[tool.pixi.feature.py314.dependencies]
+python = "3.14.*"
+
+[tool.pixi.feature.test-py312-no-midoss.dependencies]
+python = "3.12.*"
+pytest = ">=9.0.3,<10"
+
+[tool.pixi.feature.test-py313-no-midoss.dependencies]
+python = "3.13.*"
+pytest = ">=9.0.3,<10"
+
+[tool.pixi.feature.test-py314-no-midoss.dependencies]
+python = "3.14.*"
+pytest = ">=9.0.3,<10"
+
+[tool.pixi.feature.test-py314-no-midoss.tasks]
+pytest-no-midoss = "pytest"
+
+[tool.pixi.feature.docs.dependencies]
+docutils = "0.22.4.*"
+sphinx = "9.1.0.*"
+sphinx-notfound-page = "1.1.0.*"
+commonmark = "0.9.1.*"
+recommonmark = "0.7.1.*"
+mock = "5.2.0.*"
+pillow = "12.2.0.*"
+
+[tool.pixi.feature.docs.tasks]
+docs = { cmd = "make clean html", cwd = "docs/" }
+linkcheck = { cmd = "make clean linkcheck", cwd = "docs/" }
+
+[tool.pixi.feature.dev.dependencies]
+# For coding style, repo QA, and pkg management
+black = ">=26.5.1,<27"
+hatch = ">=1.17.0,<2"
+pip = ">=26.1.2,<27"
+pre-commit = ">=4.6.0,<5"
+# For unit tests
+pytest = ">=9.0.3,<10"
+pytest-cov = ">=7.1.0,<8"
+pytest-randomly = ">=3.15.0,<4"
+tomli = ">=2.4.1,<3"
+# For documentation
+docutils = "0.22.4.*"
+sphinx = "9.1.0.*"
+sphinx-notfound-page = "1.1.0.*"
+commonmark = "0.9.1.*"
+recommonmark = "0.7.1.*"
+mock = "5.2.0.*"
+pillow = "12.2.0.*"
+# midoss namespace dependencies
+geopandas = ">=1.1.3,<2"
+pytables = ">=3.11.1,<4"
+rasterio = ">=1.5.0,<2"
+shapely = ">=2.1.2,<3"
+
+[tool.pixi.feature.dev.tasks]
+update-reqs = "python -m pip list --format=freeze >> requirements.txt"
+
+[dependency-groups]
+docs = ["sphinx-rtd-theme==3.1.0"]
+dev = ["sphinx-rtd-theme==3.1.0"]

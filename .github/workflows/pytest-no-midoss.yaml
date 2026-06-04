@@ -12,39 +12,29 @@ on:
   workflow_dispatch:
 
 jobs:
-  pytest-with-coverage:
+  pytest-no-midoss:
     permissions:
       contents: read
       pull-requests: write
+
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.11', '3.12', '3.13']
+        environment: [ 'test-py312-no-midoss', 'test-py313-no-midoss', 'test-py314-no-midoss' ]
+
     runs-on: 'ubuntu-latest'
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Get current date for downloads cache key
-        id: date
-        run: echo "date=$(date +%Y-%m-%d)" >> "${GITHUB_OUTPUT}"
-
-      - name: Set up Conda environment with Micromamba
-        uses: mamba-org/setup-micromamba@d7c9bd84e824b79d2af72a2d4196c7f4300d3476
+      - name: Set up Pixi
+        uses: prefix-dev/setup-pixi@1b2de7f3351f171c8b4dfeb558c639cb58ed4ec0
         with:
-           environment-file: envs/environment-test-no-midoss.yaml
-           environment-name: moad-tools-test-no-midoss
-           # environment caching does not play nicely with --editable installed packages
-           cache-environment: false
-           cache-downloads: true
-           # persist downloads cache for 1 day
-           cache-downloads-key: downloads-${{ steps.date.outputs.date }}-no-midoss
-           create-args: >-
-             python=${{ matrix.python-version }}
+          cache: true
+          environments: ${{ matrix.environment }}
 
-      - name: pytest package
-        shell: bash -l {0}
-        run: |
-          pytest
+      - name: Run pytest
+        run: pixi run -e ${{ matrix.environment }} pytest
 
       # Test coverage is not reported from this workflow because many tests are skipped.
