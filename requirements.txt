@@ -137,7 +137,7 @@ threadpoolctl==3.6.0
 tomli==2.4.1
 tomli_w==1.2.0
 tomlkit==0.15.0
-tornado==6.5.6
+tornado==6.5.7
 trove-classifiers==2026.6.1.19
 truststore==0.10.4
 typing_extensions==4.15.0
