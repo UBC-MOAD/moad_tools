@@ -102,7 +102,7 @@ Clone the code and documentation `repository`_ from GitHub with:
 
 .. _repository: https://github.com/UBC-MOAD/moad_tools
 
-.. code-block:: bash
+.. code-block:: console
 
     $ git clone git@github.com:UBC-MOAD/moad_tools.git
 
@@ -163,7 +163,7 @@ That means that changes you make to the code are immediately reflected in the en
 
 To deactivate the environment use:
 
-.. code-block:: bash
+.. code-block:: console
 
     (moad-tools-dev)$ conda deactivate
 
@@ -191,7 +191,7 @@ To install the `pre-commit` hooks in a newly cloned repo,
 activate the conda development environment,
 and run :command:`pre-commit install`:
 
-.. code-block:: bash
+.. code-block:: console
 
     $ cd moad_tools
     $ pixi run -e dev pre-commit install
@@ -251,7 +251,7 @@ Building and Previewing the Documentation
 Building the documentation is driven by the :file:`docs/Makefile`.
 Use:
 
-.. code-block:: bash
+.. code-block:: console
 
     $ cd moad_tools/
     $ pixi run docs
@@ -307,7 +307,7 @@ The HTML rendering of the docs ends up in :file:`docs/_build/html/`.
 You can open the :file:`index.html` file in that directory tree in your browser to preview the results of the build.
 To preview in Firefox from the command-line you can do:
 
-.. code-block:: bash
+.. code-block:: console
 
     $ firefox docs/_build/html/index.html
 
@@ -327,7 +327,7 @@ Link Checking the Documentation
 Sphinx also provides a link checker utility which can be run to find broken or redirected links in the docs.
 Use:
 
-.. code-block:: bash
+.. code-block:: console
 
     $ cd moad_tools/
     $ pixi run linkcheck
@@ -451,7 +451,7 @@ The `pytest`_ tool is used for test parametrization and as the test runner for t
 
 Use:
 
-.. code-block:: bash
+.. code-block:: console
 
     $ cd moad_tools/
     $ pixi run -e test pytest
@@ -483,7 +483,7 @@ and `pytest-cov`_ tools with the command:
 .. _coverage.py: https://coverage.readthedocs.io/en/latest/
 .. _pytest-cov: https://pytest-cov.readthedocs.io/en/latest/
 
-.. code-block:: bash
+.. code-block:: console
 
     $ cd moad_tools/
     $ pixi run -e test pytest-cov
@@ -493,7 +493,7 @@ The test coverage report will be displayed below the test suite run output.
 Alternatively,
 you can use
 
-.. code-block:: bash
+.. code-block:: console
 
         $ pixi run -e test pytest-cov-html
 

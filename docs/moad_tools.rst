@@ -84,9 +84,9 @@ used to generate oil spill parameters for Monte Carlo runs of MOHID.
 
 Information about the :command:`geotiff-watermask` command-line arguments and options is available via:
 
-.. code-block:: bash
+.. code-block:: console
 
-    pixi run -e midoss geotiff-watermask --help
+    $ pixi run -e midoss geotiff-watermask --help
 
 .. code-block:: text
 
@@ -132,9 +132,9 @@ file into a netCDF4 file.
 
 Information about the :command:`hdf5-to-netcdf4` command-line arguments and options is available via:
 
-.. code-block:: bash
+.. code-block:: console
 
-    pixi run -e midoss hdf5-to-netcdf4 --help
+    $ pixi run -e midoss hdf5-to-netcdf4 --help
 
 .. code-block:: text
 
@@ -166,9 +166,9 @@ Such a file is one of the items required to launch a collection of MOHID runs vi
 
 Information about the :command:`random-oil-spills` command-line arguments and options is available via:
 
-.. code-block:: bash
+.. code-block:: console
 
-    pixi run -e midoss random-oil-spills --help
+    $ pixi run -e midoss random-oil-spills --help
 
 .. code-block:: text
 
