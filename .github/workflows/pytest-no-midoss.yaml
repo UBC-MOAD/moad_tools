@@ -35,6 +35,6 @@ jobs:
           environments: ${{ matrix.environment }}
 
       - name: Run pytest
-        run: pixi run -e ${{ matrix.environment }} pytest
+        run: pixi run -e ${{ matrix.environment }} pytest-no-midoss
 
       # Test coverage is not reported from this workflow because many tests are skipped.
