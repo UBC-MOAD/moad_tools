@@ -89,6 +89,7 @@ Information about the :command:`geotiff-watermask` command-line arguments and op
     $ pixi run -e midoss geotiff-watermask --help
 
 .. code-block:: text
+    :class: no-copybutton
 
     Usage: geotiff-watermask [OPTIONS] GEOTIFF_FILE MESHMASK_FILE NUMPY_FILE
 
@@ -137,6 +138,7 @@ Information about the :command:`hdf5-to-netcdf4` command-line arguments and opti
     $ pixi run -e midoss hdf5-to-netcdf4 --help
 
 .. code-block:: text
+    :class: no-copybutton
 
     Usage: hdf5-to-netcdf4 [OPTIONS] HDF5_FILE NETCDF4_FILE
 
@@ -171,6 +173,7 @@ Information about the :command:`random-oil-spills` command-line arguments and op
     $ pixi run -e midoss random-oil-spills --help
 
 .. code-block:: text
+    :class: no-copybutton
 
     Usage: random-oil-spills [OPTIONS] N_SPILLS CONFIG_FILE CSV_FILE
 
