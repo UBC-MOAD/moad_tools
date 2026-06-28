@@ -69,7 +69,7 @@ markdown-it-py==4.2.0
 MarkupSafe==3.0.3
 matplotlib==3.10.9
 mdurl==0.1.2
-moad_tools==25.2.dev0
+moad_tools==26.2.dev0
 mock==5.2.0
 more-itertools==11.1.0
 munkres==1.1.4
@@ -123,6 +123,7 @@ six==1.17.0
 snowballstemmer==3.1.1
 snuggs==1.4.7
 Sphinx==9.1.0
+sphinx-copybutton==0.5.2
 sphinx-notfound-page==1.1.0
 sphinx_rtd_theme==3.1.0
 sphinxcontrib-applehelp==2.0.0

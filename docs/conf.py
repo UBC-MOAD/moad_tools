@@ -48,11 +48,20 @@ release = version
 # ones.
 extensions = [
     "notfound.extension",
+    "sphinx_copybutton",
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
     "sphinx.ext.mathjax",
     "sphinx.ext.viewcode",
 ]
+
+# -- Options for sphinx_copybutton extension ------------------------------
+
+copybutton_prompt_text = r">>> |\.\.\. |\$ |In \[\d*\]: | {2,5}\.\.\.: | {5,8}: "
+copybutton_prompt_is_regexp = True
+copybutton_line_continuation_character = "\\"
+# Add a `no-copybutton` class that can be used to suppress the copy button
+copybutton_selector = "div:not(.no-copybutton) > div.highlight > pre"
 
 intersphinx_mapping = {
     "mohidcmd": ("https://mohid-cmd.readthedocs.io/en/latest", None),
