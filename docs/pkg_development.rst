@@ -161,12 +161,6 @@ That means that changes you make to the code are immediately reflected in the en
 
 .. _editable install mode: https://pip.pypa.io/en/stable/topics/local-project-installs/#editable-installs
 
-To deactivate the environment use:
-
-.. code-block:: console
-
-    (moad-tools-dev)$ conda deactivate
-
 
 .. _moad_toolsCodingStyle:
 
