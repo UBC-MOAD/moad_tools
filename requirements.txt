@@ -84,7 +84,7 @@ packaging==26.2
 pandas==2.3.3
 pathspec==1.1.1
 pexpect==4.9.0
-pillow==12.2.0
+pillow==12.3.0
 pip==26.1.2
 platformdirs==4.10.0
 pluggy==1.6.0
