@@ -88,7 +88,6 @@ moad_tools = { path = ".", editable = true }
 
 [tool.pixi.environments]
 default = { solve-group = "default" }
-dev = { features = ["dev"], solve-group = "default" }
 docs = { features = ["docs"], solve-group = "default" }
 midoss = { features = ["midoss"], solve-group = "default" }
 test = { features = ["test"], solve-group = "default" }
@@ -98,6 +97,13 @@ test-py314 = ["py314", "test"]
 test-py312-no-midoss = { features = ["test-py312-no-midoss"] }
 test-py313-no-midoss = { features = ["test-py313-no-midoss"] }
 test-py314-no-midoss = { features = ["test-py314-no-midoss"] }
+
+[tool.pixi.environments.dev]
+features = ["dev"]
+solve-group = "default"
+
+[tool.pixi.environments.dev.dependencies]
+python = "3.14.*"
 
 [tool.pixi.tasks]
 
