@@ -35,7 +35,6 @@ authors = [
     { name = "Doug Latornell", email= "dlatornell@eoas.ubc.ca" }
 ]
 dependencies = [
-    # see requirements.txt for package versions used during recent development
     "arrow",
     "click",
     "matplotlib",
@@ -203,9 +202,6 @@ pytables = ">=3.11.1,<4"
 rasterio = ">=1.5.0,<2"
 shapely = ">=2.1.2,<3"
 sphinx-copybutton = ">=0.5.2,<0.6"
-
-[tool.pixi.feature.dev.tasks]
-update-reqs = "python -m pip list --format=freeze >> requirements.txt"
 
 [dependency-groups]
 docs = ["sphinx-rtd-theme==3.1.0"]
