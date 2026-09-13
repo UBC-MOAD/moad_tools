@@ -16,8 +16,8 @@ on:
 jobs:
   pytest-no-midoss:
     permissions:
-      contents: read
-      pull-requests: write
+      contents: read  # Required to access the repository's source code
+      pull-requests: write  # Required to upload coverage report  pull request
 
     strategy:
       fail-fast: false
