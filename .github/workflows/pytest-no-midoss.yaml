@@ -4,6 +4,8 @@ name: pytest-no-midoss
 # the appropriate conda environment. Test coverage is not reported from this workflow
 # because many tests are skipped.
 
+permissions: {}
+
 on:
   push:
     branches: [ '*' ]
