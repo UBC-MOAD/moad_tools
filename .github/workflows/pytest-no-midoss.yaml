@@ -15,6 +15,7 @@ on:
 
 jobs:
   pytest-no-midoss:
+    name: Run pytest with coverage for no-midoss environments
     permissions:
       contents: read  # Required to access the repository's source code
       pull-requests: write  # Required to upload coverage report  pull request
